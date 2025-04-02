@@ -1,10 +1,12 @@
 package com.example.kfc.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.ToString;
 
 @AllArgsConstructor
 @ToString
+@Getter
 public class PlayerForm {
     private Long id;
     private Long rank;
