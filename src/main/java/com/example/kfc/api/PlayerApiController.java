@@ -2,7 +2,6 @@ package com.example.kfc.api;
 
 import com.example.kfc.dto.PlayerForm;
 import com.example.kfc.dto.PlayerPageResponse;
-import com.example.kfc.entity.Player;
 import com.example.kfc.service.PlayerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +13,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:5173")
 @Slf4j
@@ -32,15 +29,15 @@ public class PlayerApiController {
         };
     }
 
-    // GET
-    @GetMapping("/api/players")
-    public List<Player> index() {
-        return playerService.index();
-    }
+    @GetMapping("/api/player")
+    public PlayerPageResponse getPlayerPage(
+            @RequestParam(required = false) String search,
+            Pageable pageable) {
+        log.info("검색어: {}", search);
+        log.info("페이지: {}", pageable.getPageNumber());
 
-    @GetMapping("/api/playerpage")
-    public PlayerPageResponse getPlayerPage(Pageable pageable) {
-        Page<PlayerForm> page = playerService.findAllAsForm(pageable); // 서비스에서 DTO로 변환
+        Page<PlayerForm> page = playerService.searchPlayers(search, pageable);
+
         return new PlayerPageResponse(
                 page.getContent(),
                 page.getNumber(),
@@ -48,13 +45,5 @@ public class PlayerApiController {
                 page.getTotalPages(),
                 page.getTotalElements()
         );
-    }
-
-
-
-    // PageRequest 사용 예제
-    @GetMapping("/api/find-by-name")
-    public Page<Player> findByName(@RequestParam(required = false, defaultValue = "0") int page) {
-        return playerService.findByName(10);
     }
 }
