@@ -15,11 +15,11 @@ public class PlayerService {
     @Autowired
     private PlayerRepository playerRepository;
 
-    public Page<PlayerForm> searchPlayers(String search, Pageable pageable) {
+    public Page<PlayerForm> searchPlayers(String search, Long minAge, Long maxAge, Long minRank, Long maxRank, Long minOvr, Long maxOvr, Pageable pageable) {
         if (search == null || search.trim().isEmpty()) {
             return playerRepository.findAll(pageable).map(PlayerForm::from);
         } else {
-            return playerRepository.findByNameContainingIgnoreCase(search, pageable)
+            return playerRepository.searchPlayersWithFilter(search, minAge, maxAge, minRank, maxRank, minOvr, maxOvr, pageable)
                     .map(PlayerForm::from);
         }
     }
