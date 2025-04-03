@@ -27,16 +27,16 @@ public class PlayerApiController {
     public PageableHandlerMethodArgumentResolverCustomizer customize() {
         return p -> {
             p.setOneIndexedParameters(false);    // 1 페이지 부터 시작
-            p.setMaxPageSize(10);       // 한 페이지에 10개씩 출력
+            p.setMaxPageSize(100);       // 한 페이지에 10개씩 출력
         };
     }
 
     @GetMapping("/api/player")
     public PlayerPageResponse getPlayerPage(
-            @RequestParam(required = false, defaultValue = "1") int page, String search,
-            Pageable pageable, @RequestParam(required = false, defaultValue = "AGE_DESC") String sortType) {
-        log.info("검색어: {}", search);
-        log.info("페이지: {}", pageable.getPageNumber());
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "100") int size,
+            @RequestParam(required = false) String search,
+            @RequestParam(defaultValue = "AGE_DESC") String sortType) {
 
         Sort sort = Sort.by("age").descending(); // 기본값
 
@@ -55,8 +55,8 @@ public class PlayerApiController {
         }
 
         Pageable sortedPageable = PageRequest.of(
-                pageable.getPageNumber(),
-                pageable.getPageSize(),
+                page,
+                size,
                 sort
         );
 

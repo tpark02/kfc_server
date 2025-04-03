@@ -18,7 +18,7 @@ public interface PlayerRepository extends JpaRepository<Player, Long> {
                                          @Param("maxAge") Long maxAge,
                                          @Param("minRank") Long minRank,
                                          @Param("maxRank") Long maxRank,
-                                         @Param("minRank") Long minOvr,
-                                         @Param("maxRank") Long maxOvr,
+                                         @Param("minOvr") Long minOvr,
+                                         @Param("maxOvr") Long maxOvr,
                                          Pageable pageable);
 }
