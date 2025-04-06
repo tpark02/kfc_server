@@ -1,7 +1,9 @@
 package com.example.kfc.api;
 
+import com.example.kfc.dto.CountryFilter;
 import com.example.kfc.dto.PlayerForm;
 import com.example.kfc.dto.PlayerPageResponse;
+import com.example.kfc.dto.PlayerSearchRequest;
 import com.example.kfc.service.PlayerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +14,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.config.PageableHandlerMethodArgumentResolverCustomizer;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:5173")
 @Slf4j
@@ -22,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class PlayerApiController {
     @Autowired
     private PlayerService playerService;
+    private List<CountryFilter> filters = new ArrayList<>();
 
     @Bean
     public PageableHandlerMethodArgumentResolverCustomizer customize() {
@@ -31,12 +37,15 @@ public class PlayerApiController {
         };
     }
 
-    @GetMapping("/api/player")
-    public PlayerPageResponse getPlayerPage(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "100") int size,
-            @RequestParam(required = false) String search,
-            @RequestParam(defaultValue = "AGE_DESC") String sortType) {
+    @PostMapping("/api/player")
+    public PlayerPageResponse getPlayerPage(@RequestBody PlayerSearchRequest request) {
+        int page = request.getPage();
+        int size = request.getSize() > 0 ? request.getSize() : 100;
+        String search = request.getSearch();
+        String sortType = request.getSortType();
+        filters = request.getFilters();
+
+        getPlayerPrintLog(page, size, search, sortType);
 
         Sort sort = Sort.by("age").descending(); // 기본값
 
@@ -69,5 +78,22 @@ public class PlayerApiController {
                 p.getTotalPages(),
                 p.getTotalElements()
         );
+    }
+
+    private void getPlayerPrintLog(int page, int size, String search, String sortType) {
+        log.info("===== getPlayer =====");
+        log.info("page: {}, size: {}, search: {}, sortType: {}", page, size, search, sortType);
+
+        if (filters == null) {
+            filters = new ArrayList<>();
+        }
+
+        if (!filters.isEmpty()) {
+            for (CountryFilter filter : filters) {
+                log.info("name: {}, code: {}", filter.getName(), filter.getCode());
+            }
+        } else {
+            log.info("No countries selected!!!");
+        }
     }
 }
