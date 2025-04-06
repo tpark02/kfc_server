@@ -63,13 +63,17 @@ public class PlayerApiController {
             sort = Sort.by("ovr").descending();
         }
 
+        List<String> nation = filters.stream()
+                .map(CountryFilter::getName)
+                .toList(); // Java 17 이상이면 toList() 사용 가능
+
         Pageable sortedPageable = PageRequest.of(
                 page,
                 size,
                 sort
         );
 
-        Page<PlayerForm> p = playerService.searchPlayers(search, 0L, 100L, 0L, 999999L, 0L, 1000L, sortedPageable);
+        Page<PlayerForm> p = playerService.searchPlayers(search, 0L, 100L, 0L, 999999L, 0L, 1000L, nation.isEmpty() ? null : nation, sortedPageable);
 
         return new PlayerPageResponse(
                 p.getContent(),
