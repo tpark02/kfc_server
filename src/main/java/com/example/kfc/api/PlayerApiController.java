@@ -65,7 +65,7 @@ public class PlayerApiController {
 
         List<String> nation = filters.stream()
                 .map(CountryFilter::getName)
-                .toList(); // Java 17 이상이면 toList() 사용 가능
+                .toList();
 
         Pageable sortedPageable = PageRequest.of(
                 page,
