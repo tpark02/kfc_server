@@ -6,9 +6,9 @@ import java.util.List;
 
 @Getter
 public class TeamPageResponse {
-    private final List<TeamForm> content;
+    private final List<TeamDto> content;
 
-    public TeamPageResponse(List<TeamForm> content) {
+    public TeamPageResponse(List<TeamDto> content) {
         this.content = content;
     }
 }

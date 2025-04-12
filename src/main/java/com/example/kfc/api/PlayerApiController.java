@@ -1,7 +1,7 @@
 package com.example.kfc.api;
 
 import com.example.kfc.dto.CountryFilter;
-import com.example.kfc.dto.PlayerForm;
+import com.example.kfc.dto.PlayerDto;
 import com.example.kfc.dto.PlayerPageResponse;
 import com.example.kfc.dto.PlayerSearchRequest;
 import com.example.kfc.service.PlayerService;
@@ -73,7 +73,7 @@ public class PlayerApiController {
                 sort
         );
 
-        Page<PlayerForm> p = playerService.searchPlayers(search, 0L, 100L, 0L, 999999L, 0L, 1000L, nation.isEmpty() ? null : nation, sortedPageable);
+        Page<PlayerDto> p = playerService.searchPlayers(search, 0L, 100L, 0L, 999999L, 0L, 1000L, nation.isEmpty() ? null : nation, sortedPageable);
 
         return new PlayerPageResponse(
                 p.getContent(),

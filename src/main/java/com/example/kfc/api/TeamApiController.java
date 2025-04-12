@@ -1,6 +1,6 @@
 package com.example.kfc.api;
 
-import com.example.kfc.dto.TeamForm;
+import com.example.kfc.dto.TeamDto;
 import com.example.kfc.dto.TeamPageResponse;
 import com.example.kfc.entity.Team;
 import com.example.kfc.repository.TeamRepository;
@@ -26,7 +26,7 @@ public class TeamApiController {
     @GetMapping("/api/teams")
     public TeamPageResponse getAllTeams() {
         List<Team> list = (List<Team>) teamRepository.findAll();
-        List<TeamForm> forms = list.stream().map(TeamForm::from).collect(Collectors.toList());
+        List<TeamDto> forms = list.stream().map(TeamDto::from).collect(Collectors.toList());
         return new TeamPageResponse(forms);
     }
 }

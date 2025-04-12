@@ -1,6 +1,6 @@
 package com.example.kfc.service;
 
-import com.example.kfc.dto.PlayerForm;
+import com.example.kfc.dto.PlayerDto;
 import com.example.kfc.repository.PlayerRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +17,12 @@ public class PlayerService {
     @Autowired
     private PlayerRepository playerRepository;
 
-    public Page<PlayerForm> searchPlayers(String search, Long minAge, Long maxAge, Long minRank, Long maxRank, Long minOvr, Long maxOvr, List<String> nation, Pageable pageable) {
+    public Page<PlayerDto> searchPlayers(String search, Long minAge, Long maxAge, Long minRank, Long maxRank, Long minOvr, Long maxOvr, List<String> nation, Pageable pageable) {
         if ((nation == null) && (search == null || search.trim().isEmpty())) {
-            return playerRepository.findAll(pageable).map(PlayerForm::from);
+            return playerRepository.findAll(pageable).map(PlayerDto::from);
         } else {
             return playerRepository.searchPlayersWithFilter(search, minAge, maxAge, minRank, maxRank, minOvr, maxOvr, nation, pageable)
-                    .map(PlayerForm::from);
+                    .map(PlayerDto::from);
         }
     }
 }
