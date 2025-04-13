@@ -1,9 +1,12 @@
 package com.example.kfc.api;
 
-import com.example.kfc.dto.CountryFilter;
 import com.example.kfc.dto.PlayerDto;
 import com.example.kfc.dto.PlayerPageResponse;
 import com.example.kfc.dto.PlayerSearchRequest;
+import com.example.kfc.filter.CountryFilter;
+import com.example.kfc.filter.LeagueFilter;
+import com.example.kfc.filter.PlayerPositionFilter;
+import com.example.kfc.filter.TeamFilter;
 import com.example.kfc.service.PlayerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +30,10 @@ import java.util.List;
 public class PlayerApiController {
     @Autowired
     private PlayerService playerService;
-    private List<CountryFilter> filters = new ArrayList<>();
+    private List<CountryFilter> countryFilter = new ArrayList<>();
+    private List<TeamFilter> teamFilter = new ArrayList<>();
+    private List<LeagueFilter> leagueFilters = new ArrayList<>();
+    private List<PlayerPositionFilter> posFilter = new ArrayList<>();
 
     @Bean
     public PageableHandlerMethodArgumentResolverCustomizer customize() {
@@ -43,9 +49,23 @@ public class PlayerApiController {
         int size = request.getSize() > 0 ? request.getSize() : 100;
         String search = request.getSearch();
         String sortType = request.getSortType();
-        filters = request.getFilters();
+        //filters = request.getFilters();
+        countryFilter = request.getCountryFilter();
+        teamFilter = request.getTeamFilter();
+        leagueFilters = request.getLeagueFilter();
+        posFilter= request.getPlayerPositionFilter();
 
-        getPlayerPrintLog(page, size, search, sortType);
+        for (var c : countryFilter)
+            System.out.println(c.getName());
+
+        for (var t : teamFilter)
+            System.out.println(t.getName());
+
+        for (var l : leagueFilters)
+            System.out.println(l.getName());
+
+        for (var p : posFilter)
+            System.out.println(p.getCode());
 
         Sort sort = Sort.by("age").descending(); // 기본값
 
@@ -63,9 +83,26 @@ public class PlayerApiController {
             sort = Sort.by("ovr").descending();
         }
 
-        List<String> nation = filters.stream()
+        List<String> nation = countryFilter.stream()
                 .map(CountryFilter::getName)
+                .map(String::toLowerCase)
                 .toList();
+
+        List<String> team = teamFilter.stream()
+                .map(TeamFilter::getName)
+                .map(String::toLowerCase)
+                .toList();
+
+        List<String> league = leagueFilters.stream()
+                .map(LeagueFilter::getName)
+                .map(String::toLowerCase)
+                .toList();
+
+        List<String> position = posFilter.stream()
+                .map(PlayerPositionFilter::getCode)
+                .map(String::toLowerCase)
+                .toList();
+
 
         Pageable sortedPageable = PageRequest.of(
                 page,
@@ -73,7 +110,13 @@ public class PlayerApiController {
                 sort
         );
 
-        Page<PlayerDto> p = playerService.searchPlayers(search, 0L, 100L, 0L, 999999L, 0L, 1000L, nation.isEmpty() ? null : nation, sortedPageable);
+        String lowerName = (search == null || search.isBlank()) ? null : search.toLowerCase();
+
+        Page<PlayerDto> p = playerService.searchPlayers(search, 0L, 100L, 0L, 999999L, 0L, 1000L, nation.isEmpty() ? null : nation, team.isEmpty()? null:team, league.isEmpty()?null:league, position.isEmpty()?null:position, sortedPageable);
+
+
+        for (var pl : p)
+            System.out.println(pl.getName());
 
         return new PlayerPageResponse(
                 p.getContent(),
@@ -82,22 +125,5 @@ public class PlayerApiController {
                 p.getTotalPages(),
                 p.getTotalElements()
         );
-    }
-
-    private void getPlayerPrintLog(int page, int size, String search, String sortType) {
-        log.info("===== getPlayer =====");
-        log.info("page: {}, size: {}, search: {}, sortType: {}", page, size, search, sortType);
-
-        if (filters == null) {
-            filters = new ArrayList<>();
-        }
-
-        if (!filters.isEmpty()) {
-            for (CountryFilter filter : filters) {
-                log.info("name: {}, code: {}", filter.getName(), filter.getCode());
-            }
-        } else {
-            log.info("No countries selected!!!");
-        }
     }
 }

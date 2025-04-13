@@ -15,7 +15,10 @@ public interface PlayerRepository extends JpaRepository<Player, Long> {
             "p.age >= :minAge AND p.age <= :maxAge AND " +
             "p.rank >= :minRank AND p.rank <= :maxRank AND " +
             "p.ovr >= :minOvr AND p.ovr <= :maxOvr AND " +
-            "(:nation IS NULL OR p.nation IN :nation)")
+            "(:nation IS NULL OR LOWER(p.nation) IN :nation) AND " +
+            "(:team IS NULL OR LOWER(p.team) IN :team) AND " +
+            "(:league IS NULL OR LOWER(p.league) IN :league) AND " +
+            "(:pos IS NULL OR LOWER(p.pos) IN :pos)")
     Page<Player> searchPlayersWithFilter(@Param("name") String name,
                                          @Param("minAge") Long minAge,
                                          @Param("maxAge") Long maxAge,
@@ -24,5 +27,8 @@ public interface PlayerRepository extends JpaRepository<Player, Long> {
                                          @Param("minOvr") Long minOvr,
                                          @Param("maxOvr") Long maxOvr,
                                          @Param("nation") List<String> nation,
+                                         @Param("team") List<String> team,
+                                         @Param("league") List<String> league,
+                                         @Param("pos") List<String> position,
                                          Pageable pageable);
 }

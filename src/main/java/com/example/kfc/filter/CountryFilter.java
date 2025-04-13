@@ -1,4 +1,4 @@
-package com.example.kfc.dto;
+package com.example.kfc.filter;
 
 import lombok.Getter;
 import lombok.Setter;

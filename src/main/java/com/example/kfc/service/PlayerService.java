@@ -17,11 +17,11 @@ public class PlayerService {
     @Autowired
     private PlayerRepository playerRepository;
 
-    public Page<PlayerDto> searchPlayers(String search, Long minAge, Long maxAge, Long minRank, Long maxRank, Long minOvr, Long maxOvr, List<String> nation, Pageable pageable) {
-        if ((nation == null) && (search == null || search.trim().isEmpty())) {
+    public Page<PlayerDto> searchPlayers(String search, Long minAge, Long maxAge, Long minRank, Long maxRank, Long minOvr, Long maxOvr, List<String> nation, List<String> team,List<String> league,List<String> position, Pageable pageable) {
+        if ((position == null) && (team == null) && (league == null) && (nation == null) && (search == null || search.trim().isEmpty())) {
             return playerRepository.findAll(pageable).map(PlayerDto::from);
         } else {
-            return playerRepository.searchPlayersWithFilter(search, minAge, maxAge, minRank, maxRank, minOvr, maxOvr, nation, pageable)
+            return playerRepository.searchPlayersWithFilter(search, minAge, maxAge, minRank, maxRank, minOvr, maxOvr, nation, team, league, position, pageable)
                     .map(PlayerDto::from);
         }
     }
