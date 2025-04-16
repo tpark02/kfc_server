@@ -43,7 +43,7 @@ public class PlayerApiController {
         };
     }
 
-    @PostMapping("/api/player")
+    @PostMapping("/api/players")
     public PlayerPageResponse getPlayerPage(@RequestBody PlayerSearchRequest request) {
         int page = request.getPage();
         int size = request.getSize() > 0 ? request.getSize() : 100;
