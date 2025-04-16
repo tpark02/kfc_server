@@ -67,7 +67,7 @@ public class PlayerApiController {
         for (var p : posFilter)
             System.out.println(p.getCode());
 
-        Sort sort = Sort.by("age").descending(); // 기본값
+        Sort sort = Sort.by("ovr").descending(); // 기본값
 
         if ("AGE_ASC".equals(sortType)) {
             sort = Sort.by("age").ascending();
