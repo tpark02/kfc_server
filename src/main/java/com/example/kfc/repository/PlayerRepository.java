@@ -31,4 +31,7 @@ public interface PlayerRepository extends JpaRepository<Player, Long> {
                                          @Param("league") List<String> league,
                                          @Param("pos") List<String> position,
                                          Pageable pageable);
+
+    @Query("SELECT p FROM Player p WHERE (:team IS NULL OR LOWER(p.team) = LOWER(:team))")
+    List<Player> searchSquad(@Param("team") String team);
 }

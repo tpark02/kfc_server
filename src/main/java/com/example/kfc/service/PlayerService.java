@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -24,5 +25,13 @@ public class PlayerService {
             return playerRepository.searchPlayersWithFilter(search, minAge, maxAge, minRank, maxRank, minOvr, maxOvr, nation, team, league, position, pageable)
                     .map(PlayerDto::from);
         }
+    }
+
+    public List<PlayerDto> searchSquad(String teamName){
+        if (teamName.isEmpty()) {
+            return Collections.emptyList(); // or return List.of();
+        }
+        log.info("hello");
+        return playerRepository.searchSquad(teamName).stream().map(PlayerDto::from).toList();
     }
 }

@@ -1,8 +1,8 @@
 package com.example.kfc.api;
 
+import com.example.kfc.Request.PlayerSearchRequest;
+import com.example.kfc.Response.PlayerPageResponse;
 import com.example.kfc.dto.PlayerDto;
-import com.example.kfc.dto.PlayerPageResponse;
-import com.example.kfc.dto.PlayerSearchRequest;
 import com.example.kfc.filter.CountryFilter;
 import com.example.kfc.filter.LeagueFilter;
 import com.example.kfc.filter.PlayerPositionFilter;
@@ -43,6 +43,8 @@ public class PlayerApiController {
         };
     }
 
+
+
     @PostMapping("/api/players")
     public PlayerPageResponse getPlayerPage(@RequestBody PlayerSearchRequest request) {
         int page = request.getPage();
@@ -55,17 +57,17 @@ public class PlayerApiController {
         leagueFilters = request.getLeagueFilter();
         posFilter= request.getPlayerPositionFilter();
 
-        for (var c : countryFilter)
-            System.out.println(c.getName());
-
-        for (var t : teamFilter)
-            System.out.println(t.getName());
-
-        for (var l : leagueFilters)
-            System.out.println(l.getName());
-
-        for (var p : posFilter)
-            System.out.println(p.getCode());
+//        for (var c : countryFilter)
+//            System.out.println(c.getName());
+//
+//        for (var t : teamFilter)
+//            System.out.println(t.getName());
+//
+//        for (var l : leagueFilters)
+//            System.out.println(l.getName());
+//
+//        for (var p : posFilter)
+//            System.out.println(p.getCode());
 
         Sort sort = Sort.by("ovr").descending(); // 기본값
 
@@ -115,8 +117,8 @@ public class PlayerApiController {
         Page<PlayerDto> p = playerService.searchPlayers(search, 0L, 100L, 0L, 999999L, 0L, 1000L, nation.isEmpty() ? null : nation, team.isEmpty()? null:team, league.isEmpty()?null:league, position.isEmpty()?null:position, sortedPageable);
 
 
-        for (var pl : p)
-            System.out.println(pl.getName());
+//        for (var pl : p)
+//            System.out.println(pl.getName());
 
         return new PlayerPageResponse(
                 p.getContent(),

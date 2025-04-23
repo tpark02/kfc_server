@@ -1,7 +1,7 @@
 package com.example.kfc.api;
 
 import com.example.kfc.dto.LeagueDto;
-import com.example.kfc.dto.LeaguePageResponse;
+import com.example.kfc.Response.LeaguePageResponse;
 import com.example.kfc.entity.League;
 import com.example.kfc.repository.LeagueRepository;
 import lombok.extern.slf4j.Slf4j;
