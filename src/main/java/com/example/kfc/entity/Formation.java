@@ -18,21 +18,30 @@ public class Formation {
     @Setter
     private String name;
 
-    private String p1;
-    private String p2;
-    private String p3;
-    private String p4;
-    private String p5;
-    private String p6;
-    private String p7;
-    private String p8;
-    private String p9;
-    private String p10;
-    private String p11;
+    private Long p1;
+    private Long p2;
+    private Long p3;
+    private Long p4;
+    private Long p5;
+    private Long p6;
+    private Long p7;
+    private Long p8;
+    private Long p9;
+    private Long p10;
+    private Long p11;
 
     // ✅ 생성자, getter, setter
-    public Formation(String name, String p1, String p2, String p3, String p4, String p5,
-                     String p6, String p7, String p8, String p9, String p10, String p11) {
+    public Formation(String name,  Long p1,
+                     Long p2,
+                     Long p3,
+                     Long p4,
+                     Long p5,
+                     Long p6,
+                     Long p7,
+                     Long p8,
+                     Long p9,
+                     Long p10,
+                     Long p11) {
         this.name = name;
         this.p1 = p1;
         this.p2 = p2;

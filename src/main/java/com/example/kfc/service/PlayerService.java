@@ -1,6 +1,7 @@
 package com.example.kfc.service;
 
 import com.example.kfc.dto.PlayerDto;
+import com.example.kfc.entity.Player;
 import com.example.kfc.repository.PlayerRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,11 @@ public class PlayerService {
         if (teamName.isEmpty()) {
             return Collections.emptyList(); // or return List.of();
         }
-        log.info("hello");
         return playerRepository.searchSquad(teamName).stream().map(PlayerDto::from).toList();
+    }
+
+    public Player searchPlayerById(Long id) {
+        if (id == 0) return null;
+        return playerRepository.searchPlayerById(id);
     }
 }

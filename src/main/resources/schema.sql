@@ -82,16 +82,16 @@ CREATE TABLE league (
 
 CREATE TABLE formation (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(50) NOT NULL,
-    p1 VARCHAR(50),
-    p2 VARCHAR(50),
-    p3 VARCHAR(50),
-    p4 VARCHAR(50),
-    p5 VARCHAR(50),
-    p6 VARCHAR(50),
-    p7 VARCHAR(50),
-    p8 VARCHAR(50),
-    p9 VARCHAR(50),
-    p10 VARCHAR(50),
-    p11 VARCHAR(50)
+    name INT NOT NULL,
+    p1 INT,
+    p2 INT,
+    p3 INT,
+    p4 INT,
+    p5 INT,
+    p6 INT,
+    p7 INT,
+    p8 INT,
+    p9 INT,
+    p10 INT,
+    p11 INT
 );
