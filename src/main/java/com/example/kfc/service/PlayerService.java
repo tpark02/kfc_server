@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service // 서비스 객체 선언
@@ -38,5 +39,11 @@ public class PlayerService {
     public Player searchPlayerById(Long id) {
         if (id == 0) return null;
         return playerRepository.searchPlayerById(id);
+    }
+
+    public List<Player> search(String query) {
+        return playerRepository.findByNameContainingIgnoreCase(query)
+                .stream()
+                .collect(Collectors.toList());
     }
 }

@@ -37,4 +37,6 @@ public interface PlayerRepository extends JpaRepository<Player, Long> {
 
     @Query("SELECT p FROM Player p WHERE (:team IS NULL OR LOWER(p.team) = LOWER(:team))")
     List<Player> searchSquad(@Param("team") String team);
+
+    List<Player> findByNameContainingIgnoreCase(String name);
 }

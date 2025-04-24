@@ -8,14 +8,10 @@ import com.example.kfc.service.FormationService;
 import com.example.kfc.service.PlayerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
-@CrossOrigin(origins = "http://localhost:5173")
 @Slf4j
 @RestController
 public class SquadApiController {
@@ -24,6 +20,18 @@ public class SquadApiController {
 
     @Autowired
     private FormationService formationService;
+
+    @GetMapping("/api/search")
+    public List<PlayerDto> search(@RequestParam String query) {
+        try {
+            var lst = playerService.search(query);
+            lst.forEach(n -> log.info(n.toString()));
+            return lst.stream().map(PlayerDto::from).toList();
+        } catch (Exception e) {
+            log.info(e.toString());
+            return null;
+        }
+    }
 
     @PostMapping("/api/squad")
     public Map<String, List<PlayerDto>> getSquadPage(@RequestBody SquadSearchRequest request){
