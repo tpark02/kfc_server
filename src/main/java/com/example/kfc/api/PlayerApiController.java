@@ -114,7 +114,7 @@ public class PlayerApiController {
 
         String lowerName = (search == null || search.isBlank()) ? null : search.toLowerCase();
 
-        Page<PlayerDto> p = playerService.searchPlayers(search, 0L, 100L, 0L, 999999L, 0L, 1000L, nation.isEmpty() ? null : nation, team.isEmpty()? null:team, league.isEmpty()?null:league, position.isEmpty()?null:position, sortedPageable);
+        Page<PlayerDto> p = playerService.searchPlayersWithFilter(search, 0L, 100L, 0L, 999999L, 0L, 1000L, nation.isEmpty() ? null : nation, team.isEmpty()? null:team, league.isEmpty()?null:league, position.isEmpty()?null:position, sortedPageable);
 
 
 //        for (var pl : p)

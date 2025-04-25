@@ -6,5 +6,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SquadSearchRequest {
-    private String teamName;
+    private int page;
+    private String country;
+    private String league;
+    private String club;
+    private String pos;
+    private String name;
 }

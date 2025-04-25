@@ -2,12 +2,17 @@ package com.example.kfc.api;
 
 import com.example.kfc.Request.SquadRequest;
 import com.example.kfc.Request.SquadSearchRequest;
+import com.example.kfc.Response.PlayerPageResponse;
 import com.example.kfc.Response.SquadResponse;
 import com.example.kfc.dto.PlayerDto;
 import com.example.kfc.service.FormationService;
 import com.example.kfc.service.PlayerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -21,36 +26,34 @@ public class SquadApiController {
     @Autowired
     private FormationService formationService;
 
-    @GetMapping("/api/search")
-    public List<PlayerDto> search(@RequestParam String query) {
+    @PostMapping("/api/squadsearch")
+    public PlayerPageResponse getSquadPage(@RequestBody SquadSearchRequest request){
         try {
-            var lst = playerService.search(query);
-            lst.forEach(n -> log.info(n.toString()));
-            return lst.stream().map(PlayerDto::from).toList();
-        } catch (Exception e) {
-            log.info(e.toString());
-            return null;
-        }
-    }
+            int page = request.getPage();
+            String country = request.getCountry();
+            String league = request.getLeague();
+            String club = request.getClub();
+            String pos = request.getPos();
+            String name = request.getName();
 
-    @PostMapping("/api/squad")
-    public Map<String, List<PlayerDto>> getSquadPage(@RequestBody SquadSearchRequest request){
-        try {
-            String teamName = request.getTeamName();
-            var lst = playerService.searchSquad(teamName);
-            // Group players by position
-            Map<String, List<PlayerDto>> memberByPos = new HashMap<>();
-            for (PlayerDto member : lst) {
-                memberByPos
-                        .computeIfAbsent(member.getPos(), k -> new ArrayList<>())
-                        .add(member);
+            if (name != null && !name.trim().isEmpty()) {
+                name = "%" + name.trim() + "%";
+            } else {
+                name = null;
             }
 
-            // Sort each group by OVR (assuming getOvr() exists)
-            for (List<PlayerDto> group : memberByPos.values()) {
-                group.sort(Comparator.comparingLong(PlayerDto::getOvr).reversed()); // Highest OVR first
-            }
-            return memberByPos;
+            Sort sort = Sort.by("ovr").descending(); // 기본값
+            Pageable sortedPageable = PageRequest.of(
+                    page,
+                    30,
+                    sort);
+            Page<PlayerDto> p = playerService.searchPlayers(country, league, club, pos, name, 30L, sortedPageable);
+            return new PlayerPageResponse(
+                    p.getContent(),
+                    p.getNumber(),
+                    p.getSize(),
+                    p.getTotalPages(),
+                    p.getTotalElements());
         }
         catch (Exception e) {
             log.info(e.toString());

@@ -20,7 +20,7 @@ public class PlayerService {
     @Autowired
     private PlayerRepository playerRepository;
 
-    public Page<PlayerDto> searchPlayers(String search, Long minAge, Long maxAge, Long minRank, Long maxRank, Long minOvr, Long maxOvr, List<String> nation, List<String> team,List<String> league,List<String> position, Pageable pageable) {
+    public Page<PlayerDto> searchPlayersWithFilter(String search, Long minAge, Long maxAge, Long minRank, Long maxRank, Long minOvr, Long maxOvr, List<String> nation, List<String> team,List<String> league,List<String> position, Pageable pageable) {
         if ((position == null) && (team == null) && (league == null) && (nation == null) && (search == null || search.trim().isEmpty())) {
             return playerRepository.findAll(pageable).map(PlayerDto::from);
         } else {
@@ -29,11 +29,15 @@ public class PlayerService {
         }
     }
 
-    public List<PlayerDto> searchSquad(String teamName){
+    public Page<PlayerDto> searchPlayers(String country, String league, String club, String pos, String name, Long size, Pageable pageable){
+        return playerRepository.searchPlayers(country, league, club, pos, name, pageable).map(PlayerDto::from);
+    }
+
+    public List<PlayerDto> searchClub(String teamName){
         if (teamName.isEmpty()) {
             return Collections.emptyList(); // or return List.of();
         }
-        return playerRepository.searchSquad(teamName).stream().map(PlayerDto::from).toList();
+        return playerRepository.searchClub(teamName).stream().map(PlayerDto::from).toList();
     }
 
     public Player searchPlayerById(Long id) {
