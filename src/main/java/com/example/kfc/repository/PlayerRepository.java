@@ -33,7 +33,7 @@ public interface PlayerRepository extends JpaRepository<Player, Long> {
                                          Pageable pageable);
 
     @Query("SELECT p FROM Player p WHERE " +
-            "LOWER(p.name) LIKE LOWER(:name) AND " +
+            "(:name IS NULL OR :name = '' OR LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%'))) AND " +
             "(:country IS NULL OR :country = '' OR LOWER(p.nation) = LOWER(:country)) AND " +
             "(:club IS NULL OR :club = '' OR LOWER(p.team) = LOWER(:club)) AND " +
             "(:league IS NULL OR :league = '' OR LOWER(p.league) = LOWER(:league)) AND " +

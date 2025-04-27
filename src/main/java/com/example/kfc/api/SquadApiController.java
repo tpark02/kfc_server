@@ -39,7 +39,7 @@ public class SquadApiController {
             if (name != null && !name.trim().isEmpty()) {
                 name = "%" + name.trim() + "%";
             } else {
-                name = null;
+                name = "";
             }
 
             Sort sort = Sort.by("ovr").descending(); // 기본값
