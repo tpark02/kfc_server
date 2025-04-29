@@ -11,6 +11,12 @@ import java.util.List;
 
 public interface PlayerRepository extends JpaRepository<Player, Long> {
     @Query("SELECT p FROM Player p WHERE " +
+            "(:nation IS NULL OR LOWER(p.nation) IN :nation) AND " +
+            "(:team IS NULL OR LOWER(p.team) IN :team) AND " +
+            "(:league IS NULL OR LOWER(p.league) IN :league)")
+    List<Player> searchPlayersByFilters(@Param("nation") List<String> nation, @Param("team") List<String> team, @Param("league") List<String> league);
+
+    @Query("SELECT p FROM Player p WHERE " +
             "(:name IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%'))) AND " +
             "p.age >= :minAge AND p.age <= :maxAge AND " +
             "p.rank >= :minRank AND p.rank <= :maxRank AND " +

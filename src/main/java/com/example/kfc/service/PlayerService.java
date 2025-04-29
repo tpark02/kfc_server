@@ -1,6 +1,9 @@
 package com.example.kfc.service;
 
+import com.example.kfc.dto.CountryDto;
+import com.example.kfc.dto.LeagueDto;
 import com.example.kfc.dto.PlayerDto;
+import com.example.kfc.dto.TeamDto;
 import com.example.kfc.entity.Player;
 import com.example.kfc.repository.PlayerRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -9,9 +12,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service // 서비스 객체 선언
@@ -46,8 +49,22 @@ public class PlayerService {
     }
 
     public List<Player> search(String query) {
-        return playerRepository.findByNameContainingIgnoreCase(query)
-                .stream()
-                .collect(Collectors.toList());
+        return new ArrayList<>(playerRepository.findByNameContainingIgnoreCase(query));
+    }
+
+    public List<Player> searchPlayersByFilters(List<CountryDto> countries, List<LeagueDto> leagues, List<TeamDto> clubs) {
+        List<String> lowerNation = countries.stream()
+                .map(c -> c.getName().toLowerCase())
+                .toList();
+
+        List<String> lowerTeam = clubs.stream()
+                .map(c -> c.getName().toLowerCase())
+                .toList();
+
+        List<String> lowerLeague = leagues.stream()
+                .map(l -> l.getName().toLowerCase())
+                .toList();
+
+        return playerRepository.searchPlayersByFilters(lowerNation.isEmpty() ? null : lowerNation, lowerTeam.isEmpty() ? null : lowerTeam, lowerLeague.isEmpty() ? null : lowerLeague);
     }
 }
