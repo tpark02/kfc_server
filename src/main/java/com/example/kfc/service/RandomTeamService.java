@@ -22,7 +22,9 @@ public class RandomTeamService {
     private final Random random = new Random();
 
     public RandomSquadResponse generateRandomTeamByPosition(String formation, List<CountryDto> countries, List<LeagueDto> leagues, List<TeamDto> clubs) {
-        var positionRequirement = FormationPositionCounts.FORMATION_POSITION_COUNTS.get(formation);
+        LinkedHashMap<String, Integer> positionRequirement =
+                FormationPositionCounts.FORMATION_POSITION_COUNTS.get(
+                formation);
 
         if (positionRequirement == null) {
             throw new IllegalArgumentException("존재하지 않는 포메이션입니다: " + formation);
@@ -85,8 +87,21 @@ public class RandomTeamService {
 
         int chemistry = calculateChemistry(selectedPlayers);
 
-        return RandomSquadResponse.builder()
-                .content(selectedPlayers.stream().map(PlayerDto::from).collect(Collectors.toList()))
+        List<PlayerDto> lst = new ArrayList<>();
+        Set<Integer> usedIds = new HashSet<>();
+
+        positionRequirement.forEach((pos, count) -> {
+            selectedPlayers.stream()
+                    .filter(p -> pos.equals(p.getPos()) && !usedIds.contains(p.getId()))
+                    .limit(count)
+                    .forEach(p -> {
+                        usedIds.add(Math.toIntExact(p.getId()));
+                        lst.add(PlayerDto.from(p));
+                    });
+        });
+
+        return  RandomSquadResponse.builder()
+                .content(lst)
                 .chemistry(chemistry)
                 .build();
     }
