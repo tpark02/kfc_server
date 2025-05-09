@@ -5,17 +5,22 @@ import com.example.kfc.Request.SquadSearchRequest;
 import com.example.kfc.Response.PlayerPageResponse;
 import com.example.kfc.Response.SquadResponse;
 import com.example.kfc.dto.PlayerDto;
+import com.example.kfc.entity.UserInfo;
 import com.example.kfc.service.FormationService;
 import com.example.kfc.service.PlayerService;
+import com.example.kfc.service.UserInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -25,6 +30,9 @@ public class SquadApiController {
 
     @Autowired
     private FormationService formationService;
+
+    @Autowired
+    private UserInfoService userInfoService;
 
     @PostMapping("/api/squadsearch")
     public PlayerPageResponse getSquadPage(@RequestBody SquadSearchRequest request){
@@ -105,11 +113,13 @@ public class SquadApiController {
                 playerDtoList.add(PlayerDto.from(p));
             }
 
-            return new SquadResponse(name, playerDtoList);
+            UserInfo user = userInfoService.findUserInfoById(1L)
+                    .orElseThrow(() -> new IllegalArgumentException("해당 유저 없음"));
+            return new SquadResponse(name, playerDtoList, user.getTeamName());
         }
         catch (Exception e){
             log.info(e.toString());
-            return new SquadResponse("", null);
+            return new SquadResponse("", null, "");
         }
     }
 }

@@ -95,3 +95,8 @@ CREATE TABLE formation (
     p10 INT,
     p11 INT
 );
+
+CREATE TABLE user_info (
+id BIGINT AUTO_INCREMENT PRIMARY KEY,
+team_name VARCHAR(100)
+);

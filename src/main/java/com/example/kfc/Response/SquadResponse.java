@@ -10,8 +10,10 @@ import java.util.List;
 public class SquadResponse {
     private final List<PlayerDto> content;
     private final String name;
-    public SquadResponse(String name, List<PlayerDto> content) {
+    private final String myTeamName;
+    public SquadResponse(String name, List<PlayerDto> content, String myTeamName) {
         this.content = content;
         this.name = name;
+        this.myTeamName = myTeamName;
     }
 }

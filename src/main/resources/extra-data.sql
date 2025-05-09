@@ -49,3 +49,9 @@ WHERE NOT EXISTS (SELECT 1 FROM formation WHERE name = '4132');
 INSERT INTO formation(name, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11)
 SELECT '424', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 WHERE NOT EXISTS (SELECT 1 FROM formation WHERE name = '424');
+
+INSERT INTO user_info(team_name)
+SELECT 'MyTeam'
+WHERE NOT EXISTS (SELECT 1 FROM
+user_info WHERE
+team_name = 'MyTeam');

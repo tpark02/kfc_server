@@ -15,7 +15,7 @@ public class FormationPositionCounts {
         f442.put("CB", 2);
         f442.put("RB", 1);
         f442.put("LM", 1);
-        f442.put("CAM", 2);
+        f442.put("CM", 2);
         f442.put("RM", 1);
         f442.put("ST", 2);
         FORMATION_POSITION_COUNTS.put("442", f442);
@@ -25,7 +25,7 @@ public class FormationPositionCounts {
         f433.put("LB", 1);
         f433.put("CB", 2);
         f433.put("RB", 1);
-        f433.put("CAM", 3);
+        f433.put("CM", 3);
         f433.put("LW", 1);
         f433.put("ST", 1);
         f433.put("RW", 1);
@@ -37,9 +37,7 @@ public class FormationPositionCounts {
         f4231.put("CB", 2);
         f4231.put("RB", 1);
         f4231.put("CDM", 2);
-        f4231.put("LM", 1);
-        f4231.put("CAM", 1);
-        f4231.put("RM", 1);
+        f4231.put("CAM", 3);
         f4231.put("ST", 1);
         FORMATION_POSITION_COUNTS.put("4231", f4231);
 
@@ -49,9 +47,9 @@ public class FormationPositionCounts {
         f451.put("CB", 2);
         f451.put("RB", 1);
         f451.put("LM", 1);
-        f451.put("CM", 2);
+        f451.put("CM", 1);
         f451.put("RM", 1);
-        f451.put("CAM", 1);
+        f451.put("CAM", 2);
         f451.put("ST", 1);
         FORMATION_POSITION_COUNTS.put("451", f451);
 
@@ -73,9 +71,10 @@ public class FormationPositionCounts {
         f352.put("LB", 1);
         f352.put("CB", 1);
         f352.put("RB", 1);
-        f352.put("LM", 2);
-        f352.put("CM", 1);
-        f352.put("RM", 2);
+        f352.put("LM", 1);
+        f352.put("CDM", 2);
+        f352.put("CAM", 1);
+        f352.put("RM", 1);
         f352.put("ST", 2);
         FORMATION_POSITION_COUNTS.put("352", f352);
 

@@ -21,4 +21,9 @@ public class Team {
 
     @Column
     private String url;
+
+    public Team(String bye) {
+        this.team = bye;
+        this.url = "";
+    }
 }

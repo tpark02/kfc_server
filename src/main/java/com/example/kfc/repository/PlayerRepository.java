@@ -10,6 +10,10 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface PlayerRepository extends JpaRepository<Player, Long> {
+    @Query("SELECT ROUND(AVG(p.ovr)) FROM Player p WHERE LOWER(p.team) LIKE LOWER(CONCAT('%', :team, '%'))")
+    Long avgOvrTeam(@Param("team") String team);
+
+
     @Query("SELECT p FROM Player p WHERE " +
             "(:nation IS NULL OR LOWER(p.nation) IN :nation) AND " +
             "(:team IS NULL OR LOWER(p.team) IN :team) AND " +
