@@ -27,6 +27,7 @@ public class SimService {
     @Autowired
     PlayerRepository playerRepository;
 
+
     public SimResultResponse simulateLeague(List<String> teams) {
         Map<String, TeamStatDto> table = new HashMap<>();
         List<String> logs = new ArrayList<>();
@@ -108,9 +109,13 @@ public class SimService {
                         finalOpponent.set(teams.get(i).getTeam());
                         Long avgOvr = playerRepository.avgOvrTeam(finalOpponent.get().toLowerCase());
                         String res = myTeamOvr > avgOvr ? "W" : "L";
-                        schedule.add(new MatchDto(myTeamName, finalOpponent.toString(), i + 1, avgOvr, res));
+                        var lst = playerRepository.searchClub(schedule.get(i).getAwayTeam()).stream().map(PlayerDto::from).toList();
+                        schedule.add(new MatchDto(myTeamName, finalOpponent.toString(), i + 1, avgOvr, res, lst));
                     });
 
+            for (int i = 0; i < schedule.size(); i++) {
+
+            }
             return schedule;
         } catch (Exception e) {
             log.info(String.valueOf(opponent));

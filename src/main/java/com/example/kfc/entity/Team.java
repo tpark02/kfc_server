@@ -1,16 +1,14 @@
 package com.example.kfc.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
 @Entity
 @Getter
+@Setter
 public class Team {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // DB가 id 자동 생성

@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.List;
+
 @AllArgsConstructor
 @ToString
 @Getter
@@ -15,4 +17,5 @@ public class MatchDto {
     private int round;
     private Long ovr;
     private String res;
+    private List<PlayerDto> members;
 }

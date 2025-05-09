@@ -1,15 +1,13 @@
 package com.example.kfc.dto;
 
 import com.example.kfc.entity.Player;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
 @Getter
+@Setter
 public class PlayerDto {
     private Long id;
     private Long rank;
