@@ -10,16 +10,14 @@ import java.util.List;
 @Builder
 public class RandomSquadResponse {
     private List<PlayerDto> content;
-    private Long myTeamOvr; // 팀의 평균 OVR
-    private int chemistry; // (나중에 관계를 계산해서)
+    private Long myTeamOvr;
+    private Long chemistry;
     private String myTeamName;
-
-    public RandomSquadResponse(List<PlayerDto> content, Long myTeamOvr, int chemistry, String myTeamName){
-        this.content = content;
-        this.myTeamOvr = myTeamOvr;
-        this.chemistry = chemistry;
-        this.myTeamName = myTeamName;
-    }
+    private Long myTeamClubCohesion;
+    private Long myTeamStamina;
+    private Long myTeamAge;
+    private Long myTeamAtk;
+    private Long myTeamDef;
+    private Long myTeamPace;
+    private Long myTeamSquadValue;
 }
-
-// sr

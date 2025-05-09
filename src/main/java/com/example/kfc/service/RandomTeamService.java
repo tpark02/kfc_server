@@ -1,12 +1,13 @@
 package com.example.kfc.service;
 
 import com.example.kfc.Response.RandomSquadResponse;
-import com.example.kfc.data.FormationPositionCounts;
+import com.example.kfc.data.FormationUtil;
 import com.example.kfc.dto.CountryDto;
 import com.example.kfc.dto.LeagueDto;
 import com.example.kfc.dto.PlayerDto;
 import com.example.kfc.dto.TeamDto;
 import com.example.kfc.entity.Player;
+import com.example.kfc.entity.UserInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,11 +18,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RandomTeamService {
     private final PlayerService playerService;
+    private final UserInfoService userInfoService;
     private final Random random = new Random();
 
     public RandomSquadResponse generateRandomTeamByPosition(String formation, List<CountryDto> countries, List<LeagueDto> leagues, List<TeamDto> clubs) {
         LinkedHashMap<String, Integer> positionRequirement =
-                FormationPositionCounts.FORMATION_POSITION_COUNTS.get(
+                FormationUtil.FORMATION_POSITION_COUNTS.get(
                 formation);
 
         if (positionRequirement == null) {
@@ -106,15 +108,41 @@ public class RandomTeamService {
 
         System.out.println("random formation - long avg: " + myTeamOvr);
 
+        // total squad value
+        Long squadValue = lst.stream()
+                .mapToLong(FormationUtil::estimateValue)
+                .sum();
+        // atk, def
+        Map<String, Long> atkdef = FormationUtil.getDefenseAttackSplit(lst);
+        Long atk = atkdef.get("attack");
+        Long def = atkdef.get("defense");
+
+        // get PaceIndex
+        Long paceIndex = FormationUtil.getPaceIndex(lst);
+        // get TeamAge
+        Long teamAge = FormationUtil.getTeamAge(lst);
+        // club cohesion
+        Long clubCohesion = FormationUtil.getClubCohesion(lst);
+        // stamina
+        Long teamStamina = FormationUtil.getTeamStamina(lst);
+
+        UserInfo user = userInfoService.findUserInfoById(1L)
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저 없음"));
+
         return  RandomSquadResponse.builder()
                 .content(lst)
-                .chemistry(chemistry)
+                .chemistry((long) chemistry)
                 .myTeamOvr(myTeamOvr)
+                .myTeamSquadValue(squadValue)
+                .myTeamAge(teamAge)
+                .myTeamClubCohesion(clubCohesion)
+                .myTeamAtk(atk)
+                .myTeamDef(def)
+                .myTeamPace(paceIndex)
+                .myTeamStamina(teamStamina)
+                .myTeamName(user.getTeamName())
                 .build();
     }
-
-
-
 
     private int calculateChemistry(List<Player> players) {
         int chemistry = 0;

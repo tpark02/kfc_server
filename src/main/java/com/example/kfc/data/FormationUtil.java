@@ -1,10 +1,18 @@
 package com.example.kfc.data;
 
-import java.util.LinkedHashMap;
+import com.example.kfc.dto.PlayerDto;
 
-public class FormationPositionCounts {
+import java.util.*;
+
+public class FormationUtil {
 
     public static final LinkedHashMap<String, LinkedHashMap<String, Integer>> FORMATION_POSITION_COUNTS;
+
+    public static final Map<String, Double> POSITION_MULTIPLIER;
+
+    public static final Set<String> DEFENDERS;
+
+    public static final Set<String> ATTACKERS;
 
     static {
         FORMATION_POSITION_COUNTS = new LinkedHashMap<>();
@@ -156,6 +164,79 @@ public class FormationPositionCounts {
         f424.put("RW", 1);
         f424.put("ST", 2);
         FORMATION_POSITION_COUNTS.put("424", f424);
+
+        // positionMultiplier
+        Map<String, Double> posMulti = new HashMap<>();
+        posMulti.put("GK", 0.9);
+        posMulti.put("CB", 1.0);
+        posMulti.put("LB", 1.0);
+        posMulti.put("RB", 1.0);
+        posMulti.put("CDM", 1.05);
+        posMulti.put("CM", 1.1);
+        posMulti.put("CAM", 1.15);
+        posMulti.put("LM", 1.1);
+        posMulti.put("RM", 1.1);
+        posMulti.put("LW", 1.2);
+        posMulti.put("RW", 1.2);
+        posMulti.put("ST", 1.3);
+        posMulti.put("CF", 1.25);
+        POSITION_MULTIPLIER = Collections.unmodifiableMap(posMulti);
+
+        // defenders
+        DEFENDERS = Set.of("GK", "CB", "LB", "RB", "LWB", "RWB", "CDM");
+
+        // attackers
+        ATTACKERS = Set.of("ST", "CF", "CAM", "LW", "RW", "LM", "RM");
     }
 
+    public static Long estimateValue(PlayerDto player) {
+        double baseValue = Math.pow(player.getOvr(), 2) * 1000;
+        double multiplier = POSITION_MULTIPLIER.getOrDefault(player.getPos(), 1.0);
+        System.out.println("estimating: " + player.getName() + " / pos=" + player.getPos() + " / ovr=" + player.getOvr());
+
+        return Math.round(baseValue * multiplier);
+    }
+
+    public static Map<String, Long> getDefenseAttackSplit(List<PlayerDto> players) {
+        double avgDef = players.stream()
+                .mapToLong(PlayerDto::getDef)
+                .average()
+                .orElse(0);
+
+        double avgSho = players.stream()
+                .mapToLong(PlayerDto::getSho)
+                .average()
+                .orElse(0);
+
+        Map<String, Long> result = new HashMap<>();
+        result.put("defense", Math.round(avgDef));
+        result.put("attack", Math.round(avgSho));
+        return result;
+    }
+
+    public static Long getPaceIndex(List<PlayerDto> players) {
+        long sum = players.stream().mapToLong(PlayerDto::getPac).sum();
+        return (long) Math.round((float) sum / 11);
+    }
+
+    public  static Long getTeamAge(List<PlayerDto> players) {
+        long sum = players.stream().mapToLong(PlayerDto::getAge).sum();
+        return (long) Math.round((float) sum / 11);
+    }
+
+    public static Long getClubCohesion(List<PlayerDto> players) {
+        Map<String, Long> clubCount = new HashMap<>();
+
+        for (var p : players) {
+            if (p != null && p.getTeam() != null && !p.getTeam().isEmpty()) {
+                clubCount.put(p.getTeam(), clubCount.getOrDefault(p.getTeam(), 0L) + 1);
+            }
+        }
+        return clubCount.values().stream().max(Long::compareTo).orElse(0L) * 10L;
+    }
+
+    public static Long getTeamStamina(List<PlayerDto> players) {
+        long sum = players.stream().mapToLong(PlayerDto::getStamina).sum();
+        return (long) Math.round((float) sum / 11);
+    }
 }
