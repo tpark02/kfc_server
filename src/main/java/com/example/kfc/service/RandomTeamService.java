@@ -7,7 +7,6 @@ import com.example.kfc.dto.LeagueDto;
 import com.example.kfc.dto.PlayerDto;
 import com.example.kfc.dto.TeamDto;
 import com.example.kfc.entity.Player;
-import com.example.kfc.repository.PlayerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +17,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RandomTeamService {
     private final PlayerService playerService;
-    private final PlayerRepository playerRepository;
     private final Random random = new Random();
 
     public RandomSquadResponse generateRandomTeamByPosition(String formation, List<CountryDto> countries, List<LeagueDto> leagues, List<TeamDto> clubs) {
@@ -100,9 +98,18 @@ public class RandomTeamService {
                     });
         });
 
+        //my team ovr 계산
+        double avg = lst.stream().mapToLong(PlayerDto::getOvr).average().orElse(0.0);
+        System.out.println("random formation - avg: " + avg);
+
+        Long myTeamOvr = (long) avg;
+
+        System.out.println("random formation - long avg: " + myTeamOvr);
+
         return  RandomSquadResponse.builder()
                 .content(lst)
                 .chemistry(chemistry)
+                .myTeamOvr(myTeamOvr)
                 .build();
     }
 

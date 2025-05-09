@@ -10,15 +10,15 @@ import java.util.List;
 @Builder
 public class RandomSquadResponse {
     private List<PlayerDto> content;
-    private int totalOvr;   // 전체 팀의 OVR 합
-    private double averageOvr; // 팀의 평균 OVR
+    private Long myTeamOvr; // 팀의 평균 OVR
     private int chemistry; // (나중에 관계를 계산해서)
+    private String myTeamName;
 
-    public RandomSquadResponse(List<PlayerDto> content, int totalovr, double averageOvr, int chemistry){
+    public RandomSquadResponse(List<PlayerDto> content, Long myTeamOvr, int chemistry, String myTeamName){
         this.content = content;
-        this.totalOvr = totalovr;
-        this.averageOvr = averageOvr;
+        this.myTeamOvr = myTeamOvr;
         this.chemistry = chemistry;
+        this.myTeamName = myTeamName;
     }
 }
 

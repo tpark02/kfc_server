@@ -115,11 +115,21 @@ public class SquadApiController {
 
             UserInfo user = userInfoService.findUserInfoById(1L)
                     .orElseThrow(() -> new IllegalArgumentException("해당 유저 없음"));
-            return new SquadResponse(name, playerDtoList, user.getTeamName());
+
+            //my team ovr 계산
+            double avg = playerDtoList.stream().mapToLong(PlayerDto::getOvr).average().orElse(0.0);
+
+            System.out.println("load formation - avg: " + avg);
+
+            Long myTeamOvr = (long) avg;
+
+            System.out.println("load formation - long avg: " + myTeamOvr);
+
+            return new SquadResponse(name, playerDtoList, user.getTeamName(), myTeamOvr);
         }
         catch (Exception e){
             log.info(e.toString());
-            return new SquadResponse("", null, "");
+            return new SquadResponse("", null, "", -1L);
         }
     }
 }

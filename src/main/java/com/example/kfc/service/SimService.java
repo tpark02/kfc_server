@@ -115,7 +115,7 @@ public class SimService {
         } catch (Exception e) {
             log.info(String.valueOf(opponent));
             log.info(e.toString());
-            return null;
+            return new ArrayList<MatchDto>();
         }
     }
 }

@@ -5,7 +5,9 @@ import com.example.kfc.Response.RandomSquadResponse;
 import com.example.kfc.dto.CountryDto;
 import com.example.kfc.dto.LeagueDto;
 import com.example.kfc.dto.TeamDto;
+import com.example.kfc.entity.UserInfo;
 import com.example.kfc.service.RandomTeamService;
+import com.example.kfc.service.UserInfoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -22,6 +24,7 @@ import java.util.List;
 public class RandomTeamController {
 
     private final RandomTeamService randomTeamService;
+    private final UserInfoService userInfoService;
 
     @PostMapping("/api/randomteam")
     public RandomSquadResponse getRandomTeam(@RequestBody RandomSquadRequest request) {
@@ -38,6 +41,9 @@ public class RandomTeamController {
 
         var res = randomTeamService.generateRandomTeamByPosition(formation, countries, leagues, clubs);
 
-        return new RandomSquadResponse(res.getContent(), res.getTotalOvr(), res.getAverageOvr(), res.getChemistry());
+        UserInfo user = userInfoService.findUserInfoById(1L)
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저 없음"));
+
+        return new RandomSquadResponse(res.getContent(), res.getMyTeamOvr(), res.getChemistry(), user.getTeamName());
     }
 }
