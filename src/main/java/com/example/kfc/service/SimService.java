@@ -95,10 +95,10 @@ public class SimService {
                     .average()
                     .orElse(0.0);
 
-            System.out.println("avg: " + avg);
+            //System.out.println("avg: " + avg);
 
             Long myTeamOvr = (long) avg;
-            System.out.println("long avg: " + myTeamOvr);
+            //System.out.println("long avg: " + myTeamOvr);
 
             List<MatchDto> schedule = new ArrayList<>();
             opponent = new AtomicReference<>("");
@@ -106,16 +106,14 @@ public class SimService {
             AtomicReference<String> finalOpponent = opponent;
             IntStream.range(0, teams.size())
                     .forEach(i -> {
+                        log.info(i + " : " + teams.get(i).getTeam());
                         finalOpponent.set(teams.get(i).getTeam());
                         Long avgOvr = playerRepository.avgOvrTeam(finalOpponent.get().toLowerCase());
                         String res = myTeamOvr > avgOvr ? "W" : "L";
-                        var lst = playerRepository.searchClub(schedule.get(i).getAwayTeam()).stream().map(PlayerDto::from).toList();
+                        var lst = playerRepository.searchClub(teams.get(i).getTeam()).stream().map(PlayerDto::from).toList();
                         schedule.add(new MatchDto(myTeamName, finalOpponent.toString(), i + 1, avgOvr, res, lst));
                     });
 
-            for (int i = 0; i < schedule.size(); i++) {
-
-            }
             return schedule;
         } catch (Exception e) {
             log.info(String.valueOf(opponent));
