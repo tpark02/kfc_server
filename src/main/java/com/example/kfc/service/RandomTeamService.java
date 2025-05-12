@@ -22,8 +22,8 @@ public class RandomTeamService {
     private final Random random = new Random();
 
     public RandomSquadResponse generateRandomTeamByPosition(String formation, List<CountryDto> countries, List<LeagueDto> leagues, List<TeamDto> clubs) {
-        LinkedHashMap<String, Integer> positionRequirement =
-                FormationUtil.FORMATION_POSITION_COUNTS.get(
+        List<String> positionRequirement =
+                FormationUtil.formationPosition.get(
                 formation);
 
         if (positionRequirement == null) {
@@ -45,39 +45,53 @@ public class RandomTeamService {
 
         List<Player> selectedPlayers = new ArrayList<>();
 
-        for (Map.Entry<String, Integer> entry : positionRequirement.entrySet()) {
-            String pos = entry.getKey();
-            int requiredCount = entry.getValue();
+        for (var pos : positionRequirement) {
+//            int requiredCount = entry.getValue();
+//            List<Player> candidates = playersByPosition.getOrDefault(pos, Collections.emptyList());
+//            if (candidates.size() < requiredCount) {
+//                if (pos.equals("RM") == true || pos.equals("CDM") == true) {
+//                    List<Player> cdm = playersByPosition.getOrDefault("CDM", Collections.emptyList());
+//                    List<Player> cam = playersByPosition.getOrDefault("CAM", Collections.emptyList());
+//                    List<Player> cm = playersByPosition.getOrDefault("CM", Collections.emptyList());
+//
+//                    // 후보 리스트에 추가
+//                    List<Player> mergedCandidates = new ArrayList<>(candidates);
+//                    mergedCandidates.addAll(cdm);
+//                    mergedCandidates.addAll(cam);
+//                    mergedCandidates.addAll(cm);
+//
+//                    candidates = mergedCandidates; // 새로 합친 리스트로 덮어쓰기
+//                }
+//                else {
+//                    throw new IllegalStateException(
+//                            "포지션 [" + pos + "]에 필요한 선수 수(" + requiredCount + "명)보다 후보가 부족합니다. (현재 후보: " + candidates.size() + "명)");
+//                }
+//            }
 
-            List<Player> candidates = playersByPosition.getOrDefault(pos, Collections.emptyList());
+            List<Player> candidates = playersByPosition.get(pos);
 
-            if (candidates.size() < requiredCount) {
-                if (pos.equals("RM") == true || pos.equals("CDM") == true) {
-                    List<Player> cdm = playersByPosition.getOrDefault("CDM", Collections.emptyList());
-                    List<Player> cam = playersByPosition.getOrDefault("CAM", Collections.emptyList());
-                    List<Player> cm = playersByPosition.getOrDefault("CM", Collections.emptyList());
-
-                    // 후보 리스트에 추가
-                    List<Player> mergedCandidates = new ArrayList<>(candidates);
-                    mergedCandidates.addAll(cdm);
-                    mergedCandidates.addAll(cam);
-                    mergedCandidates.addAll(cm);
-
-                    candidates = mergedCandidates; // 새로 합친 리스트로 덮어쓰기
+            if (candidates == null || candidates.isEmpty()) {
+                // Try to match prefix, e.g. "CDM1" → "CDM"
+                for (String key : playersByPosition.keySet()) {
+                    if (pos.startsWith(key)) {
+                        candidates = playersByPosition.get(key);
+                        break;
+                    }
                 }
-                else {
-                    throw new IllegalStateException(
-                            "포지션 [" + pos + "]에 필요한 선수 수(" + requiredCount + "명)보다 후보가 부족합니다. (현재 후보: " + candidates.size() + "명)");
-                }
+            }
+
+            if (candidates == null) {
+                candidates = Collections.emptyList();
             }
 
             // 후보를 다시 섞어도 되고, 그냥 앞에서부터 뽑아도 됨
             Collections.shuffle(candidates);
 
-            if (!candidates.isEmpty()) {
-                int actualCount = Math.min(requiredCount, candidates.size());
-                selectedPlayers.addAll(candidates.subList(0, actualCount));
-            }
+//            if (!candidates.isEmpty()) {
+//                int actualCount = Math.min(requiredCount, candidates.size());
+//                selectedPlayers.addAll(candidates.subList(0, actualCount));
+//            }
+            selectedPlayers.add(candidates.get(0));
         }
 
         // 최종적으로 정확히 11명만 선택됐는지 체크
@@ -90,16 +104,19 @@ public class RandomTeamService {
         List<PlayerDto> lst = new ArrayList<>();
         Set<Integer> usedIds = new HashSet<>();
 
-        positionRequirement.forEach((pos, count) -> {
-            selectedPlayers.stream()
-                    .filter(p -> pos.equals(p.getPos()) && !usedIds.contains(p.getId()))
-                    .limit(count)
-                    .forEach(p -> {
-                        usedIds.add(Math.toIntExact(p.getId()));
-                        lst.add(PlayerDto.from(p));
-                    });
-        });
+//        positionRequirement.forEach((pos, count) -> {
+//            selectedPlayers.stream()
+//                    .filter(p -> pos.equals(p.getPos()) && !usedIds.contains(p.getId()))
+//                    .limit(count)
+//                    .forEach(p -> {
+//                        usedIds.add(Math.toIntExact(p.getId()));
+//                        lst.add(PlayerDto.from(p));
+//                    });
+//        });
 
+        selectedPlayers.stream().forEach(p -> {
+            lst.add(PlayerDto.from(p));
+        });
         //my team ovr 계산
         double avg = lst.stream().mapToLong(PlayerDto::getOvr).average().orElse(0.0);
         System.out.println("random formation - avg: " + avg);
@@ -131,7 +148,7 @@ public class RandomTeamService {
         List<PlayerDto> benchplayers = playersPool.stream()
                 .limit(15)
                 .map(PlayerDto::from)
-                .collect(Collectors.toList());
+                .toList();
 
         lst.addAll(benchplayers);
 
