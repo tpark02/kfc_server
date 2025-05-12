@@ -20,4 +20,5 @@ public class RandomSquadResponse {
     private Long myTeamDef;
     private Long myTeamPace;
     private Long myTeamSquadValue;
+//    private List<PlayerDto> benchPlayers;
 }

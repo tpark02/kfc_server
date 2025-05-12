@@ -8,6 +8,7 @@ import lombok.*;
 @ToString
 @Entity
 @Getter
+@Setter
 @Table(name = "formation")
 public class Formation {
 
@@ -15,8 +16,15 @@ public class Formation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Setter
     private String name;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "club_id", nullable = false)
+    private MyClub club;
+
+
+    //@OneToMany(mappedBy = "formation", cascade = CascadeType.ALL)
+    //private List<Long> players;
 
     private Long p1;
     private Long p2;

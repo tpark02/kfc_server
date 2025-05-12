@@ -1,11 +1,14 @@
 package com.example.kfc.repository;
 
 import com.example.kfc.entity.Formation;
+import com.example.kfc.entity.MyClub;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
+import java.util.List;
 
 public interface FormationRepository extends JpaRepository<Formation, Long> {
     @Modifying
@@ -29,5 +32,7 @@ public interface FormationRepository extends JpaRepository<Formation, Long> {
     @Query("SELECT p FROM Formation p WHERE "
             + "(:name IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%')))")
     Formation searchFormationByName(@Param("name") String name);
+
+    List<Formation> findByClub(MyClub club);
 }
 

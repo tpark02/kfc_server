@@ -80,9 +80,24 @@ CREATE TABLE league (
     url VARCHAR(255)
 );
 
+CREATE TABLE user_info (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50),
+    email VARCHAR(100),
+    team_name VARCHAR(100)
+);
+
+CREATE TABLE my_club (
+    club_id  BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100),
+    user_id BIGINT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES user_info(id)
+);
+
 CREATE TABLE formation (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    name INT NOT NULL,
+    name VARCHAR(20) NOT NULL,
+    club_id BIGINT,
     p1 INT,
     p2 INT,
     p3 INT,
@@ -93,10 +108,6 @@ CREATE TABLE formation (
     p8 INT,
     p9 INT,
     p10 INT,
-    p11 INT
-);
-
-CREATE TABLE user_info (
-id BIGINT AUTO_INCREMENT PRIMARY KEY,
-team_name VARCHAR(100)
+    p11 INT,
+    FOREIGN KEY (club_id) REFERENCES my_club(club_id)
 );

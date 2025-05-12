@@ -1,11 +1,8 @@
 package com.example.kfc.api;
 
-import com.example.kfc.Request.SquadRequest;
 import com.example.kfc.Request.SquadSearchRequest;
 import com.example.kfc.Response.PlayerPageResponse;
-import com.example.kfc.Response.SquadResponse;
 import com.example.kfc.dto.PlayerDto;
-import com.example.kfc.entity.UserInfo;
 import com.example.kfc.service.FormationService;
 import com.example.kfc.service.PlayerService;
 import com.example.kfc.service.UserInfoService;
@@ -18,9 +15,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -69,67 +63,67 @@ public class SquadApiController {
         }
     }
 
-    @PostMapping("/api/savesquad")
-    public boolean saveSquad(@RequestBody SquadRequest request){
-        try {
-            String name = request.getName();
-            Long p1 = request.getP1();
-            Long p2 = request.getP2();
-            Long p3 = request.getP3();
-            Long p4 = request.getP4();
-            Long p5 = request.getP5();
-            Long p6 = request.getP6();
-            Long p7 = request.getP7();
-            Long p8 = request.getP8();
-            Long p9 = request.getP9();
-            Long p10 = request.getP10();
-            Long p11 = request.getP11();
-
-            int res = formationService.updateFormation(name, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11);
-            return res != 0;
-        }
-        catch (Exception e){
-            log.info(e.toString());
-            return false;
-        }
-    }
-
-    @PostMapping("/api/loadsquad")
-    public SquadResponse loadSquad(@RequestBody SquadRequest request) {
-        try {
-            String name = request.getName();
-            var lst = formationService.loadFormation(name);
-
-            lst.forEach(n -> log.info(n.toString()));
-
-            List<PlayerDto> playerDtoList = new ArrayList<>();
-
-            for (Long n : lst) {
-                if (n == 0L) {
-                    playerDtoList.add(new PlayerDto());
-                    continue;
-                }
-                var p = playerService.searchPlayerById(n);
-                playerDtoList.add(PlayerDto.from(p));
-            }
-
-            UserInfo user = userInfoService.findUserInfoById(1L)
-                    .orElseThrow(() -> new IllegalArgumentException("해당 유저 없음"));
-
-            //my team ovr 계산
-            double avg = playerDtoList.stream().mapToLong(PlayerDto::getOvr).average().orElse(0.0);
-
-            System.out.println("load formation - avg: " + avg);
-
-            Long myTeamOvr = (long) avg;
-
-            System.out.println("load formation - long avg: " + myTeamOvr);
-
-            return new SquadResponse(name, playerDtoList, user.getTeamName(), myTeamOvr);
-        }
-        catch (Exception e){
-            log.info(e.toString());
-            return new SquadResponse("", null, "", -1L);
-        }
-    }
+//    @PostMapping("/api/savesquad")
+//    public boolean saveSquad(@RequestBody SquadRequest request){
+//        try {
+//            String name = request.getName();
+//            Long p1 = request.getP1();
+//            Long p2 = request.getP2();
+//            Long p3 = request.getP3();
+//            Long p4 = request.getP4();
+//            Long p5 = request.getP5();
+//            Long p6 = request.getP6();
+//            Long p7 = request.getP7();
+//            Long p8 = request.getP8();
+//            Long p9 = request.getP9();
+//            Long p10 = request.getP10();
+//            Long p11 = request.getP11();
+//
+//            int res = formationService.updateFormation(name, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11);
+//            return res != 0;
+//        }
+//        catch (Exception e){
+//            log.info(e.toString());
+//            return false;
+//        }
+//    }
+//
+//    @PostMapping("/api/loadsquad")
+//    public SquadResponse loadSquad(@RequestBody SquadRequest request) {
+//        try {
+//            String name = request.getName();
+//            var lst = formationService.loadFormation(name);
+//
+//            lst.forEach(n -> log.info(n.toString()));
+//
+//            List<PlayerDto> playerDtoList = new ArrayList<>();
+//
+//            for (Long n : lst) {
+//                if (n == 0L) {
+//                    playerDtoList.add(new PlayerDto());
+//                    continue;
+//                }
+//                var p = playerService.searchPlayerById(n);
+//                playerDtoList.add(PlayerDto.from(p));
+//            }
+//
+//            UserInfo user = userInfoService.findUserInfoById(1L)
+//                    .orElseThrow(() -> new IllegalArgumentException("해당 유저 없음"));
+//
+//            //my team ovr 계산
+//            double avg = playerDtoList.stream().mapToLong(PlayerDto::getOvr).average().orElse(0.0);
+//
+//            System.out.println("load formation - avg: " + avg);
+//
+//            Long myTeamOvr = (long) avg;
+//
+//            System.out.println("load formation - long avg: " + myTeamOvr);
+//
+//            return new SquadResponse(name, playerDtoList, user.getTeamName(), myTeamOvr);
+//        }
+//        catch (Exception e){
+//            log.info(e.toString());
+//            return new SquadResponse("", null, "", -1L);
+//        }
+//    }
 }

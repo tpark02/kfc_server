@@ -126,8 +126,14 @@ public class RandomTeamService {
         // stamina
         Long teamStamina = FormationUtil.getTeamStamina(lst);
 
-        UserInfo user = userInfoService.findUserInfoById(1L)
-                .orElseThrow(() -> new IllegalArgumentException("해당 유저 없음"));
+        UserInfo user = userInfoService.getUserById(1L);
+        // bench players
+        List<PlayerDto> benchplayers = playersPool.stream()
+                .limit(15)
+                .map(PlayerDto::from)
+                .collect(Collectors.toList());
+
+        lst.addAll(benchplayers);
 
         return  RandomSquadResponse.builder()
                 .content(lst)
@@ -141,6 +147,7 @@ public class RandomTeamService {
                 .myTeamPace(paceIndex)
                 .myTeamStamina(teamStamina)
                 .myTeamName(user.getTeamName())
+//                .benchPlayers(benchplayers)
                 .build();
     }
 
