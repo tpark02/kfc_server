@@ -14,5 +14,15 @@ import java.util.List;
 public class MyClubDto {
     private Long clubId;
     private String name;
-    private List<FormationDto> formations; // ✅ 추가됨
+    private String formationName;
+//    private List<FormationDto> formations; // ✅ 추가됨
+    private List<PlayerDto> players;
+    private Long ovr;
+    private Long price;
+    private Long age;
+    private Long pace;
+    private Long defense;
+    private Long attack;
+    private Long clubCohesion;
+    private Long stamina;
 }

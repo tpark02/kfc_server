@@ -23,4 +23,19 @@ public class FormationDto {
     private Long p9;
     private Long p10;
     private Long p11;
+    private Long p12;
+    private Long p13;
+    private Long p14;
+    private Long p15;
+    private Long p16;
+    private Long p17;
+    private Long p18;
+    private Long p19;
+    private Long p20;
+    private Long p21;
+    private Long p22;
+    private Long p23;
+    private Long p24;
+    private Long p25;
+    private Long p26;
 }

@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
+import java.util.Optional;
 
 public interface FormationRepository extends JpaRepository<Formation, Long> {
     @Modifying
@@ -33,6 +33,6 @@ public interface FormationRepository extends JpaRepository<Formation, Long> {
             + "(:name IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%')))")
     Formation searchFormationByName(@Param("name") String name);
 
-    List<Formation> findByClub(MyClub club);
+    Optional<Formation> findByClub(MyClub club);
 }
 

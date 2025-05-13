@@ -4,9 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
 @Setter
 @Getter
@@ -21,7 +18,17 @@ public class MyClub {
     @JoinColumn(name = "user_id", nullable = false) // ✔ FK가 user.id 참조
     private UserInfo user;
 
-    @OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
-    private List<Formation> formations = new ArrayList<>();
+//    @OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "club", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Formation formations;
     // getter/setter 생략
+
+    private Long ovr;
+    private Long price;
+    private Long age;
+    private Long pace;
+    private Long def;
+    private Long atk;
+    private Long cch;
+    private Long stm;
 }

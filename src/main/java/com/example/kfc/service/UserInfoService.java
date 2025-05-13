@@ -12,9 +12,9 @@ public class UserInfoService {
     @Autowired
     private UserInfoRepository userInfoRepository;
 
-//    public Optional<UserInfo> findUserInfoById(Long id) {
-//        return userInfoRepository.findById(id);
-//    }
+    public Optional<UserInfo> findUserInfoById(Long id) {
+        return userInfoRepository.findById(id);
+    }
 
     public UserInfo getUserById(Long userId) {
         return userInfoRepository.findById(userId)

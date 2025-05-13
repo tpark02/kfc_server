@@ -91,6 +91,14 @@ CREATE TABLE my_club (
     club_id  BIGINT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100),
     user_id BIGINT NOT NULL,
+    ovr INT,
+    price INT,
+    age INT,
+    pace INT,
+    def INT,
+    atk INT,
+    cch INT,
+    stm INT,
     FOREIGN KEY (user_id) REFERENCES user_info(id)
 );
 
@@ -109,5 +117,20 @@ CREATE TABLE formation (
     p9 INT,
     p10 INT,
     p11 INT,
+    p12 INT,
+    p13 INT,
+    p14 INT,
+    p15 INT,
+    p16 INT,
+    p17 INT,
+    p18 INT,
+    p19 INT,
+    p20 INT,
+    p21 INT,
+    p22 INT,
+    p23 INT,
+    p24 INT,
+    p25 INT,
+    p26 INT,
     FOREIGN KEY (club_id) REFERENCES my_club(club_id)
 );
