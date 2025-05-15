@@ -87,10 +87,9 @@ public class RandomTeamService {
             // 후보를 다시 섞어도 되고, 그냥 앞에서부터 뽑아도 됨
             Collections.shuffle(candidates);
 
-//            if (!candidates.isEmpty()) {
-//                int actualCount = Math.min(requiredCount, candidates.size());
-//                selectedPlayers.addAll(candidates.subList(0, actualCount));
-//            }
+            if (candidates == null || candidates.isEmpty()) {
+                throw new IllegalStateException("[" + pos + "] 포지션에 사용할 수 있는 후보 선수가 없습니다.");
+            }
             selectedPlayers.add(candidates.get(0));
         }
 
