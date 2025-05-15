@@ -21,8 +21,8 @@ public class UserInfo {
     private Long id;
     private String username;
     private String email;
-    @Column(name = "team_name")
-    private String teamName;
+//    @Column(name = "team_name")
+//    private String teamName;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<MyClub> clubs = new ArrayList<>();

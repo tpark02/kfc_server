@@ -57,10 +57,18 @@
 --team_name = 'MyTeam');
 
 -- 먼저 user_info
-INSERT INTO user_info (username, email, team_name) VALUES ('tm', 'tm@example.com', 'MyTeam');
+INSERT INTO user_info (username, email) VALUES ('tm', 'tm@example.com');
 
 -- 그 다음 my_club
-INSERT INTO my_club (name, user_id) VALUES ('MyClub', 1);
+INSERT INTO my_club (name, user_id) VALUES (null,
+1);
+INSERT INTO my_club (name, user_id) VALUES (null, 1);
+INSERT INTO my_club (name, user_id) VALUES (null, 1);
 
 -- 그 다음 formation
-INSERT INTO formation (name, club_id) VALUES ('4-4-2', 1); -- 다른 p1~p26은 생략하거나 NULL 처리
+INSERT INTO formation (name, club_id) VALUES
+('442', 1);
+INSERT INTO formation (name, club_id) VALUES
+('442', 2); -- 다른 p1~p26은 생략하거나 NULL 처리
+INSERT INTO formation (name, club_id) VALUES
+('442', 3); -- 다른 p1~p26은 생략하거나 NULL 처리

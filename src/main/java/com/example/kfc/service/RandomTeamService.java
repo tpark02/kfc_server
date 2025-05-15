@@ -163,7 +163,7 @@ public class RandomTeamService {
                 .myTeamDef(def)
                 .myTeamPace(paceIndex)
                 .myTeamStamina(teamStamina)
-                .myTeamName(user.getTeamName())
+//                .myTeamName(user.getTeamName())
 //                .benchPlayers(benchplayers)
                 .build();
     }

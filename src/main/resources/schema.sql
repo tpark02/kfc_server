@@ -83,8 +83,8 @@ CREATE TABLE league (
 CREATE TABLE user_info (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50),
-    email VARCHAR(100),
-    team_name VARCHAR(100)
+    email VARCHAR(100)
+--    team_name VARCHAR(100)
 );
 
 CREATE TABLE my_club (

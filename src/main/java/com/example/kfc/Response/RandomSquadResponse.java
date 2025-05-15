@@ -12,7 +12,7 @@ public class RandomSquadResponse {
     private List<PlayerDto> content;
     private Long myTeamOvr;
     private Long chemistry;
-    private String myTeamName;
+//    private String myTeamName;
     private Long myTeamClubCohesion;
     private Long myTeamStamina;
     private Long myTeamAge;

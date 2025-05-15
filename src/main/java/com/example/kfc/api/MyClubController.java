@@ -74,7 +74,7 @@ public class MyClubController {
     }
 
     @PostMapping("/users/{userId}/myclubs")
-    public ResponseEntity<?> saveMyClub(@PathVariable Long userId, @RequestBody MyClubRequest request) {
+    public ResponseEntity<?> createMyClub(@PathVariable Long userId, @RequestBody MyClubRequest request) {
         try {
             myClubService.createMyClub(userId, request);
             return ResponseEntity.ok("클럽 저장 성공");
@@ -99,17 +99,23 @@ public class MyClubController {
     }
 
     @PutMapping("/updatemyclub/{clubId}")
-    public ResponseEntity<String> updateMyClub(@PathVariable Long clubId, @RequestBody MyClub clubRequest) {
+    public ResponseEntity<String> updateMyClub(@PathVariable Long clubId, @RequestBody MyClubRequest clubRequest) {
         try {
-            myClubService.updateClub(clubId, clubRequest);
-            return ResponseEntity.ok("클럽 수정 성공");
+            var updatedClub = myClubService.updateMyClub(clubId,
+                              clubRequest).orElse(null);
+            return updatedClub != null ? ResponseEntity.ok("클럽 수정 성공") : ResponseEntity.ok("클럽 수정 실패");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
     @DeleteMapping("/deletemyclub/{clubId}")
-    public void deleteMyClub(@PathVariable Long clubId) {
-        myClubService.deleteClub(clubId);
+    public ResponseEntity<String> deleteMyClub(@PathVariable Long clubId) {
+        try {
+            var updatedClub = myClubService.resetClub(clubId).orElse(null);
+            return updatedClub != null ? ResponseEntity.ok("클럽 수정 성공") : ResponseEntity.ok("클럽 수정 실패");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 }
