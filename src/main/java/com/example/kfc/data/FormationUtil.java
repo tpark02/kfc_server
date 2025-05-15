@@ -37,7 +37,9 @@ public class FormationUtil {
         f433.add("CB2");
         f433.add("CB1");
         f433.add("RB");
-        f433.add("CM");
+        f433.add("CM3");
+        f433.add("CM2");
+        f433.add("CM1");
         f433.add("LW");
         f433.add("ST");
         f433.add("RW");

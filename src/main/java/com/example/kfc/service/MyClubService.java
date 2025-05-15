@@ -42,7 +42,7 @@ public class MyClubService {
         return myClubRepository.save(existing);
     }
 
-    public void saveMyClub(Long userId, MyClubRequest request) {
+    public void createMyClub(Long userId, MyClubRequest request) {
         UserInfo user = userInfoRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 

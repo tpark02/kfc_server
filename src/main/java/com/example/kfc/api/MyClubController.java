@@ -76,7 +76,7 @@ public class MyClubController {
     @PostMapping("/users/{userId}/myclubs")
     public ResponseEntity<?> saveMyClub(@PathVariable Long userId, @RequestBody MyClubRequest request) {
         try {
-            myClubService.saveMyClub(userId, request);
+            myClubService.createMyClub(userId, request);
             return ResponseEntity.ok("클럽 저장 성공");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
