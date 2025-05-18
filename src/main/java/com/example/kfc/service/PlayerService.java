@@ -43,11 +43,6 @@ public class PlayerService {
         return playerRepository.searchClub(teamName).stream().map(PlayerDto::from).toList();
     }
 
-    public Player searchPlayerById(Long id) {
-        if (id == 0) return null;
-        return playerRepository.searchPlayerById(id);
-    }
-
     public List<Player> search(String query) {
         return new ArrayList<>(playerRepository.findByNameContainingIgnoreCase(query));
     }

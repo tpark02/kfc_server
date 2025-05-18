@@ -66,9 +66,9 @@ INSERT INTO my_club (name, user_id) VALUES (null, 1);
 INSERT INTO my_club (name, user_id) VALUES (null, 1);
 
 -- 그 다음 formation
-INSERT INTO formation (name, club_id) VALUES
+INSERT INTO my_formation (name, club_id) VALUES
 ('442', 1);
-INSERT INTO formation (name, club_id) VALUES
+INSERT INTO my_formation (name, club_id) VALUES
 ('442', 2); -- 다른 p1~p26은 생략하거나 NULL 처리
-INSERT INTO formation (name, club_id) VALUES
+INSERT INTO my_formation (name, club_id) VALUES
 ('442', 3); -- 다른 p1~p26은 생략하거나 NULL 처리

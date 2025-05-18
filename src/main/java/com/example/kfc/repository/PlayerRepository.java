@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PlayerRepository extends JpaRepository<Player, Long> {
     @Query("SELECT ROUND(AVG(p.ovr)) FROM Player p WHERE LOWER(p.team) LIKE LOWER(CONCAT('%', :team, '%'))")
@@ -57,7 +58,7 @@ public interface PlayerRepository extends JpaRepository<Player, Long> {
 
 
     @Query("SELECT p FROM Player p WHERE p.ID = :Id")
-    Player searchPlayerById(@Param("Id") Long id);
+    Optional<Player> searchPlayerById(@Param("Id") Long id);
 
     @Query("SELECT p FROM Player p WHERE (:team IS NULL OR LOWER(p.team) = LOWER(:team))")
     List<Player> searchClub(@Param("team") String team);

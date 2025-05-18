@@ -9,7 +9,7 @@ import lombok.*;
 @Entity
 @Getter
 @Setter
-@Table(name = "formation")
+@Table(name = "my_formation")
 public class Formation {
 
     @Id

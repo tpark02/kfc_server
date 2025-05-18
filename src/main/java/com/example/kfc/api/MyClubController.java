@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @CrossOrigin(origins = "http://localhost:5173") // Vite dev 서버 주소
 @RestController
@@ -49,7 +50,13 @@ public class MyClubController {
                     Method getter = Formation.class.getMethod("getP" + i);
                     Long playerId = (Long) getter.invoke(f);
                     if (playerId != null) {
-                        Player player = playerRepository.searchPlayerById(playerId);
+                        Player player =
+                        playerRepository.searchPlayerById(playerId).orElse(null);
+
+                        if (player == null) {
+                            throw new IllegalArgumentException("player does not exist [" + playerId.toString() + "]");
+                        }
+
                         playerDtos.add(PlayerDto.from(player));
                     }
                 } catch (Exception e) {

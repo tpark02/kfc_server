@@ -1,15 +1,12 @@
 package com.example.kfc.service;
 
 import com.example.kfc.Request.MyClubRequest;
-import com.example.kfc.entity.Formation;
-import com.example.kfc.entity.MyClub;
-import com.example.kfc.entity.UserInfo;
-import com.example.kfc.repository.FormationRepository;
-import com.example.kfc.repository.MyClubRepository;
-import com.example.kfc.repository.UserInfoRepository;
+import com.example.kfc.entity.*;
+import com.example.kfc.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +17,9 @@ public class MyClubService {
     private final MyClubRepository myClubRepository;
     private final UserInfoRepository userInfoRepository;
     private final FormationRepository formationRepository;
+    private final MyPlayerRepository myPlayerRepository;
+    private final PlayerRepository playerRepository;
+    private final MyPlayerService myPlayerService;
 
 //    public MyClub saveClub(MyClub club) {
 //        return myClubRepository.save(club);
@@ -91,9 +91,11 @@ public class MyClubService {
 
     public Optional<MyClub> updateMyClub(Long clubId, MyClubRequest request) {
         MyClub existing = getClubById(clubId);
+
         if (request.getPlayers().size() != 26) {
             throw new IllegalArgumentException("Exactly 26 players must be provided");
         }
+
         existing.setName(request.getClubName());
         existing.setName(request.getClubName());
         existing.setOvr(request.getOvr());
@@ -108,7 +110,8 @@ public class MyClubService {
         System.out.println("Update club: id=" + existing.getClubId() + ", name=" + existing.getName());
 
         // 🔍 Check if a formation already exists for this club
-        Formation formation = formationRepository.findByClub(existing).orElseGet(Formation::new); // new Formation() if not found
+        Formation formation = formationRepository.findByClub(existing)
+                .orElseGet(Formation::new); // new Formation() if not found
 
         // ⚙️ If it's new, set the club and name
         if (formation.getId() == null) {
@@ -119,35 +122,52 @@ public class MyClubService {
         // Create the formation
         formation.setName(request.getFormationName());
         formation.setClub(existing); // FK
-        List<Long> players = request.getPlayers();
-        formation.setP1(players.get(0));
-        formation.setP2(players.get(1));
-        formation.setP3(players.get(2));
-        formation.setP4(players.get(3));
-        formation.setP5(players.get(4));
-        formation.setP6(players.get(5));
-        formation.setP7(players.get(6));
-        formation.setP8(players.get(7));
-        formation.setP9(players.get(8));
-        formation.setP10(players.get(9));
-        formation.setP11(players.get(10));
-        formation.setP12(players.get(11));
-        formation.setP13(players.get(12));
-        formation.setP14(players.get(13));
-        formation.setP15(players.get(14));
-        formation.setP16(players.get(15));
-        formation.setP17(players.get(16));
-        formation.setP18(players.get(17));
-        formation.setP19(players.get(18));
-        formation.setP20(players.get(19));
-        formation.setP21(players.get(20));
-        formation.setP22(players.get(21));
-        formation.setP23(players.get(22));
-        formation.setP24(players.get(23));
-        formation.setP25(players.get(24));
-        formation.setP26(players.get(25));
-        formationRepository.save(formation);
 
+        List<Long> players = request.getPlayers();
+
+        // check if the club exists
+        List<MyPlayer> existingClubPlayers = myPlayerRepository.findByClubId(clubId).orElse(null);
+
+        List<Long> rows = null;
+        if (!existingClubPlayers.isEmpty()) {
+            rows = myPlayerService.resetMyPlayersByClubId(clubId).orElse(null);
+
+            if (rows == null || rows.size() < 26) {
+                throw new IllegalArgumentException(
+                        "club id [" + clubId + "] row size less than 26. size [" + (rows == null ? 0 : rows.size()) + "]");
+            }
+        }
+
+        for (int i = 0; i < players.size(); i++) {
+            try {
+                Long playerId = players.get(i);
+
+                // set Formation PX
+                Method setter = Formation.class.getMethod("setP" + (i + 1), Long.class);
+                setter.invoke(formation, playerId);
+
+                // validate permanent player exists
+                Player player = playerRepository.searchPlayerById(playerId)
+                        .orElseThrow(() -> new IllegalArgumentException("player does not exist [" + playerId + "]"));
+
+                // check if myPlayer already exists for this playerId & clubId
+                MyPlayer myPlayer = myPlayerRepository.findByIdAndClubId(playerId, clubId).orElse(null);
+                if (myPlayer != null) {
+                    continue;
+                }
+
+                if (rows != null) {
+                    myPlayerService.updateMyPlayer(player, clubId, rows.get(i)); // update at specific row
+                } else {
+                    myPlayerService.addMyPlayer(player, clubId); // insert new
+                }
+
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to set P" + (i + 1), e);
+            }
+        }
+
+        formationRepository.save(formation);
         return Optional.of(myClubRepository.save(existing));
     }
 
@@ -183,7 +203,8 @@ public class MyClubService {
         var targetClub = myClubRepository.save(club);
 
         // 🔍 Check if a formation already exists for this club
-        Formation formation = formationRepository.findByClub(targetClub).orElseGet(Formation::new); // new Formation() if not found
+        Formation formation = formationRepository.findByClub(targetClub)
+                .orElseGet(Formation::new); // new Formation() if not found
 
         // ⚙️ If it's new, set the club and name
         if (formation.getId() == null) {
@@ -221,6 +242,7 @@ public class MyClubService {
         formation.setP24(players.get(23));
         formation.setP25(players.get(24));
         formation.setP26(players.get(25));
+
         formationRepository.save(formation);
     }
 }
