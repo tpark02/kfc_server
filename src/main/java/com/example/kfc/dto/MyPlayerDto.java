@@ -10,6 +10,7 @@ import lombok.*;
 @Setter
 public class MyPlayerDto {
     private Long id;
+    private Long userId;
     private Long clubId;
     private Long yellowCard;
     private Long redCard;
@@ -74,6 +75,7 @@ public class MyPlayerDto {
     public static MyPlayerDto from(MyPlayer player) {
         return new MyPlayerDto(
                 player.getId(),
+                player.getUserId(),
                 player.getClubId(),
                 player.getYellowCard(),
                 player.getRedCard(),

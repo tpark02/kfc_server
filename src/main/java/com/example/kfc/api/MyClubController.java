@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @CrossOrigin(origins = "http://localhost:5173") // Vite dev 서버 주소
 @RestController
@@ -80,6 +79,12 @@ public class MyClubController {
 
     }
 
+//    @GetMapping("/users/{userId}/myplayers")
+//    public List<MyClubDto> getMyPlayers(@PathVariable Long userId) {
+//        UserInfo user = userInfoService.getUserById(userId);
+//
+//    }
+
     @PostMapping("/users/{userId}/myclubs")
     public ResponseEntity<?> createMyClub(@PathVariable Long userId, @RequestBody MyClubRequest request) {
         try {
@@ -92,23 +97,23 @@ public class MyClubController {
 
     // ✅ 특정 MyClub의 포메이션 목록 조회
     // todo
-    @GetMapping("/myclubs/{myClubId}/formations")
-    public List<Formation> getFormationsOfMyClub(@PathVariable Long myClubId) {
-        MyClub club = myClubService.getClubById(myClubId);
-        var formation = formationService.getFormationsByClub(club);
-        var f = formation.orElse(null);
+//    @GetMapping("/myclubs/{myClubId}/formations")
+//    public List<Formation> getFormationsOfMyClub(@PathVariable Long myClubId) {
+//        MyClub club = myClubService.getClubById(myClubId);
+//        var formation = formationService.getFormationsByClub(club);
+//        var f = formation.orElse(null);
+//
+//        if (f == null) {
+//            return null;
+//        }
+//
+//        return null;
+//    }
 
-        if (f == null) {
-            return null;
-        }
-
-        return null;
-    }
-
-    @PutMapping("/updatemyclub/{clubId}")
-    public ResponseEntity<String> updateMyClub(@PathVariable Long clubId, @RequestBody MyClubRequest clubRequest) {
+    @PutMapping("/updatemyclub/{userId}/{clubId}")
+    public ResponseEntity<String> updateMyClub(@PathVariable Long userId, @PathVariable Long clubId, @RequestBody MyClubRequest clubRequest) {
         try {
-            var updatedClub = myClubService.updateMyClub(clubId,
+            var updatedClub = myClubService.updateMyClub(userId, clubId,
                               clubRequest).orElse(null);
             return updatedClub != null ? ResponseEntity.ok("클럽 수정 성공") : ResponseEntity.ok("클럽 수정 실패");
         } catch (Exception e) {
@@ -116,10 +121,10 @@ public class MyClubController {
         }
     }
 
-    @DeleteMapping("/deletemyclub/{clubId}")
-    public ResponseEntity<String> deleteMyClub(@PathVariable Long clubId) {
+    @DeleteMapping("/deletemyclub/{userId}/{clubId}")
+    public ResponseEntity<String> deleteMyClub(@PathVariable Long userId, @PathVariable Long clubId) {
         try {
-            var updatedClub = myClubService.resetClub(clubId).orElse(null);
+            var updatedClub = myClubService.resetClub(userId, clubId).orElse(null);
             return updatedClub != null ? ResponseEntity.ok("클럽 수정 성공") : ResponseEntity.ok("클럽 수정 실패");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

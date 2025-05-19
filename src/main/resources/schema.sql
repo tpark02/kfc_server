@@ -137,6 +137,7 @@ CREATE TABLE my_formation (
 
 CREATE TABLE my_player (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
     player_id INT,
     club_id INT,
     yellow_card INT,

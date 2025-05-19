@@ -5,8 +5,10 @@ import com.example.kfc.entity.UserInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface MyClubRepository extends JpaRepository<MyClub, Long> {
     List<MyClub> findByUser(UserInfo user);
+    Optional<MyClub> findByClubIdAndUserId(Long cludId, Long userId);
 }
 

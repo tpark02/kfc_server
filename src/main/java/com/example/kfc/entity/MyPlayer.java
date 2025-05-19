@@ -16,6 +16,9 @@ public class MyPlayer {
     private Long id;
 
     @Column
+    private Long userId;
+
+    @Column
     private Long playerId;
 
     @Column
@@ -259,8 +262,9 @@ public class MyPlayer {
         this.skillMoves = 0L;
     }
 
-    public static MyPlayer from(Player player, Long clubId) {
+    public static MyPlayer from(Player player, Long userId, Long clubId) {
         MyPlayer myPlayer = new MyPlayer();
+        myPlayer.setUserId(userId);
         myPlayer.setPlayerId(player.getId());
         myPlayer.setClubId(clubId);
         myPlayer.setName(player.getName());

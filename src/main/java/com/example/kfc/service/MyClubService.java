@@ -29,13 +29,10 @@ public class MyClubService {
         return myClubRepository.findByUser(user);
     }
 
-    public MyClub getClubById(Long clubId) {
-        return myClubRepository.findById(clubId)
+    public Optional<MyClub> resetClub(Long userId, Long clubId) {
+        MyClub existing =
+                myClubRepository.findByClubIdAndUserId(clubId, userId)
                 .orElseThrow(() -> new IllegalArgumentException("Club not found"));
-    }
-
-    public Optional<MyClub> resetClub(Long clubId) {
-        MyClub existing = getClubById(clubId);
 
         // 클럽 정보 초기화 (ID와 FK 제외)
         existing.setName(null);
@@ -81,16 +78,28 @@ public class MyClubService {
             formation.setP24(null);
             formation.setP25(null);
             formation.setP26(null);
-
             formationRepository.save(formation);
         }
+
+        // reset my players
+        List<MyPlayer> players = myPlayerRepository.findByUserIdAndClubId(userId, clubId).orElse(null);
+
+        if (players == null)
+            throw new IllegalArgumentException("No players found for clubId: " + clubId);
+
+        for (MyPlayer player : players)
+            player.resetStats();
+
+        myPlayerRepository.saveAll(players);
 
         return Optional.of(myClubRepository.save(existing));
     }
 
 
-    public Optional<MyClub> updateMyClub(Long clubId, MyClubRequest request) {
-        MyClub existing = getClubById(clubId);
+    public Optional<MyClub> updateMyClub(Long userId, Long clubId, MyClubRequest request) {
+        MyClub existing =
+                myClubRepository.findByClubIdAndUserId(clubId, userId)
+                .orElseThrow(() -> new IllegalArgumentException("Club not found"));
 
         if (request.getPlayers().size() != 26) {
             throw new IllegalArgumentException("Exactly 26 players must be provided");
@@ -125,12 +134,13 @@ public class MyClubService {
 
         List<Long> players = request.getPlayers();
 
-        // check if the club exists
-        List<MyPlayer> existingClubPlayers = myPlayerRepository.findByClubId(clubId).orElse(null);
+        // check if a club exists
+        List<MyPlayer> existingClubPlayers = myPlayerRepository.findByUserIdAndClubId(userId, clubId).orElse(null);
 
+        // if the club does not exist, create the club
         List<Long> rows = null;
         if (!existingClubPlayers.isEmpty()) {
-            rows = myPlayerService.resetMyPlayersByClubId(clubId).orElse(null);
+            rows = myPlayerService.addNewClub(userId, clubId).orElse(null);
 
             if (rows == null || rows.size() < 26) {
                 throw new IllegalArgumentException(
@@ -151,7 +161,7 @@ public class MyClubService {
                         .orElseThrow(() -> new IllegalArgumentException("player does not exist [" + playerId + "]"));
 
                 // check if myPlayer already exists for this playerId & clubId
-                MyPlayer myPlayer = myPlayerRepository.findByIdAndClubId(playerId, clubId).orElse(null);
+                MyPlayer myPlayer = myPlayerRepository.findByIdAndUserIdAndClubId(playerId, userId, clubId).orElse(null);
                 if (myPlayer != null) {
                     continue;
                 }
@@ -159,7 +169,7 @@ public class MyClubService {
                 if (rows != null) {
                     myPlayerService.updateMyPlayer(player, clubId, rows.get(i)); // update at specific row
                 } else {
-                    myPlayerService.addMyPlayer(player, clubId); // insert new
+                    myPlayerService.addMyPlayer(player, userId, clubId); // insert new
                 }
 
             } catch (Exception e) {

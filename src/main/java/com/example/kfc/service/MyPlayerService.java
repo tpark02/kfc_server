@@ -18,21 +18,21 @@ public class MyPlayerService {
     @Autowired
     private MyPlayerRepository myPlayerRepository;
 
-    public MyPlayer getMyPlayer(Long id, Long clubId) {
-        return myPlayerRepository.findByIdAndClubId(id, clubId)
-                .orElseThrow(() -> new RuntimeException("Player not found"));
-    }
+//    public MyPlayer getMyPlayer(Long id, Long clubId) {
+//        return myPlayerRepository.findByIdAndClubId(id, clubId)
+//                .orElseThrow(() -> new RuntimeException("Player not found"));
+//    }
 
     @Transactional
-    public MyPlayer addMyPlayer(Player player, Long clubId)
+    public void addMyPlayer(Player player, Long userId, Long clubId)
     {
-        MyPlayer myPlayer = MyPlayer.from(player, clubId);
-        return myPlayerRepository.save(myPlayer);
+        MyPlayer myPlayer = MyPlayer.from(player, userId, clubId);
+        myPlayerRepository.save(myPlayer);
     }
 
     @Transactional
-    public Optional<List<Long>> resetMyPlayersByClubId(Long clubId) {
-        List<MyPlayer> players = myPlayerRepository.findByClubId(clubId).orElse(null);
+    public Optional<List<Long>> addNewClub(Long userId, Long clubId) {
+        List<MyPlayer> players = myPlayerRepository.findByUserIdAndClubId(userId, clubId).orElse(null);
 
         if (players == null)
             throw new IllegalArgumentException("No players found for clubId: " + clubId);
@@ -48,7 +48,7 @@ public class MyPlayerService {
     }
 
     @Transactional
-    public Optional<MyPlayer> updateMyPlayer(Player player, Long clubId, Long row) {
+    public void updateMyPlayer(Player player, Long clubId, Long row) {
         MyPlayer myPlayer = myPlayerRepository.findById(row)
                 .orElseThrow(() -> new IllegalArgumentException("MyPlayer not found for id: " + row));
 
@@ -121,6 +121,5 @@ public class MyPlayerService {
         myPlayer.setGkReflexes(player.getGkReflexes());
 
         myPlayerRepository.save(myPlayer);
-        return Optional.of(myPlayer);
     }
 }
