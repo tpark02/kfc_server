@@ -18,10 +18,10 @@ public class MyPlayerService {
     @Autowired
     private MyPlayerRepository myPlayerRepository;
 
-//    public MyPlayer getMyPlayer(Long id, Long clubId) {
-//        return myPlayerRepository.findByIdAndClubId(id, clubId)
-//                .orElseThrow(() -> new RuntimeException("Player not found"));
-//    }
+    public List<MyPlayer> getMyPlayer(Long userId, Long clubId) {
+        return myPlayerRepository.findByUserIdAndClubId(userId, clubId)
+                .orElseThrow(() -> new RuntimeException("Player not found"));
+    }
 
     @Transactional
     public void addMyPlayer(Player player, Long userId, Long clubId)

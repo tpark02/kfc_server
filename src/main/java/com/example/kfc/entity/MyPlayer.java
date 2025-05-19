@@ -202,7 +202,9 @@ public class MyPlayer {
     private Long gkReflexes;
 
     public void resetStats() {
+        // IDs
         this.playerId = 0L;
+
         // Match info
         this.yellowCard = 0L;
         this.redCard = 0L;
@@ -250,16 +252,33 @@ public class MyPlayer {
         this.strength = 0L;
         this.aggression = 0L;
 
-        // GK stats
+        // Goalkeeper stats
         this.gkDiving = 0L;
         this.gkHandling = 0L;
         this.gkKicking = 0L;
         this.gkPositioning = 0L;
         this.gkReflexes = 0L;
 
-        // Optional: skill metadata
+        // Optional skill metadata
         this.weakFoot = 0L;
         this.skillMoves = 0L;
+
+        // Positional/meta
+        this.name = "";
+        this.pos = "";
+        this.preferredFoot = "";
+        this.height = "";
+        this.weight = "";
+        this.alternativePositions = "";
+        this.nation = "";
+        this.league = "";
+        this.team = "";
+        this.playStyle = "";
+        this.url = "";
+        this.img = "";
+
+        // Age
+        this.age = 0L;
     }
 
     public static MyPlayer from(Player player, Long userId, Long clubId) {

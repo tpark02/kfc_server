@@ -16,7 +16,7 @@ public class MyClubDto {
     private String name;
     private String formationName;
 //    private List<FormationDto> formations; // ✅ 추가됨
-    private List<PlayerDto> players;
+    private List<MyPlayerDto> players;
     private Long ovr;
     private Long price;
     private Long age;

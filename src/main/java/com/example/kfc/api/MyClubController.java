@@ -2,21 +2,20 @@ package com.example.kfc.api;
 
 import com.example.kfc.Request.MyClubRequest;
 import com.example.kfc.dto.MyClubDto;
-import com.example.kfc.dto.PlayerDto;
+import com.example.kfc.dto.MyPlayerDto;
 import com.example.kfc.entity.Formation;
 import com.example.kfc.entity.MyClub;
-import com.example.kfc.entity.Player;
+import com.example.kfc.entity.MyPlayer;
 import com.example.kfc.entity.UserInfo;
 import com.example.kfc.repository.PlayerRepository;
-import com.example.kfc.service.FormationService;
 import com.example.kfc.service.MyClubService;
+import com.example.kfc.service.MyPlayerService;
 import com.example.kfc.service.UserInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,46 +27,49 @@ public class MyClubController {
 
     private final UserInfoService userInfoService;
     private final MyClubService myClubService;
-    private final FormationService formationService;
+    //private final FormationService formationService;
     private final PlayerRepository playerRepository;
+    private final MyPlayerService myPlayerService;
 
     @GetMapping("/users/{userId}/myclubs")
     public List<MyClubDto> getMyClubs(@PathVariable Long userId) {
         UserInfo user = userInfoService.getUserById(userId);
         List<MyClub> clubs = myClubService.getClubsByUser(user);
-
         List<MyClubDto> result = new ArrayList<>();
 
         for (MyClub club : clubs) {
-            var formations = club.getFormations();
-            Formation f = formations;
+            List<MyPlayer> myPlayers = myPlayerService.getMyPlayer(userId, club.getClubId());
+
+            var lst = myPlayers.stream().map(MyPlayerDto::from).toList();
+
+            Formation f = club.getFormations();
             var formationName = f.getName();
-            List<PlayerDto> playerDtos = new ArrayList<>();
+            //List<PlayerDto> playerDtos = new ArrayList<>();
 
-            for (int i = 1; i <= 26; i++) {
-                try {
-                    Method getter = Formation.class.getMethod("getP" + i);
-                    Long playerId = (Long) getter.invoke(f);
-                    if (playerId != null) {
-                        Player player =
-                        playerRepository.searchPlayerById(playerId).orElse(null);
-
-                        if (player == null) {
-                            throw new IllegalArgumentException("player does not exist [" + playerId.toString() + "]");
-                        }
-
-                        playerDtos.add(PlayerDto.from(player));
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+//            for (int i = 1; i <= 26; i++) {
+//                try {
+//                    Method getter = Formation.class.getMethod("getP" + i);
+//                    Long playerId = (Long) getter.invoke(f);
+//                    if (playerId != null) {
+//                        Player player =
+//                        playerRepository.searchPlayerById(playerId).orElse(null);
+//
+//                        if (player == null) {
+//                            throw new IllegalArgumentException("player does not exist [" + playerId.toString() + "]");
+//                        }
+//
+//                        playerDtos.add(PlayerDto.from(player));
+//                    }
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
 
             MyClubDto dto = new MyClubDto(
                     club.getClubId(),
                     club.getName(),
                     formationName,
-                    playerDtos,
+                    lst,
                     club.getOvr(), club.getPrice(), club.getAge(), club.getPace(), club.getDef(),
                     club.getAtk(), club.getCch(), club.getStm()
             );

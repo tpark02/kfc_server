@@ -161,10 +161,10 @@ public class MyClubService {
                         .orElseThrow(() -> new IllegalArgumentException("player does not exist [" + playerId + "]"));
 
                 // check if myPlayer already exists for this playerId & clubId
-                MyPlayer myPlayer = myPlayerRepository.findByIdAndUserIdAndClubId(playerId, userId, clubId).orElse(null);
-                if (myPlayer != null) {
-                    continue;
-                }
+//                MyPlayer myPlayer = myPlayerRepository.findByIdAndUserIdAndClubId(playerId, userId, clubId).orElse(null);
+//                if (myPlayer != null) {
+//                    continue;
+//                }
 
                 if (rows != null) {
                     myPlayerService.updateMyPlayer(player, clubId, rows.get(i)); // update at specific row
