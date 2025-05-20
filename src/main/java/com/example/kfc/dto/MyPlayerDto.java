@@ -11,6 +11,7 @@ import lombok.*;
 public class MyPlayerDto {
     private Long id;
     private Long userId;
+    private Long playerId;
     private Long clubId;
     private Long yellowCard;
     private Long redCard;
@@ -76,6 +77,7 @@ public class MyPlayerDto {
         return new MyPlayerDto(
                 player.getId(),
                 player.getUserId(),
+                player.getPlayerId(),
                 player.getClubId(),
                 player.getYellowCard(),
                 player.getRedCard(),

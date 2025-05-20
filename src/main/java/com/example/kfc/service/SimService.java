@@ -27,6 +27,8 @@ public class SimService {
     @Autowired
     PlayerRepository playerRepository;
 
+    @Autowired
+    MyClubService myClubService;
 
     public SimResultResponse simulateLeague(List<String> teams) {
         Map<String, TeamStatDto> table = new HashMap<>();
@@ -74,7 +76,7 @@ public class SimService {
         return new SimResultResponse(table, logs);
     }
 
-    public List<MatchDto> generateRandomSchedule(String myTeamName, List<PlayerDto> myTeamMembers) {
+    public List<MatchDto> generateRandomSchedule(String myTeamName, Long userId, Long clubId) {
         AtomicReference<String> opponent = null;
         try {
             List<Team> teams = teamRepository.findRandom20Teams();
@@ -88,17 +90,19 @@ public class SimService {
                 teams.add(new Team("BYE"));
             }
 
-            myTeamMembers.forEach(p -> System.out.println("ovr: " + p.getOvr()));
-
-            double avg = myTeamMembers.stream()
-                    .mapToLong(PlayerDto::getOvr)
-                    .average()
-                    .orElse(0.0);
+//            myTeamMembers.forEach(p -> System.out.println("ovr: " + p.getOvr()));
+//
+//            double avg = myTeamMembers.stream()
+//                    .mapToLong(PlayerDto::getOvr)
+//                    .average()
+//                    .orElse(0.0);
 
             //System.out.println("avg: " + avg);
 
-            Long myTeamOvr = (long) avg;
+//            Long myTeamOvr = (long) avg;
             //System.out.println("long avg: " + myTeamOvr);
+
+            var club = myClubService.getClubByUserIdAndUserId(userId, clubId);
 
             List<MatchDto> schedule = new ArrayList<>();
             opponent = new AtomicReference<>("");
@@ -109,7 +113,7 @@ public class SimService {
                         log.info(i + " : " + teams.get(i).getTeam());
                         finalOpponent.set(teams.get(i).getTeam());
                         Long avgOvr = playerRepository.avgOvrTeam(finalOpponent.get().toLowerCase());
-                        String res = myTeamOvr > avgOvr ? "W" : "L";
+                        String res = club.getOvr() > avgOvr ? "W" : "L";
                         var lst = playerRepository.searchClub(teams.get(i).getTeam()).stream().map(PlayerDto::from).toList();
                         schedule.add(new MatchDto(myTeamName, finalOpponent.toString(), i + 1, avgOvr, res, lst));
                     });

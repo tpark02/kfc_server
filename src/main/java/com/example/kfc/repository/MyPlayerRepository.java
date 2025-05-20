@@ -8,5 +8,5 @@ import java.util.Optional;
 
 public interface MyPlayerRepository extends JpaRepository<MyPlayer, Long> {
     Optional<MyPlayer> findByIdAndUserIdAndClubId(Long id, Long userId, Long clubId);
-    Optional<List<MyPlayer>> findByUserIdAndClubId(Long userId, Long clubId);
+    List<MyPlayer> findByUserIdAndClubId(Long userId, Long clubId);
 }

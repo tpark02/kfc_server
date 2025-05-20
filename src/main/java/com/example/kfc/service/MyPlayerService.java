@@ -8,9 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,8 +17,7 @@ public class MyPlayerService {
     private MyPlayerRepository myPlayerRepository;
 
     public List<MyPlayer> getMyPlayer(Long userId, Long clubId) {
-        return myPlayerRepository.findByUserIdAndClubId(userId, clubId)
-                .orElseThrow(() -> new RuntimeException("Player not found"));
+        return myPlayerRepository.findByUserIdAndClubId(userId, clubId);
     }
 
     @Transactional
@@ -30,95 +27,88 @@ public class MyPlayerService {
         myPlayerRepository.save(myPlayer);
     }
 
-    @Transactional
-    public Optional<List<Long>> addNewClub(Long userId, Long clubId) {
-        List<MyPlayer> players = myPlayerRepository.findByUserIdAndClubId(userId, clubId).orElse(null);
-
-        if (players == null)
-            throw new IllegalArgumentException("No players found for clubId: " + clubId);
-
-        List<Long> res = new ArrayList<>();
-        for (MyPlayer player : players) {
-            player.resetStats();
-            res.add(player.getId());
-        }
-
-        myPlayerRepository.saveAll(players);
-        return Optional.of(res);
-    }
+//    @Transactional
+//    public Optional<List<Long>> addNewClub(Long userId, Long clubId) {
+//        List<MyPlayer> players =
+//                myPlayerRepository.findByUserIdAndClubId(userId, clubId);
+//
+//        if (!players.isEmpty()) {
+//            throw new IllegalArgumentException("Club exists: " + clubId);
+//        }
+//
+//        List<Long> res = new ArrayList<>();
+//        myPlayerRepository.saveAll(players);
+//        return Optional.of(res);
+//    }
 
     @Transactional
-    public void updateMyPlayer(Player player, Long clubId, Long row) {
-        MyPlayer myPlayer = myPlayerRepository.findById(row)
-                .orElseThrow(() -> new IllegalArgumentException("MyPlayer not found for id: " + row));
-
-        myPlayer.setPlayerId(player.getId());
-        //myPlayer.setClubId(clubId);
-        myPlayer.setName(player.getName());
-        myPlayer.setOvr(player.getOvr());
-        myPlayer.setPos(player.getPos());
-        myPlayer.setNation(player.getNation());
-        myPlayer.setLeague(player.getLeague());
-        myPlayer.setTeam(player.getTeam());
-        myPlayer.setImg(player.getImg());
+    public void updateMyPlayer(Player source, MyPlayer myPlayer) {
+        myPlayer.setPlayerId(source.getId());
+        myPlayer.setName(source.getName());
+        myPlayer.setOvr(source.getOvr());
+        myPlayer.setPos(source.getPos());
+        myPlayer.setNation(source.getNation());
+        myPlayer.setLeague(source.getLeague());
+        myPlayer.setTeam(source.getTeam());
+        myPlayer.setImg(source.getImg());
 
         myPlayer.setYellowCard(0L);
         myPlayer.setRedCard(0L);
-        myPlayer.setRank(0L); // optional default
+        myPlayer.setRank(0L);
 
-        myPlayer.setPac(player.getPac());
-        myPlayer.setSho(player.getSho());
-        myPlayer.setPas(player.getPas());
-        myPlayer.setDri(player.getDri());
-        myPlayer.setDef(player.getDef());
-        myPlayer.setPhy(player.getPhy());
+        myPlayer.setPac(source.getPac());
+        myPlayer.setSho(source.getSho());
+        myPlayer.setPas(source.getPas());
+        myPlayer.setDri(source.getDri());
+        myPlayer.setDef(source.getDef());
+        myPlayer.setPhy(source.getPhy());
 
-        myPlayer.setAcceleration(player.getAcceleration());
-        myPlayer.setSprintSpeed(player.getSprintSpeed());
-        myPlayer.setPositioning(player.getPositioning());
-        myPlayer.setFinishing(player.getFinishing());
-        myPlayer.setShotPower(player.getShotPower());
-        myPlayer.setLongShots(player.getLongShots());
-        myPlayer.setVolleys(player.getVolleys());
-        myPlayer.setPenalties(player.getPenalties());
-        myPlayer.setVision(player.getVision());
-        myPlayer.setCrossing(player.getCrossing());
-        myPlayer.setShortPassing(player.getShortPassing());
-        myPlayer.setLongPassing(player.getLongPassing());
-        myPlayer.setCurve(player.getCurve());
-        myPlayer.setDribbling(player.getDribbling());
-        myPlayer.setAgility(player.getAgility());
-        myPlayer.setBalance(player.getBalance());
-        myPlayer.setReactions(player.getReactions());
-        myPlayer.setBallControl(player.getBallControl());
-        myPlayer.setComposure(player.getComposure());
+        myPlayer.setAcceleration(source.getAcceleration());
+        myPlayer.setSprintSpeed(source.getSprintSpeed());
+        myPlayer.setPositioning(source.getPositioning());
+        myPlayer.setFinishing(source.getFinishing());
+        myPlayer.setShotPower(source.getShotPower());
+        myPlayer.setLongShots(source.getLongShots());
+        myPlayer.setVolleys(source.getVolleys());
+        myPlayer.setPenalties(source.getPenalties());
+        myPlayer.setVision(source.getVision());
+        myPlayer.setCrossing(source.getCrossing());
+        myPlayer.setShortPassing(source.getShortPassing());
+        myPlayer.setLongPassing(source.getLongPassing());
+        myPlayer.setCurve(source.getCurve());
+        myPlayer.setDribbling(source.getDribbling());
+        myPlayer.setAgility(source.getAgility());
+        myPlayer.setBalance(source.getBalance());
+        myPlayer.setReactions(source.getReactions());
+        myPlayer.setBallControl(source.getBallControl());
+        myPlayer.setComposure(source.getComposure());
 
-        myPlayer.setInterceptions(player.getInterceptions());
-        myPlayer.setHeadingAccuracy(player.getHeadingAccuracy());
-        myPlayer.setDefAwareness(player.getDefAwareness());
-        myPlayer.setStandingTackle(player.getStandingTackle());
-        myPlayer.setSlidingTackle(player.getSlidingTackle());
+        myPlayer.setInterceptions(source.getInterceptions());
+        myPlayer.setHeadingAccuracy(source.getHeadingAccuracy());
+        myPlayer.setDefAwareness(source.getDefAwareness());
+        myPlayer.setStandingTackle(source.getStandingTackle());
+        myPlayer.setSlidingTackle(source.getSlidingTackle());
 
-        myPlayer.setJumping(player.getJumping());
-        myPlayer.setStamina(player.getStamina());
-        myPlayer.setStrength(player.getStrength());
-        myPlayer.setAggression(player.getAggression());
+        myPlayer.setJumping(source.getJumping());
+        myPlayer.setStamina(source.getStamina());
+        myPlayer.setStrength(source.getStrength());
+        myPlayer.setAggression(source.getAggression());
 
-        myPlayer.setWeakFoot(player.getWeakFoot());
-        myPlayer.setSkillMoves(player.getSkillMoves());
-        myPlayer.setPreferredFoot(player.getPreferredFoot());
-        myPlayer.setHeight(player.getHeight());
-        myPlayer.setWeight(player.getWeight());
-        myPlayer.setAlternativePositions(player.getAlternativePositions());
-        myPlayer.setAge(player.getAge());
-        myPlayer.setPlayStyle(player.getPlayStyle());
-        myPlayer.setUrl(player.getUrl());
+        myPlayer.setWeakFoot(source.getWeakFoot());
+        myPlayer.setSkillMoves(source.getSkillMoves());
+        myPlayer.setPreferredFoot(source.getPreferredFoot());
+        myPlayer.setHeight(source.getHeight());
+        myPlayer.setWeight(source.getWeight());
+        myPlayer.setAlternativePositions(source.getAlternativePositions());
+        myPlayer.setAge(source.getAge());
+        myPlayer.setPlayStyle(source.getPlayStyle());
+        myPlayer.setUrl(source.getUrl());
 
-        myPlayer.setGkDiving(player.getGkDiving());
-        myPlayer.setGkHandling(player.getGkHandling());
-        myPlayer.setGkKicking(player.getGkKicking());
-        myPlayer.setGkPositioning(player.getGkPositioning());
-        myPlayer.setGkReflexes(player.getGkReflexes());
+        myPlayer.setGkDiving(source.getGkDiving());
+        myPlayer.setGkHandling(source.getGkHandling());
+        myPlayer.setGkKicking(source.getGkKicking());
+        myPlayer.setGkPositioning(source.getGkPositioning());
+        myPlayer.setGkReflexes(source.getGkReflexes());
 
         myPlayerRepository.save(myPlayer);
     }

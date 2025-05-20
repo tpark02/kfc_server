@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @CrossOrigin(origins = "http://localhost:5173") // Vite dev 서버 주소
 @RestController
@@ -81,45 +82,38 @@ public class MyClubController {
 
     }
 
+//    TODO: perhaps used later for creating login. because a user must have 3 clubs
 //    @GetMapping("/users/{userId}/myplayers")
 //    public List<MyClubDto> getMyPlayers(@PathVariable Long userId) {
 //        UserInfo user = userInfoService.getUserById(userId);
 //
 //    }
 
-    @PostMapping("/users/{userId}/myclubs")
-    public ResponseEntity<?> createMyClub(@PathVariable Long userId, @RequestBody MyClubRequest request) {
-        try {
-            myClubService.createMyClub(userId, request);
-            return ResponseEntity.ok("클럽 저장 성공");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
-    }
-
-    // ✅ 특정 MyClub의 포메이션 목록 조회
-    // todo
-//    @GetMapping("/myclubs/{myClubId}/formations")
-//    public List<Formation> getFormationsOfMyClub(@PathVariable Long myClubId) {
-//        MyClub club = myClubService.getClubById(myClubId);
-//        var formation = formationService.getFormationsByClub(club);
-//        var f = formation.orElse(null);
-//
-//        if (f == null) {
-//            return null;
+//    @PostMapping("/users/{userId}/myclubs")
+//    public ResponseEntity<?> createMyClub(@PathVariable Long userId, @RequestBody MyClubRequest request) {
+//        try {
+//            myClubService.createMyClub(userId, request);
+//            return ResponseEntity.ok("클럽 저장 성공");
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 //        }
-//
-//        return null;
 //    }
 
     @PutMapping("/updatemyclub/{userId}/{clubId}")
-    public ResponseEntity<String> updateMyClub(@PathVariable Long userId, @PathVariable Long clubId, @RequestBody MyClubRequest clubRequest) {
+    public ResponseEntity<String> updateMyClub(
+            @PathVariable Long userId,
+            @PathVariable Long clubId,
+            @RequestBody MyClubRequest clubRequest) {
         try {
-            var updatedClub = myClubService.updateMyClub(userId, clubId,
-                              clubRequest).orElse(null);
-            return updatedClub != null ? ResponseEntity.ok("클럽 수정 성공") : ResponseEntity.ok("클럽 수정 실패");
+            Optional<MyClub> updatedClub = myClubService.updateMyClub(userId, clubId, clubRequest);
+
+            if (updatedClub.isPresent()) {
+                return ResponseEntity.ok("club saved");
+            } else {
+                return ResponseEntity.ok("club saving failed");
+            }
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("error: " + e.getMessage());
         }
     }
 
@@ -127,7 +121,7 @@ public class MyClubController {
     public ResponseEntity<String> deleteMyClub(@PathVariable Long userId, @PathVariable Long clubId) {
         try {
             var updatedClub = myClubService.resetClub(userId, clubId).orElse(null);
-            return updatedClub != null ? ResponseEntity.ok("클럽 수정 성공") : ResponseEntity.ok("클럽 수정 실패");
+            return updatedClub != null ? ResponseEntity.ok("club deleted") : ResponseEntity.ok("club deletion failed");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
