@@ -28,7 +28,7 @@ public class SquadApiController {
     @Autowired
     private UserInfoService userInfoService;
 
-    @PostMapping("/api/squadsearch")
+    @PostMapping("/squadsearch")
     public PlayerPageResponse getSquadPage(@RequestBody SquadSearchRequest request){
         try {
             int page = request.getPage();

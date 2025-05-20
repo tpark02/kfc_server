@@ -23,7 +23,7 @@ public class TeamApiController {
         this.teamRepository = teamRepository;
     }
 
-    @GetMapping("/api/teams")
+    @GetMapping("/teams")
     public TeamPageResponse getAllTeams() {
         List<Team> list = (List<Team>) teamRepository.findAll();
         List<TeamDto> forms = list.stream().map(TeamDto::from).collect(Collectors.toList());

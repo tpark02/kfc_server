@@ -25,6 +25,11 @@ public class MyClubService {
 //        return myClubRepository.save(club);
 //    }
 
+    public MyClub getClubByUserIdAndUserId(Long userId, Long clubId) {
+        return myClubRepository.findByClubIdAndUserId(clubId, userId)
+                .orElseThrow(() -> new IllegalArgumentException("Club not found"));
+    }
+
     public List<MyClub> getClubsByUser(UserInfo user) {
         return myClubRepository.findByUser(user);
     }
@@ -32,7 +37,7 @@ public class MyClubService {
     public Optional<MyClub> resetClub(Long userId, Long clubId) {
         MyClub existing =
                 myClubRepository.findByClubIdAndUserId(clubId, userId)
-                .orElseThrow(() -> new IllegalArgumentException("Club not found"));
+                        .orElseThrow(() -> new IllegalArgumentException("Club not found"));
 
         // 클럽 정보 초기화 (ID와 FK 제외)
         existing.setName(null);
@@ -99,7 +104,7 @@ public class MyClubService {
     public Optional<MyClub> updateMyClub(Long userId, Long clubId, MyClubRequest request) {
         MyClub existing =
                 myClubRepository.findByClubIdAndUserId(clubId, userId)
-                .orElseThrow(() -> new IllegalArgumentException("Club not found"));
+                        .orElseThrow(() -> new IllegalArgumentException("Club not found"));
 
         if (request.getPlayers().size() != 26) {
             throw new IllegalArgumentException("Exactly 26 players must be provided");
@@ -161,7 +166,8 @@ public class MyClubService {
                         .orElseThrow(() -> new IllegalArgumentException("player does not exist [" + playerId + "]"));
 
                 // check if myPlayer already exists for this playerId & clubId
-//                MyPlayer myPlayer = myPlayerRepository.findByIdAndUserIdAndClubId(playerId, userId, clubId).orElse(null);
+//                MyPlayer myPlayer = myPlayerRepository.findByIdAndUserIdAndClubId(playerId, userId, clubId).orElse
+//                (null);
 //                if (myPlayer != null) {
 //                    continue;
 //                }

@@ -23,7 +23,7 @@ public class RandomTeamController {
 
     private final RandomTeamService randomTeamService;
 
-    @PostMapping("/api/randomteam")
+    @PostMapping("/randomteam")
     public RandomSquadResponse getRandomTeam(@RequestBody RandomSquadRequest request) {
         String formation  = request.getName();
         List<CountryDto> countries = request.getCountries();

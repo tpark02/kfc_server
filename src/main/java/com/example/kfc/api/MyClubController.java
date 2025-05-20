@@ -21,7 +21,7 @@ import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:5173") // Vite dev 서버 주소
 @RestController
-@RequestMapping("/api")
+//@RequestMapping("/api")
 @RequiredArgsConstructor
 public class MyClubController {
 

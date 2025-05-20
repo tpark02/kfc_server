@@ -13,7 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -22,6 +21,10 @@ import java.util.List;
 public class PlayerService {
     @Autowired
     private PlayerRepository playerRepository;
+
+    public Player searchPlayerById(Long playerId) {
+        return playerRepository.searchPlayerById(playerId).orElse(null);
+    }
 
     public Page<PlayerDto> searchPlayersWithFilter(String search, Long minAge, Long maxAge, Long minRank, Long maxRank, Long minOvr, Long maxOvr, List<String> nation, List<String> team,List<String> league,List<String> position, Pageable pageable) {
         if ((position == null) && (team == null) && (league == null) && (nation == null) && (search == null || search.trim().isEmpty())) {
@@ -36,12 +39,12 @@ public class PlayerService {
         return playerRepository.searchPlayers(country, league, club, pos, name, pageable).map(PlayerDto::from);
     }
 
-    public List<PlayerDto> searchClub(String teamName){
-        if (teamName.isEmpty()) {
-            return Collections.emptyList(); // or return List.of();
-        }
-        return playerRepository.searchClub(teamName).stream().map(PlayerDto::from).toList();
-    }
+//    public List<PlayerDto> searchClub(String teamName){
+//        if (teamName.isEmpty()) {
+//            return Collections.emptyList(); // or return List.of();
+//        }
+//        return playerRepository.searchClub(teamName).stream().map(PlayerDto::from).toList();
+//    }
 
     public List<Player> search(String query) {
         return new ArrayList<>(playerRepository.findByNameContainingIgnoreCase(query));

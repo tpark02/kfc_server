@@ -26,7 +26,7 @@ public class SimController {
         return simService.simulateLeague(request.getTeams());
     }
 
-    @PostMapping("/api/simulate/generate-schedule")
+    @PostMapping("/simulate/generate-schedule")
     public List<MatchDto> generateRandomSchedule(@RequestBody SimGenerateRequest request) {
         return simService.generateRandomSchedule(request.getMyTeamName(), request.getMyTeamMembers());
     }
