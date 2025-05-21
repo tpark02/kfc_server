@@ -57,7 +57,15 @@
 --team_name = 'MyTeam');
 
 -- 먼저 user_info
-INSERT INTO user_info (username, email) VALUES ('tm', 'tm@example.com');
+INSERT INTO user_info (username, email) VALUES ('tm1', 'tm1@example.com');
+INSERT INTO user_info (username, email) VALUES ('tm2', 'tm2@example.com');
+INSERT INTO user_info (username, email) VALUES ('tm3', 'tm3@example.com');
+INSERT INTO user_info (username, email) VALUES ('tm4', 'tm4@example.com');
+INSERT INTO user_info (username, email) VALUES ('tm5', 'tm5@example.com');
+INSERT INTO user_info (username, email) VALUES ('tm6', 'tm6@example.com');
+INSERT INTO user_info (username, email) VALUES ('tm7', 'tm7@example.com');
+INSERT INTO user_info (username, email) VALUES ('tm8', 'tm8@example.com');
+
 
 -- 그 다음 my_club
 INSERT INTO my_club (name, user_id) VALUES (null,
@@ -1788,3 +1796,5 @@ INSERT INTO my_player (
     25, 'Korea', 'K League', 'FC Seoul', 'Power Shot', 'https://player.url/3026', 'https://player.img/3026.png',
     60, 60, 60, 60, 60
 );
+
+--INSERT INTO season (id, name, started) VALUES (1, '테스트 시즌', FALSE);

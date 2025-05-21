@@ -210,3 +210,26 @@ CREATE TABLE my_player (
     gk_positioning INT,
     gk_reflexes INT
 );
+
+CREATE TABLE season_match (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    season_id BIGINT,
+    player1_id BIGINT,
+    player2_id BIGINT,
+    winner_id BIGINT,
+    round INT
+);
+
+CREATE TABLE season (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255),
+    started BOOLEAN
+);
+
+CREATE TABLE season_participant (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    season_id BIGINT,
+    user_id BIGINT,
+    round INT,
+    eliminated BOOLEAN
+);

@@ -1,4 +1,4 @@
-package com.example.kfc.api;
+package com.example.kfc.controller;
 
 import com.example.kfc.Request.PlayerSearchRequest;
 import com.example.kfc.Response.PlayerPageResponse;

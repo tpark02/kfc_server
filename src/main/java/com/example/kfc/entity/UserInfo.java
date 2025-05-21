@@ -1,5 +1,8 @@
 package com.example.kfc.entity;
 
+import com.example.kfc.entity.Season.SeasonParticipant;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,5 +28,10 @@ public class UserInfo {
 //    private String teamName;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore // clubs에서 다시 user로 가는 걸 막기 위해 무시
     private List<MyClub> clubs = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonBackReference // Participant → UserInfo는 직렬화되지 않음
+    private List<SeasonParticipant> participants = new ArrayList<>();
 }
