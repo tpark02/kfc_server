@@ -83,8 +83,8 @@ CREATE TABLE league (
 CREATE TABLE user_info (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50),
-    email VARCHAR(100)
---    team_name VARCHAR(100)
+    email VARCHAR(100),
+    password VARCHAR(255)
 );
 
 CREATE TABLE my_club (
@@ -223,7 +223,8 @@ CREATE TABLE season_match (
 CREATE TABLE season (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255),
-    started BOOLEAN
+    started BOOLEAN,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE season_participant (

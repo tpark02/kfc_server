@@ -6,8 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -16,20 +17,31 @@ import java.util.stream.Collectors;
 public class SeasonDto {
     private Long id;
     private String name;
+    private boolean started;
+    private LocalDateTime createdAt;
     private List<String> participantNames;
+    private int remainingSeconds; // 👈 추가됨
 
-    public static SeasonDto convertToDto(Season season) {
-        SeasonDto dto = new SeasonDto();
-        dto.setId(season.getId());
-        dto.setName(season.getName());
-
-        // ✅ Null-safe 처리
-        List<String> participantNames = season.getParticipants().stream()
-                .filter(p -> p.getUser() != null) // 필수
+    public static SeasonDto from(Season season) {
+        List<String> names = season.getParticipants().stream()
+                .filter(p -> p.getUser() != null)
                 .map(p -> p.getUser().getUsername())
-                .collect(Collectors.toList());
+                .toList();
 
-        dto.setParticipantNames(participantNames);
-        return dto;
+        int remaining = 0;
+        if (!season.isStarted()) {
+            Duration duration = Duration.between(LocalDateTime.now(), season.getCreatedAt().plusSeconds(5));
+            remaining = (int) Math.max(0, duration.getSeconds());
+        }
+
+        return new SeasonDto(
+                season.getId(),
+                season.getName(),
+                season.isStarted(),
+                season.getCreatedAt(),
+                names,
+                remaining
+        );
     }
 }
+

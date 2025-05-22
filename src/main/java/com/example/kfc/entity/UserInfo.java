@@ -4,10 +4,7 @@ import com.example.kfc.entity.Season.SeasonParticipant;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +14,7 @@ import java.util.List;
 @ToString
 @Entity
 @Getter
+@Setter
 @Table(name = "user_info")
 public class UserInfo {
     @Id
@@ -24,6 +22,7 @@ public class UserInfo {
     private Long id;
     private String username;
     private String email;
+    private String password;
 //    @Column(name = "team_name")
 //    private String teamName;
 

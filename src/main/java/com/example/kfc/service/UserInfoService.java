@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UserInfoService {
@@ -27,5 +28,12 @@ public class UserInfoService {
 
     public UserInfo save(UserInfo user) {
         return userInfoRepository.save(user);
+    }
+    public UserInfo generateRandomUser() {
+        UserInfo user = new UserInfo();
+        user.setUsername("AI_" + UUID.randomUUID().toString().substring(0, 5));
+        user.setEmail(user.getUsername() + "@bot.com"); // optional
+        user.setPassword("dummy"); // optional, not used
+        return userInfoRepository.save(user); // 저장 후 반환
     }
 }

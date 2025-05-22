@@ -3,5 +3,9 @@ package com.example.kfc.repository.Season;
 import com.example.kfc.entity.Season.Season;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface SeasonRepository extends JpaRepository<Season, Long> {}
+import java.util.List;
+
+public interface SeasonRepository extends JpaRepository<Season, Long> {
+    List<Season> findByStartedFalse(); // 👈 이거 추가
+}
 

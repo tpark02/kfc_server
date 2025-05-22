@@ -112,7 +112,7 @@ public class SeasonController {
     public List<SeasonDto> getAllSeasons() {
         List<Season> seasons = seasonRepository.findAll();
         return seasons.stream()
-                .map(SeasonDto::convertToDto)
+                .map(SeasonDto::from)
                 .collect(Collectors.toList());
     }
 
@@ -138,5 +138,14 @@ public class SeasonController {
         seasonParticipantRepository.save(participant);
 
         return ResponseEntity.ok("Soft leave successful");
+    }
+
+    @GetMapping("/{seasonId}")
+    public ResponseEntity<SeasonDto> getSeason(@PathVariable Long seasonId) {
+        Season season = seasonRepository.findById(seasonId)
+                .orElseThrow(() -> new IllegalArgumentException("Season not found"));
+
+        SeasonDto dto = SeasonDto.from(season);
+        return ResponseEntity.ok(dto);
     }
 }
