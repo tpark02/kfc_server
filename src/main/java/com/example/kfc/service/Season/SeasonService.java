@@ -74,7 +74,7 @@ public class SeasonService {
                     }
                 }
 
-                season.setStarted(true);
+                //season.setStarted(true);
                 seasonRepository.save(season);
                 tournamentService.tryStartTournament(season);
             }

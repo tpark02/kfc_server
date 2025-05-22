@@ -20,7 +20,7 @@ public class SeasonDto {
     private boolean started;
     private LocalDateTime createdAt;
     private List<String> participantNames;
-    private int remainingSeconds; // 👈 추가됨
+    private int remainingSeconds;
 
     public static SeasonDto from(Season season) {
         List<String> names = season.getParticipants().stream()

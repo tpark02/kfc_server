@@ -63,7 +63,8 @@ public class SeasonController {
         emptySlot.setUser(user);
         seasonParticipantRepository.save(emptySlot);
 
-        tournamentService.tryStartTournament(season);
+        //tournamentService.tryStartTournament
+        // (season);
 
         return ResponseEntity.ok(new JoinSeasonResponse(seasonId, "Joined successfully"));
     }

@@ -8,12 +8,15 @@ import com.example.kfc.repository.Season.MatchRepository;
 import com.example.kfc.repository.Season.SeasonParticipantRepository;
 import com.example.kfc.repository.Season.SeasonRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TournamentService {
@@ -22,25 +25,28 @@ public class TournamentService {
     private final MatchRepository matchRepository;
 
     public void tryStartTournament(Season season) {
-        if (season.isStarted()) return;
+        try {
+            if (season.isStarted()) return;
 
-        List<SeasonParticipant> participants = participantRepository.findBySeason(season);
+            List<SeasonParticipant> participants = participantRepository.findBySeason(season);
 
-        // ✅ 실제로 유저가 배정된 참가자 수만 필터링
-        long assignedCount = participants.stream()
-                .filter(p -> p.getUser() != null)
-                .count();
-
-        if (assignedCount == 8) {
-            season.setStarted(true);
-            seasonRepository.save(season);
-
-            // ✅ 유저가 있는 슬롯만 넘김
-            List<SeasonParticipant> filledParticipants = participants.stream()
+            // ✅ 실제로 유저가 배정된 참가자 수만 필터링
+            long assignedCount = participants.stream()
                     .filter(p -> p.getUser() != null)
-                    .toList();
+                    .count();
 
-            startRound(season, 1, filledParticipants);
+            if (assignedCount == 8) {
+                season.setStarted(true);
+                seasonRepository.save(season);
+
+                List<SeasonParticipant> filledParticipants = participants.stream()
+                        .filter(p -> p.getUser() != null)
+                        .collect(Collectors.toList()); // ✅ mutable list
+
+                startRound(season, 1, filledParticipants);
+            }
+        } catch (Exception e) {
+            log.info("Tournament Service - tryStartTournament : " + e.getMessage());
         }
     }
 
