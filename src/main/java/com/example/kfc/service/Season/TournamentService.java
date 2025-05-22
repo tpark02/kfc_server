@@ -25,10 +25,22 @@ public class TournamentService {
         if (season.isStarted()) return;
 
         List<SeasonParticipant> participants = participantRepository.findBySeason(season);
-        if (participants.size() == 8) {
+
+        // ✅ 실제로 유저가 배정된 참가자 수만 필터링
+        long assignedCount = participants.stream()
+                .filter(p -> p.getUser() != null)
+                .count();
+
+        if (assignedCount == 8) {
             season.setStarted(true);
             seasonRepository.save(season);
-            startRound(season, 1, participants);
+
+            // ✅ 유저가 있는 슬롯만 넘김
+            List<SeasonParticipant> filledParticipants = participants.stream()
+                    .filter(p -> p.getUser() != null)
+                    .toList();
+
+            startRound(season, 1, filledParticipants);
         }
     }
 

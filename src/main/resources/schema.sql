@@ -231,5 +231,6 @@ CREATE TABLE season_participant (
     season_id BIGINT,
     user_id BIGINT,
     round INT,
-    eliminated BOOLEAN
+    eliminated BOOLEAN,
+    active BOOLEAN
 );

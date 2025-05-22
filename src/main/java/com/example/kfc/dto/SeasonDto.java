@@ -19,10 +19,17 @@ public class SeasonDto {
     private List<String> participantNames;
 
     public static SeasonDto convertToDto(Season season) {
+        SeasonDto dto = new SeasonDto();
+        dto.setId(season.getId());
+        dto.setName(season.getName());
+
+        // ✅ Null-safe 처리
         List<String> participantNames = season.getParticipants().stream()
+                .filter(p -> p.getUser() != null) // 필수
                 .map(p -> p.getUser().getUsername())
                 .collect(Collectors.toList());
 
-        return new SeasonDto(season.getId(), season.getName(), participantNames);
+        dto.setParticipantNames(participantNames);
+        return dto;
     }
 }

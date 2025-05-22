@@ -27,4 +27,7 @@ public class SeasonParticipant {
 
     private int round; // 1 = 8강, 2 = 4강, 3 = 결승
     private boolean eliminated;
+
+    @Column(nullable = false)
+    private boolean active = true;
 }

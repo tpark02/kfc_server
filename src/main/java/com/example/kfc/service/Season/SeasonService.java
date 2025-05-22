@@ -2,13 +2,14 @@ package com.example.kfc.service.Season;
 
 import com.example.kfc.dto.ParticipantDto;
 import com.example.kfc.entity.Season.SeasonParticipant;
-import com.example.kfc.entity.UserInfo;
 import com.example.kfc.repository.Season.MatchRepository;
 import com.example.kfc.repository.Season.SeasonParticipantRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 // service/SeasonService.java
 @Service
@@ -19,17 +20,22 @@ public class SeasonService {
     private final SeasonParticipantRepository seasonParticipantRepository;
 
     public List<ParticipantDto> getParticipantsBySeasonId(Long seasonId) {
-        List<SeasonParticipant> participants = seasonParticipantRepository.findBySeasonId(seasonId);
+        List<SeasonParticipant> participants = seasonParticipantRepository.findActiveBySeasonId(seasonId);
+
         return participants.stream()
-                .map(p -> {
-                    UserInfo user = p.getUser();
-                    return new ParticipantDto(
-                            user.getId(),
-                            user.getUsername(),  // 또는 user.getName()
-                            0L, // rank - 필요시 계산
-                            0L  // ovr - 필요시 계산
-                    );
+                .filter(p -> {
+                    if (p.getUser() == null) {
+                        System.out.println("❗ user is null for participantId = " + p.getId());
+                        return false;
+                    }
+                    return true;
                 })
+                .map(p -> Optional.ofNullable(p.getUser())
+                        .map(user -> new ParticipantDto(user.getId(), user.getUsername(), 0L, 0L))
+                        .orElse(null))
+                .filter(Objects::nonNull)
                 .toList();
+
+
     }
 }
