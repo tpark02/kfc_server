@@ -23,7 +23,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class SeasonService {
-
+    public static final Long matchTime = 3000L;
     private final MatchRepository matchRepository;
     private final SeasonParticipantRepository seasonParticipantRepository;
     private final SeasonRepository seasonRepository;
@@ -48,7 +48,7 @@ public class SeasonService {
                 .toList();
     }
 
-    @Scheduled(fixedRate = 3000) // 1분마다 실행
+    @Scheduled(fixedRate = matchTime) // 분마다 실행
     public void checkSeasonStartConditions() {
         List<Season> waitingSeasons = seasonRepository.findByStartedFalse();
 
