@@ -8,7 +8,9 @@ import com.example.kfc.repository.Season.MatchRepository;
 import com.example.kfc.repository.Season.SeasonParticipantRepository;
 import com.example.kfc.repository.Season.SeasonRepository;
 import com.example.kfc.service.UserInfoService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -20,10 +22,11 @@ import java.util.Objects;
 import java.util.Optional;
 
 // service/SeasonService.java
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SeasonService {
-    public static final Long matchTime = 3000L;
+    public static final int matchTime = 3000;
     private final MatchRepository matchRepository;
     private final SeasonParticipantRepository seasonParticipantRepository;
     private final SeasonRepository seasonRepository;
@@ -49,12 +52,13 @@ public class SeasonService {
     }
 
     @Scheduled(fixedRate = matchTime) // 분마다 실행
+    @Transactional
     public void checkSeasonStartConditions() {
         List<Season> waitingSeasons = seasonRepository.findByStartedFalse();
 
         for (Season season : waitingSeasons) {
             //if (Duration.between(season.getCreatedAt(), LocalDateTime.now()).toMinutes() >= 5) {
-            if (Duration.between(season.getCreatedAt(), LocalDateTime.now()).getSeconds() >= 5) {
+            if (Duration.between(season.getCreatedAt(), LocalDateTime.now()).getSeconds() >= 5) {   // season start
 
                 List<SeasonParticipant> slots = seasonParticipantRepository.findBySeason(season);
                 long filledCount = slots.stream().filter(p -> p.getUser() != null).count();
@@ -75,11 +79,10 @@ public class SeasonService {
                 }
 
                 //season.setStarted(true);
-                seasonRepository.save(season);
                 tournamentService.tryStartTournament(season);
+                // save season
+                seasonRepository.save(season);
             }
         }
     }
-
-
 }

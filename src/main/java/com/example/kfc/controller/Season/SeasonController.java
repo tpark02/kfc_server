@@ -141,7 +141,7 @@ public class SeasonController {
         return ResponseEntity.ok("Soft leave successful");
     }
 
-    @GetMapping("/{seasonId}")
+    @GetMapping("/getSeason/{seasonId}")
     public ResponseEntity<SeasonDto> getSeason(@PathVariable Long seasonId) {
         Season season = seasonRepository.findById(seasonId)
                 .orElseThrow(() -> new IllegalArgumentException("Season not found"));

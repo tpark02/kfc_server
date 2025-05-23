@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -36,14 +37,18 @@ public class TournamentService {
                     .count();
 
             if (assignedCount == 8) {
+                // set season started
                 season.setStarted(true);
-                seasonRepository.save(season);
 
                 List<SeasonParticipant> filledParticipants = participants.stream()
                         .filter(p -> p.getUser() != null)
                         .collect(Collectors.toList()); // ✅ mutable list
 
                 startRound(season, 1, filledParticipants);
+
+                // set finish season
+                season.setFinishedAt(LocalDateTime.now());
+                log.info("finish season at " + season.getFinishedAt());
             }
         } catch (Exception e) {
             log.info("Tournament Service - tryStartTournament : " + e.getMessage());

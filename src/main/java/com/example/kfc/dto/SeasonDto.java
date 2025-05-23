@@ -1,6 +1,7 @@
 package com.example.kfc.dto;
 
 import com.example.kfc.entity.Season.Season;
+import com.example.kfc.service.Season.SeasonService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,7 @@ public class SeasonDto {
     private String name;
     private boolean started;
     private LocalDateTime createdAt;
+    private LocalDateTime finishedAt;
     private List<String> participantNames;
     private int remainingSeconds;
 
@@ -30,7 +32,8 @@ public class SeasonDto {
 
         int remaining = 0;
         if (!season.isStarted()) {
-            Duration duration = Duration.between(LocalDateTime.now(), season.getCreatedAt().plusSeconds(5));
+            Duration duration =
+                    Duration.between(LocalDateTime.now(), season.getCreatedAt().plusSeconds(SeasonService.matchTime/1000L));
             remaining = (int) Math.max(0, duration.getSeconds());
         }
 
@@ -39,6 +42,7 @@ public class SeasonDto {
                 season.getName(),
                 season.isStarted(),
                 season.getCreatedAt(),
+                season.getFinishedAt(),
                 names,
                 remaining
         );

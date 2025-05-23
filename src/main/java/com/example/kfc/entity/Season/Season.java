@@ -30,6 +30,9 @@ public class Season {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @Column
+    private LocalDateTime finishedAt;
+
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
