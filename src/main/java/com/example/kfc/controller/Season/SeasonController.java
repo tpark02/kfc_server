@@ -89,44 +89,55 @@ public class SeasonController {
         }).toList();
     }
 
+//    @PostMapping("/create")
+//    public ResponseEntity<Object> createSeason(@RequestBody CreateSeasonRequest request) {
+//        String name = request.getName();
+//        Long userId = request.getUserId();
+//        var lst = seasonRepository.findByUserId(userId);
+//
+//        lst.forEach(s->{
+//            System.out.println(s.getFinishedAt());
+//        });
+//        var ownerLst = lst.stream()
+//                .filter(s -> s.getUserId().equals(userId) && s.getFinishedAt() == null)
+//                .toList();
+//
+//        if (!ownerLst.isEmpty()) {
+//            SeasonDto dto = SeasonDto.from(ownerLst.get(0),
+//                                           "Your season [" + ownerLst.get(0).getId() + "] is still in progress");
+//            return ResponseEntity.ok(dto);
+//        }
+//
+//        Season newSeason = new Season();
+//        newSeason.setName(name);
+//        newSeason.setUserId(userId);
+//        newSeason.setStarted(false);
+//        Season savedSeason = seasonRepository.save(newSeason);
+//
+//        // create 8 empty participants' slots
+//        for (int i = 0; i < 8; i++) {
+//            SeasonParticipant slot = new SeasonParticipant();
+//            slot.setSeason(savedSeason);
+//            slot.setUser(null);
+//            slot.setRound(1);
+//            slot.setEliminated(false);
+//            slot.setActive(true);
+//            seasonParticipantRepository.save(slot);
+//        }
+//
+//        // the creator joins
+//        joinSeason(newSeason.getId(), userId);
+//
+//        SeasonDto dto = SeasonDto.from(savedSeason, "Season is created " + savedSeason.getId());
+//        return ResponseEntity.ok(dto);
+//    }
+
     @PostMapping("/create")
     public ResponseEntity<Object> createSeason(@RequestBody CreateSeasonRequest request) {
-        String name = request.getName();
-        Long userId = request.getUserId();
-        var lst = seasonRepository.findByUserId(userId);
-
-        lst.forEach(s->{
-            System.out.println(s.getFinishedAt());
-        });
-        var ownerLst = lst.stream()
-                .filter(s -> s.getUserId().equals(userId) && s.getFinishedAt() == null)
-                .toList();
-
-        if (!ownerLst.isEmpty()) {
-            SeasonDto dto = SeasonDto.from(ownerLst.get(0),
-                                           "Your season [" + ownerLst.get(0).getId() + "] is still in progress");
-            return ResponseEntity.ok(dto);
-        }
-
-        Season newSeason = new Season();
-        newSeason.setName(name);
-        newSeason.setUserId(userId);
-        newSeason.setStarted(false);
-        Season savedSeason = seasonRepository.save(newSeason);
-
-        for (int i = 0; i < 8; i++) {
-            SeasonParticipant slot = new SeasonParticipant();
-            slot.setSeason(savedSeason);
-            slot.setUser(null);
-            slot.setRound(1);
-            slot.setEliminated(false);
-            slot.setActive(true);
-            seasonParticipantRepository.save(slot);
-        }
-
-        SeasonDto dto = SeasonDto.from(savedSeason, "Season is created " + savedSeason.getId());
+        SeasonDto dto = seasonService.createSeason(request.getName(), request.getUserId());
         return ResponseEntity.ok(dto);
     }
+
 
     @GetMapping("/all")
     public List<SeasonDto> getAllSeasons() {

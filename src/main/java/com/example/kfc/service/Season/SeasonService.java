@@ -1,12 +1,14 @@
 package com.example.kfc.service.Season;
 
 import com.example.kfc.dto.ParticipantDto;
+import com.example.kfc.dto.SeasonDto;
 import com.example.kfc.entity.Season.Season;
 import com.example.kfc.entity.Season.SeasonParticipant;
 import com.example.kfc.entity.UserInfo;
 import com.example.kfc.repository.Season.MatchRepository;
 import com.example.kfc.repository.Season.SeasonParticipantRepository;
 import com.example.kfc.repository.Season.SeasonRepository;
+import com.example.kfc.repository.UserInfoRepository;
 import com.example.kfc.service.UserInfoService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +34,8 @@ public class SeasonService {
     private final SeasonRepository seasonRepository;
     private final UserInfoService userInfoService;
     private final TournamentService tournamentService;
+
+    private final UserInfoRepository userInfoRepository;
 
     public List<ParticipantDto> getParticipantsBySeasonId(Long seasonId) {
         List<SeasonParticipant> participants = seasonParticipantRepository.findActiveBySeasonId(seasonId);
@@ -84,5 +88,51 @@ public class SeasonService {
                 seasonRepository.save(season);
             }
         }
+    }
+
+    @Transactional
+    public void joinSeason(Long seasonId, Long userId) {
+        SeasonParticipant emptySlot = seasonParticipantRepository
+                .findFirstBySeasonIdAndUserIsNullAndActiveTrueOrderByIdAsc(seasonId)
+                .orElseThrow(() -> new IllegalStateException("No empty slot available"));
+
+        UserInfo user = userInfoRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        emptySlot.setUser(user);
+        seasonParticipantRepository.save(emptySlot);
+    }
+
+    @Transactional
+    public SeasonDto createSeason(String name, Long userId) {
+        var lst = seasonRepository.findByUserId(userId);
+        var ownerLst = lst.stream()
+                .filter(s -> s.getUserId().equals(userId) && s.getFinishedAt() == null)
+                .toList();
+
+        if (!ownerLst.isEmpty()) {
+            return SeasonDto.from(ownerLst.get(0),
+                                  "Your season [" + ownerLst.get(0).getId() + "] is still in progress");
+        }
+
+        Season newSeason = new Season();
+        newSeason.setName(name);
+        newSeason.setUserId(userId);
+        newSeason.setStarted(false);
+        Season savedSeason = seasonRepository.save(newSeason);
+
+        for (int i = 0; i < 8; i++) {
+            SeasonParticipant slot = new SeasonParticipant();
+            slot.setSeason(savedSeason);
+            slot.setUser(null);
+            slot.setRound(1);
+            slot.setEliminated(false);
+            slot.setActive(true);
+            seasonParticipantRepository.save(slot);
+        }
+
+        joinSeason(savedSeason.getId(), userId);
+
+        return SeasonDto.from(savedSeason, "Season is created " + savedSeason.getId());
     }
 }
