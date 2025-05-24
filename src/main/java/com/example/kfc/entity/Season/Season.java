@@ -21,6 +21,7 @@ public class Season {
     @Column(name = "name")
     private String name;
 
+    @Column
     private boolean started;
 
     @OneToMany(mappedBy = "season")
@@ -32,6 +33,9 @@ public class Season {
 
     @Column
     private LocalDateTime finishedAt;
+
+    @Column
+    private Long userId;
 
     @PrePersist
     public void prePersist() {

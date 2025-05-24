@@ -227,7 +227,8 @@ CREATE TABLE season (
     created_at TIMESTAMP DEFAULT
     CURRENT_TIMESTAMP,
     finished_at TIMESTAMP DEFAULT
-                    CURRENT_TIMESTAMP
+                    CURRENT_TIMESTAMP,
+    user_id BIGINT
 );
 
 CREATE TABLE season_participant (

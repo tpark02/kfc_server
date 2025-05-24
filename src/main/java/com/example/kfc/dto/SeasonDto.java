@@ -23,17 +23,27 @@ public class SeasonDto {
     private LocalDateTime finishedAt;
     private List<String> participantNames;
     private int remainingSeconds;
+    private Long userId;
+    private String msg;
 
     public static SeasonDto from(Season season) {
-        List<String> names = season.getParticipants().stream()
-                .filter(p -> p.getUser() != null)
-                .map(p -> p.getUser().getUsername())
-                .toList();
+        return from(season, "");
+    }
+
+    public static SeasonDto from(Season season, String msg) {
+        List<String> names = List.of(); // 기본 빈 리스트
+
+        if (season.getParticipants() != null) {
+            names = season.getParticipants().stream()
+                    .filter(p -> p.getUser() != null)
+                    .map(p -> p.getUser().getUsername())
+                    .toList();
+        }
 
         int remaining = 0;
         if (!season.isStarted()) {
             Duration duration =
-                    Duration.between(LocalDateTime.now(), season.getCreatedAt().plusSeconds(SeasonService.matchTime/1000L));
+                    Duration.between(LocalDateTime.now(), season.getCreatedAt().plusSeconds(SeasonService.matchTime / 1000L));
             remaining = (int) Math.max(0, duration.getSeconds());
         }
 
@@ -44,8 +54,11 @@ public class SeasonDto {
                 season.getCreatedAt(),
                 season.getFinishedAt(),
                 names,
-                remaining
+                remaining,
+                season.getUserId(),
+                msg
         );
     }
+
 }
 

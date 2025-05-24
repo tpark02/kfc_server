@@ -1,5 +1,6 @@
 package com.example.kfc.controller.Season;
 
+import com.example.kfc.Request.CreateSeasonRequest;
 import com.example.kfc.Response.JoinSeasonResponse;
 import com.example.kfc.dto.MatchResponse;
 import com.example.kfc.dto.ParticipantDto;
@@ -89,24 +90,42 @@ public class SeasonController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Season> createSeason(@RequestParam String name) {
+    public ResponseEntity<Object> createSeason(@RequestBody CreateSeasonRequest request) {
+        String name = request.getName();
+        Long userId = request.getUserId();
+        var lst = seasonRepository.findByUserId(userId);
+
+        lst.forEach(s->{
+            System.out.println(s.getFinishedAt());
+        });
+        var ownerLst = lst.stream()
+                .filter(s -> s.getUserId().equals(userId) && s.getFinishedAt() == null)
+                .toList();
+
+        if (!ownerLst.isEmpty()) {
+            SeasonDto dto = SeasonDto.from(ownerLst.get(0),
+                                           "Your season [" + ownerLst.get(0).getId() + "] is still in progress");
+            return ResponseEntity.ok(dto);
+        }
+
         Season newSeason = new Season();
         newSeason.setName(name);
+        newSeason.setUserId(userId);
         newSeason.setStarted(false);
         Season savedSeason = seasonRepository.save(newSeason);
 
-        // Pre-create 8 empty participant slots
         for (int i = 0; i < 8; i++) {
             SeasonParticipant slot = new SeasonParticipant();
             slot.setSeason(savedSeason);
-            slot.setUser(null); // empty slot
+            slot.setUser(null);
             slot.setRound(1);
             slot.setEliminated(false);
-            slot.setActive(true); // for soft delete handling
+            slot.setActive(true);
             seasonParticipantRepository.save(slot);
         }
 
-        return ResponseEntity.ok(savedSeason);
+        SeasonDto dto = SeasonDto.from(savedSeason, "Season is created " + savedSeason.getId());
+        return ResponseEntity.ok(dto);
     }
 
     @GetMapping("/all")
