@@ -4,12 +4,14 @@ import com.example.kfc.Request.MyClubRequest;
 import com.example.kfc.entity.*;
 import com.example.kfc.repository.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MyClubService {
@@ -20,7 +22,12 @@ public class MyClubService {
     private final MyPlayerRepository myPlayerRepository;
     private final PlayerRepository playerRepository;
     private final MyPlayerService myPlayerService;
+    private final PlayerService playerService;
+    private final RandomTeamService randomTeamService;
 
+    // ai club
+    private final AiClubService aiClubService;
+    private final AiFormationService aiFormationService;
 //    public MyClub saveClub(MyClub club) {
 //        return myClubRepository.save(club);
 //    }
@@ -101,7 +108,6 @@ public class MyClubService {
         return Optional.of(myClubRepository.save(existing));
     }
 
-
     public Optional<MyClub> updateMyClub(Long userId, Long clubId, MyClubRequest request) {
         MyClub existing = myClubRepository.findByClubIdAndUserId(clubId, userId)
                 .orElseThrow(() -> new IllegalArgumentException("Club not found"));
@@ -137,8 +143,8 @@ public class MyClubService {
 
         // ✅ 26명이 아니면 중단
         if (existingPlayers.size() != 26) {
-            System.out.println("❌ Cannot update. Expected 26 players, found " + existingPlayers.size());
-            return Optional.of(existing); // 혹은 Optional.empty() 반환
+            log.info("❌ Cannot update. Expected 26 players, found " + existingPlayers.size());
+            throw new IllegalArgumentException("❌ Cannot update. Expected 26 players, found " + existingPlayers.size());
         }
 
         // 🔁 26명 순서대로 덮어쓰기
@@ -162,6 +168,7 @@ public class MyClubService {
         }
 
         formationRepository.save(formation);
+
         return Optional.of(myClubRepository.save(existing));
     }
 

@@ -130,4 +130,72 @@ public class PlayerDto {
                 player.getGkReflexes()
         );
     }
+
+    public static Player toEntity(PlayerDto dto) {
+        Player player = new Player();
+        // lombok @Getter만 있으므로 setter 직접 호출이 안 됨 → 생성자 필요 또는 Builder 사용 추천
+
+        // 또는 모든 필드 포함 생성자 사용
+        return new Player(
+                dto.getId(),
+                dto.getRank(),
+                dto.getName(),
+                dto.getOvr(),
+                dto.getPac(),
+                dto.getSho(),
+                dto.getPas(),
+                dto.getDri(),
+                dto.getDef(),
+                dto.getPhy(),
+                dto.getAcceleration(),
+                dto.getSprintSpeed(),
+                dto.getPositioning(),
+                dto.getFinishing(),
+                dto.getShotPower(),
+                dto.getLongShots(),
+                dto.getVolleys(),
+                dto.getPenalties(),
+                dto.getVision(),
+                dto.getCrossing(),
+                dto.getFreeKickAccuracy(),
+                dto.getShortPassing(),
+                dto.getLongPassing(),
+                dto.getCurve(),
+                dto.getDribbling(),
+                dto.getAgility(),
+                dto.getBalance(),
+                dto.getReactions(),
+                dto.getBallControl(),
+                dto.getComposure(),
+                dto.getInterceptions(),
+                dto.getHeadingAccuracy(),
+                dto.getDefAwareness(),
+                dto.getStandingTackle(),
+                dto.getSlidingTackle(),
+                dto.getJumping(),
+                dto.getStamina(),
+                dto.getStrength(),
+                dto.getAggression(),
+                dto.getPos(),
+                dto.getWeakFoot(),
+                dto.getSkillMoves(),
+                dto.getPreferredFoot(),
+                dto.getHeight(),
+                dto.getWeight(),
+                dto.getAlternativePositions(),
+                dto.getAge(),
+                dto.getNation(),
+                dto.getLeague(),
+                dto.getTeam(),
+                dto.getPlayStyle(),
+                dto.getUrl(),
+                dto.getImg(),
+                dto.getGkDiving(),
+                dto.getGkHandling(),
+                dto.getGkKicking(),
+                dto.getGkPositioning(),
+                dto.getGkReflexes()
+        );
+    }
+
 }

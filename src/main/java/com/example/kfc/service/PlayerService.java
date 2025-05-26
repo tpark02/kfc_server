@@ -65,4 +65,8 @@ public class PlayerService {
 
         return playerRepository.searchPlayersByFilters(lowerNation.isEmpty() ? null : lowerNation, lowerTeam.isEmpty() ? null : lowerTeam, lowerLeague.isEmpty() ? null : lowerLeague);
     }
+
+    public List<Player> searchPlayersByOvr(Long ovr) {
+        return playerRepository.findByOvrLessThanEqual(ovr);
+    }
 }

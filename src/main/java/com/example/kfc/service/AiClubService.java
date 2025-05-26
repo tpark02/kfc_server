@@ -1,14 +1,11 @@
 package com.example.kfc.service;
 
-import com.example.kfc.Response.RandomSquadResponse;
 import com.example.kfc.data.FormationUtil;
-import com.example.kfc.dto.CountryDto;
-import com.example.kfc.dto.LeagueDto;
 import com.example.kfc.dto.PlayerDto;
-import com.example.kfc.dto.TeamDto;
 import com.example.kfc.entity.Player;
-import com.example.kfc.entity.UserInfo;
+import com.example.kfc.repository.AiClubRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -16,24 +13,28 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class RandomTeamService {
-    private final PlayerService playerService;
-    private final UserInfoService userInfoService;
-    private final Random random = new Random();
+public class AiClubService {
+    @Autowired
+    AiClubRepository aiClubRepository;
+    @Autowired
+    PlayerService playerService;
 
-    public RandomSquadResponse generateRandomTeamByPosition(String formation, List<CountryDto> countries, List<LeagueDto> leagues, List<TeamDto> clubs) {
+    @Autowired
+    AiFormationService aiFormationService;
+
+    public void updateAiClubAndFormation(Long clubId, String formation, Long ovr) {
         List<String> positionRequirement =
                 FormationUtil.formationPosition.get(
-                formation);
+                        formation);
 
         if (positionRequirement == null) {
-            throw new IllegalArgumentException("존재하지 않는 포메이션입니다: " + formation);
+            throw new IllegalArgumentException("AI - No such formation - " + formation);
         }
 
-        List<Player> playersPool = playerService.searchPlayersByFilters(countries, leagues, clubs);
+        List<Player> playersPool = playerService.searchPlayersByOvr(ovr);
 
         if (playersPool.isEmpty()) {
-            throw new IllegalStateException("필터 조건에 맞는 선수가 없습니다.");
+            throw new IllegalStateException("AI - There are no players with ovr - " + ovr);
         }
 
         // 전체 선수 풀을 섞기
@@ -76,7 +77,7 @@ public class RandomTeamService {
             throw new IllegalStateException("선수 11명을 완성할 수 없습니다. 현재 인원: " + selectedPlayers.size());
         }
 
-        int chemistry = calculateChemistry(selectedPlayers);
+        //int chemistry = randomTeamService.calculateChemistry(selectedPlayers);
 
         List<PlayerDto> lst = new ArrayList<>();
         Set<Integer> usedIds = new HashSet<>();
@@ -84,6 +85,7 @@ public class RandomTeamService {
         selectedPlayers.stream().forEach(p -> {
             lst.add(PlayerDto.from(p));
         });
+
         //my team ovr 계산
         double avg = lst.stream().mapToLong(PlayerDto::getOvr).average().orElse(0.0);
         System.out.println("random formation - avg: " + avg);
@@ -110,8 +112,13 @@ public class RandomTeamService {
         // stamina
         Long teamStamina = FormationUtil.getTeamStamina(lst);
 
-        UserInfo user =
-                userInfoService.getUserById(1L);    // TODO : when account system added, this should come from userId from the front-end
+        // update ai club
+        //CLUB_ID  	NAME  	USER_ID  	OVR  	PRICE  	AGE  	PACE  	DEF  	ATK  	CCH  	STM
+        updateAiClub(clubId, Math.toIntExact(ovr), Math.toIntExact(squadValue), Math.toIntExact(teamAge),
+                     Math.toIntExact(paceIndex), Math.toIntExact(def), Math.toIntExact(atk),
+                     Math.toIntExact(clubCohesion),
+                     Math.toIntExact(teamStamina));
+
         // bench players
         List<PlayerDto> benchplayers = playersPool.stream()
                 .limit(15)
@@ -120,40 +127,42 @@ public class RandomTeamService {
 
         lst.addAll(benchplayers);
 
-        return  RandomSquadResponse.builder()
-                .content(lst)
-                .chemistry((long) chemistry)
-                .myTeamOvr(myTeamOvr)
-                .myTeamSquadValue(squadValue)
-                .myTeamAge(teamAge)
-                .myTeamClubCohesion(clubCohesion)
-                .myTeamAtk(atk)
-                .myTeamDef(def)
-                .myTeamPace(paceIndex)
-                .myTeamStamina(teamStamina)
-                .build();
-    }
+        List<Player> playerList = lst.stream()
+                .map(PlayerDto::toEntity)
+                .toList();
 
-    public int calculateChemistry(List<Player> players) {
-        int chemistry = 0;
+        List<Integer> playerIds = playerList.stream()
+                .limit(26)
+                .map(p -> p.getId().intValue())
+                .toList();
 
-        for (int i = 0; i < players.size(); i++) {
-            for (int j = i + 1; j < players.size(); j++) {
-                Player p1 = players.get(i);
-                Player p2 = players.get(j);
-
-                if (p1.getNation().equals(p2.getNation())) {
-                    chemistry += 5; // 같은 국가
-                }
-                if (p1.getLeague().equals(p2.getLeague())) {
-                    chemistry += 3; // 같은 리그
-                }
-                if (p1.getTeam().equals(p2.getTeam())) {
-                    chemistry += 7; // 같은 팀
-                }
-            }
+        if (playerIds.size() < 26) {
+            throw new IllegalStateException("⚠️ 26명의 선수가 필요합니다. 현재: " + playerIds.size());
         }
 
-        return chemistry;
+        // update ai formation
+        aiFormationService.updateFormationPlayers(clubId, formation,
+                                                  playerIds.get(0), playerIds.get(1), playerIds.get(2),
+                                                  playerIds.get(3), playerIds.get(4),
+                                                  playerIds.get(5), playerIds.get(6), playerIds.get(7),
+                                                  playerIds.get(8), playerIds.get(9),
+                                                  playerIds.get(10), playerIds.get(11), playerIds.get(12),
+                                                  playerIds.get(13), playerIds.get(14),
+                                                  playerIds.get(15), playerIds.get(16), playerIds.get(17),
+                                                  playerIds.get(18), playerIds.get(19),
+                                                  playerIds.get(20), playerIds.get(21), playerIds.get(22),
+                                                  playerIds.get(23), playerIds.get(24),
+                                                  playerIds.get(25));
+
+    }
+
+    //CLUB_ID  	NAME  	USER_ID  	OVR  	PRICE  	AGE  	PACE  	DEF  	ATK  	CCH  	STM
+    public void updateAiClub(Long id, int ovr, int price, int age, int pace, int def, int atk, int cch, int stm) {
+        try {
+            aiClubRepository.updateClubInfoById(id, ovr, price, age, pace, def, atk, cch, stm);
+        } catch (Exception e) {
+            throw new IllegalArgumentException(
+                    "ai - updateAiClub - not updated : " + id + ", " + ovr + ", " + price + ", " + age + ", " + pace + ", " + def + ", " + atk + ", " + cch + ", " + stm);
+        }
     }
 }

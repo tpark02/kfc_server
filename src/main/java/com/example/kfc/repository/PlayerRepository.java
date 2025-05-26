@@ -64,4 +64,6 @@ public interface PlayerRepository extends JpaRepository<Player, Long> {
     List<Player> searchClub(@Param("team") String team);
 
     List<Player> findByNameContainingIgnoreCase(String name);
+
+    List<Player> findByOvrLessThanEqual(Long ovr);
 }

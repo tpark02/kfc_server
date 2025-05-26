@@ -1798,3 +1798,66 @@ INSERT INTO my_player (
 );
 
 --INSERT INTO season (id, name, started) VALUES (1, '테스트 시즌', FALSE);
+
+-- avg ovr - 66.7962451372836443592490275
+-- ai club insert - beginner level - 63
+INSERT INTO ai_club (name, user_id) VALUES ('AI',
+99999);
+INSERT INTO ai_club (name, user_id) VALUES ('AI', 99999);
+INSERT INTO ai_club (name, user_id) VALUES ('AI', 99999);
+INSERT INTO ai_club (name, user_id) VALUES ('AI',
+99999);
+INSERT INTO ai_club (name, user_id) VALUES ('AI', 99999);
+INSERT INTO ai_club (name, user_id) VALUES ('AI', 99999);
+INSERT INTO ai_club (name, user_id) VALUES ('AI',
+99999);
+INSERT INTO ai_club (name, user_id) VALUES ('AI', 99999);
+INSERT INTO ai_club (name, user_id) VALUES ('AI', 99999);
+INSERT INTO ai_club (name, user_id) VALUES ('AI',
+99999);
+INSERT INTO ai_club (name, user_id) VALUES ('AI', 99999);
+INSERT INTO ai_club (name, user_id) VALUES ('AI', 99999);
+INSERT INTO ai_club (name, user_id) VALUES ('AI', 99999);
+
+-- ai formation insert - beginner level - 63
+INSERT INTO ai_formation (name, club_id) VALUES ('442', 1);
+INSERT INTO ai_formation (name, club_id) VALUES ('433', 1);
+INSERT INTO ai_formation (name, club_id) VALUES ('352', 1);
+INSERT INTO ai_formation (name, club_id) VALUES ('4231', 1);
+INSERT INTO ai_formation (name, club_id) VALUES ('451', 1);
+INSERT INTO ai_formation (name, club_id) VALUES ('343', 1);
+INSERT INTO ai_formation (name, club_id) VALUES ('532', 1);
+INSERT INTO ai_formation (name, club_id) VALUES ('541', 1);
+INSERT INTO ai_formation (name, club_id) VALUES ('41212', 1);
+INSERT INTO ai_formation (name, club_id) VALUES ('4222', 1);
+INSERT INTO ai_formation (name, club_id) VALUES ('4321', 1);
+INSERT INTO ai_formation (name, club_id) VALUES ('4132', 1);
+INSERT INTO ai_formation (name, club_id) VALUES ('424', 1);
+
+INSERT INTO ai_formation (name, club_id) VALUES ('442', 2);
+INSERT INTO ai_formation (name, club_id) VALUES ('433', 2);
+INSERT INTO ai_formation (name, club_id) VALUES ('352', 2);
+INSERT INTO ai_formation (name, club_id) VALUES ('4231', 2);
+INSERT INTO ai_formation (name, club_id) VALUES ('451', 2);
+INSERT INTO ai_formation (name, club_id) VALUES ('343', 2);
+INSERT INTO ai_formation (name, club_id) VALUES ('532', 2);
+INSERT INTO ai_formation (name, club_id) VALUES ('541', 2);
+INSERT INTO ai_formation (name, club_id) VALUES ('41212', 2);
+INSERT INTO ai_formation (name, club_id) VALUES ('4222', 2);
+INSERT INTO ai_formation (name, club_id) VALUES ('4321', 2);
+INSERT INTO ai_formation (name, club_id) VALUES ('4132', 2);
+INSERT INTO ai_formation (name, club_id) VALUES ('424', 2);
+
+INSERT INTO ai_formation (name, club_id) VALUES ('442', 3);
+INSERT INTO ai_formation (name, club_id) VALUES ('433', 3);
+INSERT INTO ai_formation (name, club_id) VALUES ('352', 3);
+INSERT INTO ai_formation (name, club_id) VALUES ('4231', 3);
+INSERT INTO ai_formation (name, club_id) VALUES ('451', 3);
+INSERT INTO ai_formation (name, club_id) VALUES ('343', 3);
+INSERT INTO ai_formation (name, club_id) VALUES ('532', 3);
+INSERT INTO ai_formation (name, club_id) VALUES ('541', 3);
+INSERT INTO ai_formation (name, club_id) VALUES ('41212', 3);
+INSERT INTO ai_formation (name, club_id) VALUES ('4222', 3);
+INSERT INTO ai_formation (name, club_id) VALUES ('4321', 3);
+INSERT INTO ai_formation (name, club_id) VALUES ('4132', 3);
+INSERT INTO ai_formation (name, club_id) VALUES ('424', 3);
