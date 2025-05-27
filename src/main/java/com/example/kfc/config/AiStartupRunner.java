@@ -1,9 +1,10 @@
-package com.example.kfc.service;
+package com.example.kfc.config;
 
 import com.example.kfc.entity.AiClub;
 import com.example.kfc.entity.AiFormation;
 import com.example.kfc.repository.AiClubRepository;
 import com.example.kfc.repository.AiFormationRepository;
+import com.example.kfc.service.AiClubService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;

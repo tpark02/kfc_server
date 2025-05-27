@@ -1856,3 +1856,29 @@ INSERT INTO ai_formation (name, club_id) VALUES ('4222', 3);
 INSERT INTO ai_formation (name, club_id) VALUES ('4321', 3);
 INSERT INTO ai_formation (name, club_id) VALUES ('4132', 3);
 INSERT INTO ai_formation (name, club_id) VALUES ('424', 3);
+
+
+-- ai user info insert
+INSERT INTO user_info (username, email, is_ai)
+VALUES ('Michael Carter', 'm.carter@example.com', true);
+
+INSERT INTO user_info (username, email, is_ai)
+VALUES ('Sophie Kim', 'sophie.kim@example.com', true);
+
+INSERT INTO user_info (username, email, is_ai)
+VALUES ('Daniel Ruiz', 'daniel.ruiz@example.com', true);
+
+INSERT INTO user_info (username, email, is_ai)
+VALUES ('Emily Zhang', 'emily.zhang@example.com', true);
+
+INSERT INTO user_info (username, email, is_ai)
+VALUES ('Liam O''Connor', 'liam.oconnor@example.com', true);
+
+INSERT INTO user_info (username, email, is_ai)
+VALUES ('Ava Müller', 'ava.muller@example.com', true);
+
+INSERT INTO user_info (username, email, is_ai)
+VALUES ('Noah Yamamoto', 'noah.yamamoto@example.com', true);
+
+INSERT INTO user_info (username, email, is_ai)
+VALUES ('Isabella Rossi', 'isabella.rossi@example.com', true);

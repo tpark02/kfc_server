@@ -9,7 +9,7 @@ import com.example.kfc.entity.UserInfo;
 import com.example.kfc.repository.Season.MatchRepository;
 import com.example.kfc.repository.Season.SeasonParticipantRepository;
 import com.example.kfc.repository.Season.SeasonRepository;
-import com.example.kfc.service.AiStartupRunner;
+import com.example.kfc.config.AiStartupRunner;
 import com.example.kfc.service.MyClubService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

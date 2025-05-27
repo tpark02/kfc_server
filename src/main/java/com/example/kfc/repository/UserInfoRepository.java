@@ -4,6 +4,7 @@ import com.example.kfc.entity.UserInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserInfoRepository extends JpaRepository<UserInfo, Long> {
@@ -11,4 +12,6 @@ public interface UserInfoRepository extends JpaRepository<UserInfo, Long> {
 
     @Query("SELECT MAX(u.id) FROM UserInfo u")
     Long findMaxId();
+
+    List<UserInfo> findByIsAiTrue();
 }

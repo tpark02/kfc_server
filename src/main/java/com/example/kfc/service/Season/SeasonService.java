@@ -1,5 +1,6 @@
 package com.example.kfc.service.Season;
 
+import com.example.kfc.config.AiUserCache;
 import com.example.kfc.dto.ParticipantDto;
 import com.example.kfc.dto.SeasonDto;
 import com.example.kfc.entity.Season.Season;
@@ -35,6 +36,7 @@ public class SeasonService {
     private final UserInfoService userInfoService;
     private final TournamentService tournamentService;
     private final UserInfoRepository userInfoRepository;
+    private final AiUserCache aiUserCache;
 
     public List<ParticipantDto> getParticipantsBySeasonId(Long seasonId) {
         List<SeasonParticipant> participants = seasonParticipantRepository.findActiveBySeasonId(seasonId);
@@ -74,7 +76,8 @@ public class SeasonService {
                             .iterator();
 
                     for (int i = 0; i < emptyCount && emptySlots.hasNext(); i++) {
-                        UserInfo aiUser = userInfoService.generateRandomUser();
+                        //UserInfo aiUser = userInfoService.generateRandomUser();
+                        UserInfo aiUser = aiUserCache.getAiUser(i);
                         SeasonParticipant slot = emptySlots.next();
                         slot.setUser(aiUser);
                         seasonParticipantRepository.save(slot);
