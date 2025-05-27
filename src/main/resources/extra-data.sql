@@ -57,14 +57,23 @@
 --team_name = 'MyTeam');
 
 -- 먼저 user_info
-INSERT INTO user_info (username, email) VALUES ('tm1', 'tm1@example.com');
-INSERT INTO user_info (username, email) VALUES ('tm2', 'tm2@example.com');
-INSERT INTO user_info (username, email) VALUES ('tm3', 'tm3@example.com');
-INSERT INTO user_info (username, email) VALUES ('tm4', 'tm4@example.com');
-INSERT INTO user_info (username, email) VALUES ('tm5', 'tm5@example.com');
-INSERT INTO user_info (username, email) VALUES ('tm6', 'tm6@example.com');
-INSERT INTO user_info (username, email) VALUES ('tm7', 'tm7@example.com');
-INSERT INTO user_info (username, email) VALUES ('tm8', 'tm8@example.com');
+INSERT INTO user_info (username, email, is_ai)
+VALUES ('tm1', 'tm1@example.com', false);
+INSERT INTO user_info (username, email, is_ai)
+VALUES ('tm2', 'tm2@example.com', false);
+INSERT INTO user_info (username, email, is_ai)
+VALUES ('tm3', 'tm3@example.com', false);
+INSERT INTO user_info (username, email, is_ai)
+VALUES ('tm4', 'tm4@example.com', false);
+INSERT INTO user_info (username, email, is_ai)
+VALUES ('tm5', 'tm5@example.com', false);
+INSERT INTO user_info (username, email, is_ai)
+VALUES ('tm6', 'tm6@example.com', false);
+INSERT INTO user_info (username, email, is_ai)
+VALUES ('tm7', 'tm7@example.com', false);
+INSERT INTO user_info (username, email, is_ai)
+VALUES
+('tm8', 'tm8@example.com', false);
 
 
 -- 그 다음 my_club
@@ -1801,23 +1810,9 @@ INSERT INTO my_player (
 
 -- avg ovr - 66.7962451372836443592490275
 -- ai club insert - beginner level - 63
-INSERT INTO ai_club (name, user_id) VALUES ('AI',
-99999);
-INSERT INTO ai_club (name, user_id) VALUES ('AI', 99999);
-INSERT INTO ai_club (name, user_id) VALUES ('AI', 99999);
-INSERT INTO ai_club (name, user_id) VALUES ('AI',
-99999);
-INSERT INTO ai_club (name, user_id) VALUES ('AI', 99999);
-INSERT INTO ai_club (name, user_id) VALUES ('AI', 99999);
-INSERT INTO ai_club (name, user_id) VALUES ('AI',
-99999);
-INSERT INTO ai_club (name, user_id) VALUES ('AI', 99999);
-INSERT INTO ai_club (name, user_id) VALUES ('AI', 99999);
-INSERT INTO ai_club (name, user_id) VALUES ('AI',
-99999);
-INSERT INTO ai_club (name, user_id) VALUES ('AI', 99999);
-INSERT INTO ai_club (name, user_id) VALUES ('AI', 99999);
-INSERT INTO ai_club (name, user_id) VALUES ('AI', 99999);
+INSERT INTO ai_club (name) VALUES ('AI');
+INSERT INTO ai_club (name) VALUES ('AI');
+INSERT INTO ai_club (name) VALUES ('AI');
 
 -- ai formation insert - beginner level - 63
 INSERT INTO ai_formation (name, club_id) VALUES ('442', 1);

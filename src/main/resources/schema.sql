@@ -84,7 +84,8 @@ CREATE TABLE user_info (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50),
     email VARCHAR(100),
-    password VARCHAR(255)
+    password VARCHAR(255),
+    is_ai BOOLEAN
 );
 
 CREATE TABLE my_club (
@@ -235,6 +236,7 @@ CREATE TABLE season_participant (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     season_id BIGINT,
     user_id BIGINT,
+    club_id BIGINT,
     round INT,
     eliminated BOOLEAN,
     active BOOLEAN
@@ -244,7 +246,6 @@ CREATE TABLE season_participant (
 CREATE TABLE ai_club (
     club_id  BIGINT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100),
-    user_id BIGINT NOT NULL,
     ovr INT,
     price INT,
     age INT,

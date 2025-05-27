@@ -19,7 +19,7 @@ public class AiFormation {
     private String name;
 
     //    @ManyToOne(fetch = FetchType.LAZY)
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "club_id", nullable = false)
     private AiClub club;
 

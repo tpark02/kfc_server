@@ -4,8 +4,8 @@ import com.example.kfc.data.FormationUtil;
 import com.example.kfc.dto.PlayerDto;
 import com.example.kfc.entity.Player;
 import com.example.kfc.repository.AiClubRepository;
+import com.example.kfc.repository.UserInfoRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -14,13 +14,10 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class AiClubService {
-    @Autowired
-    AiClubRepository aiClubRepository;
-    @Autowired
-    PlayerService playerService;
-
-    @Autowired
-    AiFormationService aiFormationService;
+    private final AiClubRepository aiClubRepository;
+    private final PlayerService playerService;
+    private final AiFormationService aiFormationService;
+    private final UserInfoRepository userInfoRepository;
 
     public void updateAiClubAndFormation(Long clubId, String formation, Long ovr) {
         List<String> positionRequirement =
@@ -112,6 +109,7 @@ public class AiClubService {
         // stamina
         Long teamStamina = FormationUtil.getTeamStamina(lst);
 
+
         // update ai club
         //CLUB_ID  	NAME  	USER_ID  	OVR  	PRICE  	AGE  	PACE  	DEF  	ATK  	CCH  	STM
         updateAiClub(clubId, Math.toIntExact(ovr), Math.toIntExact(squadValue), Math.toIntExact(teamAge),
@@ -157,12 +155,14 @@ public class AiClubService {
     }
 
     //CLUB_ID  	NAME  	USER_ID  	OVR  	PRICE  	AGE  	PACE  	DEF  	ATK  	CCH  	STM
-    public void updateAiClub(Long id, int ovr, int price, int age, int pace, int def, int atk, int cch, int stm) {
+    public void updateAiClub(Long userId, int ovr, int price, int age, int pace, int def, int atk, int cch, int stm) {
         try {
-            aiClubRepository.updateClubInfoById(id, ovr, price, age, pace, def, atk, cch, stm);
+            aiClubRepository.updateClubInfoById(userId, ovr, price, age, pace, def, atk, cch, stm);
         } catch (Exception e) {
             throw new IllegalArgumentException(
-                    "ai - updateAiClub - not updated : " + id + ", " + ovr + ", " + price + ", " + age + ", " + pace + ", " + def + ", " + atk + ", " + cch + ", " + stm);
+                    "ai - updateAiClub - not updated : " + userId + ", " + ovr + ", " + price + ", " + age + ", " + pace + ", " + def + ", " + atk + ", " + cch + ", " + stm);
         }
     }
+
+
 }

@@ -8,4 +8,5 @@ import lombok.Setter;
 public class CreateSeasonRequest {
     private String name;
     private Long userId;
+    private Long clubId;
 }

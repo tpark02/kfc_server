@@ -23,6 +23,9 @@ public class UserInfo {
     private String username;
     private String email;
     private String password;
+
+    @Column(name = "is_ai")
+    private boolean isAi = false;
 //    @Column(name = "team_name")
 //    private String teamName;
 

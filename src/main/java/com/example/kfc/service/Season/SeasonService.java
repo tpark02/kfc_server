@@ -34,7 +34,6 @@ public class SeasonService {
     private final SeasonRepository seasonRepository;
     private final UserInfoService userInfoService;
     private final TournamentService tournamentService;
-
     private final UserInfoRepository userInfoRepository;
 
     public List<ParticipantDto> getParticipantsBySeasonId(Long seasonId) {
@@ -91,7 +90,7 @@ public class SeasonService {
     }
 
     @Transactional
-    public void joinSeason(Long seasonId, Long userId) {
+    public void joinSeason(Long seasonId, Long userId, Long clubId) {
         SeasonParticipant emptySlot = seasonParticipantRepository
                 .findFirstBySeasonIdAndUserIsNullAndActiveTrueOrderByIdAsc(seasonId)
                 .orElseThrow(() -> new IllegalStateException("No empty slot available"));
@@ -100,11 +99,12 @@ public class SeasonService {
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         emptySlot.setUser(user);
+        emptySlot.setClubId(clubId);
         seasonParticipantRepository.save(emptySlot);
     }
 
     @Transactional
-    public SeasonDto createSeason(String name, Long userId) {
+    public SeasonDto createSeason(String name, Long userId, Long clubId) {
         var lst = seasonRepository.findByUserId(userId);
         var ownerLst = lst.stream()
                 .filter(s -> s.getUserId().equals(userId) && s.getFinishedAt() == null)
@@ -131,7 +131,7 @@ public class SeasonService {
             seasonParticipantRepository.save(slot);
         }
 
-        joinSeason(savedSeason.getId(), userId);
+        joinSeason(savedSeason.getId(), userId, clubId);
 
         return SeasonDto.from(savedSeason, "Season is created " + savedSeason.getId());
     }

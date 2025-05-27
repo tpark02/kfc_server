@@ -34,6 +34,7 @@ public class UserInfoService {
         user.setUsername("AI_" + UUID.randomUUID().toString().substring(0, 5));
         user.setEmail(user.getUsername() + "@bot.com"); // optional
         user.setPassword("dummy"); // optional, not used
+        user.setAi(true);
         return userInfoRepository.save(user); // 저장 후 반환
     }
 }

@@ -102,7 +102,8 @@ public class SimService {
 //            Long myTeamOvr = (long) avg;
             //System.out.println("long avg: " + myTeamOvr);
 
-            var club = myClubService.getClubByUserIdAndUserId(userId, clubId);
+            var club = myClubService.getClubByUserIdAndClubId(userId,
+                                       clubId);
 
             List<MatchDto> schedule = new ArrayList<>();
             opponent = new AtomicReference<>("");

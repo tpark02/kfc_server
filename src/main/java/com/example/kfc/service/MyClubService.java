@@ -32,7 +32,7 @@ public class MyClubService {
 //        return myClubRepository.save(club);
 //    }
 
-    public MyClub getClubByUserIdAndUserId(Long userId, Long clubId) {
+    public MyClub getClubByUserIdAndClubId(Long userId, Long clubId) {
         return myClubRepository.findByClubIdAndUserId(clubId, userId)
                 .orElseThrow(() -> new IllegalArgumentException("Club not found"));
     }

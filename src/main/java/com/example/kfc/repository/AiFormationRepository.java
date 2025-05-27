@@ -7,6 +7,9 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+import java.util.Optional;
+
 public interface AiFormationRepository extends JpaRepository<AiFormation, Long> {
     @Modifying
     @Transactional
@@ -27,5 +30,5 @@ public interface AiFormationRepository extends JpaRepository<AiFormation, Long> 
                               @Param("p19") Integer p19, @Param("p20") Integer p20, @Param("p21") Integer p21,
                               @Param("p22") Integer p22, @Param("p23") Integer p23, @Param("p24") Integer p24,
                               @Param("p25") Integer p25, @Param("p26") Integer p26);
-
+    Optional<List<AiFormation>> findByClub_ClubId(Long clubId);
 }

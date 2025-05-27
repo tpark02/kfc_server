@@ -34,18 +34,19 @@ public class MyClubController {
 
     @GetMapping("/users/{userId}/myclubs")
     public List<MyClubDto> getMyClubs(@PathVariable Long userId) {
-        UserInfo user = userInfoService.getUserById(userId);
-        List<MyClub> clubs = myClubService.getClubsByUser(user);
-        List<MyClubDto> result = new ArrayList<>();
+        try {
+            UserInfo user = userInfoService.getUserById(userId);
+            List<MyClub> clubs = myClubService.getClubsByUser(user);
+            List<MyClubDto> result = new ArrayList<>();
 
-        for (MyClub club : clubs) {
-            List<MyPlayer> myPlayers = myPlayerService.getMyPlayer(userId, club.getClubId());
+            for (MyClub club : clubs) {
+                List<MyPlayer> myPlayers = myPlayerService.getMyPlayer(userId, club.getClubId());
 
-            var lst = myPlayers.stream().map(MyPlayerDto::from).toList();
+                var lst = myPlayers.stream().map(MyPlayerDto::from).toList();
 
-            Formation f = club.getFormations();
-            var formationName = f.getName();
-            //List<PlayerDto> playerDtos = new ArrayList<>();
+                Formation f = club.getFormations();
+                var formationName = f.getName();
+                //List<PlayerDto> playerDtos = new ArrayList<>();
 
 //            for (int i = 1; i <= 26; i++) {
 //                try {
@@ -66,20 +67,22 @@ public class MyClubController {
 //                }
 //            }
 
-            MyClubDto dto = new MyClubDto(
-                    club.getClubId(),
-                    club.getName(),
-                    formationName,
-                    lst,
-                    club.getOvr(), club.getPrice(), club.getAge(), club.getPace(), club.getDef(),
-                    club.getAtk(), club.getCch(), club.getStm()
-            );
+                MyClubDto dto = new MyClubDto(
+                        club.getClubId(),
+                        club.getName(),
+                        formationName,
+                        lst,
+                        club.getOvr(), club.getPrice(), club.getAge(), club.getPace(), club.getDef(),
+                        club.getAtk(), club.getCch(), club.getStm()
+                );
 
-            result.add(dto);
+                result.add(dto);
+            }
+
+            return result;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-
-        return result;
-
     }
 
 //    TODO: perhaps used later for creating login. because a user must have 3 clubs

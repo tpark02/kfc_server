@@ -39,7 +39,7 @@ public class SeasonController {
     @PostMapping("/{seasonId}/join")
     public ResponseEntity<JoinSeasonResponse> joinSeason(
             @PathVariable Long seasonId,
-            @RequestParam Long userId) {
+            @RequestParam Long userId, @RequestParam Long clubId) {
 
         Season season = seasonRepository.findById(seasonId)
                 .orElseThrow(() -> new IllegalArgumentException("❌ Season not found: id = " + seasonId));
@@ -62,6 +62,7 @@ public class SeasonController {
                 .orElseThrow(() -> new IllegalStateException("No empty slot available"));
 
         emptySlot.setUser(user);
+        emptySlot.setClubId(clubId);
         seasonParticipantRepository.save(emptySlot);
 
         //tournamentService.tryStartTournament
@@ -134,7 +135,7 @@ public class SeasonController {
 
     @PostMapping("/create")
     public ResponseEntity<Object> createSeason(@RequestBody CreateSeasonRequest request) {
-        SeasonDto dto = seasonService.createSeason(request.getName(), request.getUserId());
+        SeasonDto dto = seasonService.createSeason(request.getName(), request.getUserId(), request.getClubId());
         return ResponseEntity.ok(dto);
     }
 
