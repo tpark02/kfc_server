@@ -1,8 +1,10 @@
 package com.example.kfc.service.Season;
 
+import com.example.kfc.config.AiStartupRunner;
 import com.example.kfc.config.AiUserCache;
 import com.example.kfc.dto.ParticipantDto;
 import com.example.kfc.dto.SeasonDto;
+import com.example.kfc.entity.AiClub;
 import com.example.kfc.entity.Season.Season;
 import com.example.kfc.entity.Season.SeasonParticipant;
 import com.example.kfc.entity.UserInfo;
@@ -19,10 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 // service/SeasonService.java
 @Slf4j
@@ -37,6 +36,7 @@ public class SeasonService {
     private final TournamentService tournamentService;
     private final UserInfoRepository userInfoRepository;
     private final AiUserCache aiUserCache;
+    private final Random random = new Random();
 
     public List<ParticipantDto> getParticipantsBySeasonId(Long seasonId) {
         List<SeasonParticipant> participants = seasonParticipantRepository.findActiveBySeasonId(seasonId);
@@ -78,8 +78,11 @@ public class SeasonService {
                     for (int i = 0; i < emptyCount && emptySlots.hasNext(); i++) {
                         //UserInfo aiUser = userInfoService.generateRandomUser();
                         UserInfo aiUser = aiUserCache.getAiUser(i);
+                        AiClub aiClub = getRandomAiClub();
+
                         SeasonParticipant slot = emptySlots.next();
                         slot.setUser(aiUser);
+                        slot.setClubId(aiClub.getClubId());
                         seasonParticipantRepository.save(slot);
                     }
                 }
@@ -90,6 +93,10 @@ public class SeasonService {
                 seasonRepository.save(season);
             }
         }
+    }
+
+    private AiClub getRandomAiClub() {
+        return AiStartupRunner.aiClubList.get(random.nextInt(AiStartupRunner.aiClubList.size()));
     }
 
     @Transactional

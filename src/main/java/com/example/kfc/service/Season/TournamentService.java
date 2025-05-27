@@ -69,6 +69,8 @@ public class TournamentService {
                 SeasonParticipant a = players.get(i);
                 SeasonParticipant b = players.get(i + 1);
 
+                System.out.println("\n🌀 라운드 " + round + " - 경기 #" + (i / 2 + 1));
+
                 Match match = new Match();
                 match.setSeason(season);
                 match.setPlayer1(a.getUser());
@@ -80,37 +82,39 @@ public class TournamentService {
 
                 if (!aIsAi && !bIsAi) {
                     UserInfo winnerUser = simulateByClub(a, b);
-                    if (winnerUser == null || winnerUser.equals(a.getUser())) {
-                        winnerParticipant = a;
-                    } else {
-                        winnerParticipant = b;
-                    }
+
+                    MyClub clubA = myClubService.getClubByUserIdAndClubId(a.getUser().getId(), a.getClubId());
+                    MyClub clubB = myClubService.getClubByUserIdAndClubId(b.getUser().getId(), b.getClubId());
+
+                    System.out.println("🧍 유저 vs 유저");
+                    System.out.println("A: " + a.getUser().getUsername() + " | Club ID: " + clubA.getClubId() + " | OVR: " + clubA.getOvr());
+                    System.out.println("B: " + b.getUser().getUsername() + " | Club ID: " + clubB.getClubId() + " | OVR: " + clubB.getOvr());
+
+                    winnerParticipant = (winnerUser == null || winnerUser.equals(a.getUser())) ? a : b;
+
                 } else if (aIsAi && bIsAi) {
-                    AiClub clubA = getRandomAiClub();
-                    AiClub clubB = getRandomAiClub();
-                    System.out.println("club a" + clubA.getClubId());
-                    System.out.println("club b" + clubB.getClubId());
+                    AiClub clubA = getAiClubById(a.getClubId());
+                    AiClub clubB = getAiClubById(b.getClubId());
+
+                    System.out.println("🤖 AI vs AI");
+                    System.out.println("A (AI): " + a.getUser().getUsername() + " | Club ID: " + clubA.getClubId() + " | OVR: " + clubA.getOvr());
+                    System.out.println("B (AI): " + b.getUser().getUsername() + " | Club ID: " + clubB.getClubId() + " | OVR: " + clubB.getOvr());
+
                     winnerParticipant = (clubA.getOvr() >= clubB.getOvr()) ? a : b;
+
                 } else {
                     SeasonParticipant human = aIsAi ? b : a;
+                    SeasonParticipant ai = aIsAi ? a : b;
 
-                    Long humanUserId = human.getUser().getId();
-                    Long humanClubId = human.getClubId();
-                    if (humanClubId == null) {
-                        log.warn("❗ humanClubId is null (userId: {})", humanUserId);
-                        continue;
-                    }
+                    MyClub humanClub = myClubService.getClubByUserIdAndClubId(human.getUser().getId(), human.getClubId());
+                    AiClub aiClub = getAiClubById(ai.getClubId());
 
-                    MyClub humanClub = myClubService.getClubByUserIdAndClubId(humanUserId, humanClubId);
-                    Long humanOvr = humanClub.getOvr();
+                    System.out.println("🧍 vs 🤖 유저 vs AI");
+                    System.out.println("Human: " + human.getUser().getUsername() + " | Club ID: " + humanClub.getClubId() + " | OVR: " + humanClub.getOvr());
+                    System.out.println("AI: " + ai.getUser().getUsername() + " | Club ID: " + aiClub.getClubId() + " | OVR: " + aiClub.getOvr());
 
-                    AiClub aiClub = getRandomAiClub();
-                    Long aiOvr = aiClub.getOvr();
-
-                    System.out.println("human club " + humanClub.getClubId() + ":" + humanClubId);
-                    System.out.println("ai club " + aiClub.getClubId());
-                    boolean humanWins = humanOvr >= aiOvr;
-                    winnerParticipant = humanWins ? human : (aIsAi ? a : b);
+                    boolean humanWins = humanClub.getOvr() >= aiClub.getOvr();
+                    winnerParticipant = humanWins ? human : ai;
                 }
 
                 match.setWinner(winnerParticipant.getUser());
@@ -137,10 +141,16 @@ public class TournamentService {
         }
     }
 
-    private AiClub getRandomAiClub() {
-        List<AiClub> list = AiStartupRunner.aiClubList;
-        return list.get(new Random().nextInt(list.size()));
+    private AiClub getAiClubById(Long clubId) {
+        return AiStartupRunner.aiClubList.stream()
+                .filter(c -> c.getClubId().equals(clubId))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("AI 클럽 ID 없음: " + clubId));
     }
+//    private AiClub getRandomAiClub() {
+//        List<AiClub> list = AiStartupRunner.aiClubList;
+//        return list.get(new Random().nextInt(list.size()));
+//    }
 
     private UserInfo simulateByClub(SeasonParticipant a, SeasonParticipant b) {
         Long aUserId = a.getUser().getId();
