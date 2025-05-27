@@ -33,6 +33,9 @@ public class MyClubService {
 //    }
 
     public MyClub getClubByUserIdAndClubId(Long userId, Long clubId) {
+        System.out.println(
+                "getClubByUserIdAndClubId - " +
+                        "user id : " + userId + ", club id : " + clubId);
         return myClubRepository.findByClubIdAndUserId(clubId, userId)
                 .orElseThrow(() -> new IllegalArgumentException("Club not found"));
     }

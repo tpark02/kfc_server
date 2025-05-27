@@ -99,6 +99,7 @@ public class SeasonService {
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         emptySlot.setUser(user);
+        System.out.println("joined club id :" + clubId);
         emptySlot.setClubId(clubId);
         seasonParticipantRepository.save(emptySlot);
     }
@@ -128,6 +129,7 @@ public class SeasonService {
             slot.setRound(1);
             slot.setEliminated(false);
             slot.setActive(true);
+            slot.setClubId(0L);
             seasonParticipantRepository.save(slot);
         }
 
