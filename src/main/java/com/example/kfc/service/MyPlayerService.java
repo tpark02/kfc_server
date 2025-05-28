@@ -21,13 +21,12 @@ public class MyPlayerService {
     }
 
     @Transactional
-    public void addMyPlayer(Player player, Long userId, Long clubId)
-    {
+    public void addMyPlayer(Player player, Long userId, Long clubId) {
         MyPlayer myPlayer = MyPlayer.from(player, userId, clubId);
         myPlayerRepository.save(myPlayer);
     }
 
-//    @Transactional
+    //    @Transactional
 //    public Optional<List<Long>> addNewClub(Long userId, Long clubId) {
 //        List<MyPlayer> players =
 //                myPlayerRepository.findByUserIdAndClubId(userId, clubId);
@@ -40,6 +39,54 @@ public class MyPlayerService {
 //        myPlayerRepository.saveAll(players);
 //        return Optional.of(res);
 //    }
+    @Transactional
+    public void setYellowCard(Long userId, Long clubId, Long playerId, Long cnt) {
+        int updated = myPlayerRepository.updateYellowCard(userId, clubId, playerId, cnt);
+        if (updated == 0) {
+            throw new IllegalStateException("❌ Failed to update yellow card: no matching player found.");
+        }
+    }
+
+    @Transactional
+    public void setRedCard(Long userId, Long clubId, Long playerId, Long cnt, Long seq_cnt) {
+        int updated = myPlayerRepository.updateRedCard(userId, clubId, playerId, cnt, seq_cnt);
+        if (updated == 0) {
+            throw new IllegalStateException("❌ Failed to update red card: no matching player found. - playerId : " + playerId);
+        }
+    }
+
+    /**
+     * Reset yellow cards for a user's club players
+     */
+    @Transactional
+    public void resetYellowCards(Long userId, Long clubId) {
+        int updated = myPlayerRepository.resetYellowCard(userId, clubId);
+        if (updated == 0) {
+            throw new IllegalStateException("❌ Failed to reset yellow cards: No matching players found for the given user and club.");
+        }
+    }
+
+    /**
+     * Reset red cards for a user's club players
+     */
+    @Transactional
+    public void resetRedCards(Long userId, Long clubId) {
+        int updated = myPlayerRepository.resetRedCard(userId, clubId);
+        if (updated == 0) {
+            throw new IllegalStateException("❌ Failed to reset red cards: No matching players found for the given user and club.");
+        }
+    }
+
+    /**
+     * Reset sequence count for a user's club players
+     */
+    @Transactional
+    public void resetSeqCnt(Long userId, Long clubId) {
+        int updated = myPlayerRepository.resetSeqCnt(userId, clubId);
+        if (updated == 0) {
+            throw new IllegalStateException("❌ Failed to reset seq_cnt: No matching players found for the given user and club.");
+        }
+    }
 
     @Transactional
     public void updateMyPlayer(Player source, MyPlayer myPlayer) {

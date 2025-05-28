@@ -36,7 +36,7 @@ public class SeasonService {
     private final TournamentService tournamentService;
     private final UserInfoRepository userInfoRepository;
     private final AiUserCache aiUserCache;
-    private final Random random = new Random();
+    public static final Random random = new Random();
 
     public List<ParticipantDto> getParticipantsBySeasonId(Long seasonId) {
         List<SeasonParticipant> participants = seasonParticipantRepository.findActiveBySeasonId(seasonId);
