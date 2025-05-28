@@ -1,4 +1,4 @@
-package com.example.kfc.loader;
+package com.example.kfc.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;

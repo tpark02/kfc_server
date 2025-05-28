@@ -41,4 +41,9 @@ public interface SeasonParticipantRepository extends JpaRepository<SeasonPartici
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     Optional<SeasonParticipant> findFirstBySeasonIdAndUserIsNullAndActiveTrueOrderByIdAsc(Long seasonId);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE SeasonParticipant sp SET sp.eliminated = true WHERE sp.user.id = :userId AND sp.round = :round")
+    void eliminateParticipantByUserIdAndRound(@Param("userId") Long userId, @Param("round") int round);
 }

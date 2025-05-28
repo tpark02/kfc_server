@@ -76,7 +76,7 @@ public class TournamentService {
                 match.setPlayer1(a.getUser());
                 match.setPlayer2(b.getUser());
 
-                SeasonParticipant winnerParticipant;
+                SeasonParticipant winnerParticipant, loserParticipant;
                 boolean aIsAi = a.getUser().isAi();
                 boolean bIsAi = b.getUser().isAi();
 
@@ -87,35 +87,49 @@ public class TournamentService {
                     MyClub clubB = myClubService.getClubByUserIdAndClubId(b.getUser().getId(), b.getClubId());
 
                     System.out.println("🧍 유저 vs 유저");
-                    System.out.println("A: " + a.getUser().getUsername() + " | Club ID: " + clubA.getClubId() + " | OVR: " + clubA.getOvr());
-                    System.out.println("B: " + b.getUser().getUsername() + " | Club ID: " + clubB.getClubId() + " | OVR: " + clubB.getOvr());
+                    System.out.println("A: " + a.getUser()
+                            .getUsername() + " | Club ID: " + clubA.getClubId() + " | OVR: " + clubA.getOvr());
+                    System.out.println("B: " + b.getUser()
+                            .getUsername() + " | Club ID: " + clubB.getClubId() + " | OVR: " + clubB.getOvr());
 
                     winnerParticipant = (winnerUser == null || winnerUser.equals(a.getUser())) ? a : b;
-
+                    loserParticipant = (winnerUser == null || winnerUser.equals(a.getUser())) ? b : a;
                 } else if (aIsAi && bIsAi) {
                     AiClub clubA = getAiClubById(a.getClubId());
                     AiClub clubB = getAiClubById(b.getClubId());
 
                     System.out.println("🤖 AI vs AI");
-                    System.out.println("A (AI): " + a.getUser().getUsername() + " | Club ID: " + clubA.getClubId() + " | OVR: " + clubA.getOvr());
-                    System.out.println("B (AI): " + b.getUser().getUsername() + " | Club ID: " + clubB.getClubId() + " | OVR: " + clubB.getOvr());
+                    System.out.println("A (AI): " + a.getUser()
+                            .getUsername() + " | Club ID: " + clubA.getClubId() + " | OVR: " + clubA.getOvr());
+                    System.out.println("B (AI): " + b.getUser()
+                            .getUsername() + " | Club ID: " + clubB.getClubId() + " | OVR: " + clubB.getOvr());
 
                     winnerParticipant = (clubA.getOvr() >= clubB.getOvr()) ? a : b;
-
+                    loserParticipant =  (clubA.getOvr() >= clubB.getOvr()) ? b : a;
                 } else {
                     SeasonParticipant human = aIsAi ? b : a;
                     SeasonParticipant ai = aIsAi ? a : b;
 
-                    MyClub humanClub = myClubService.getClubByUserIdAndClubId(human.getUser().getId(), human.getClubId());
+                    MyClub humanClub = myClubService.getClubByUserIdAndClubId(human.getUser().getId(),
+                                                                              human.getClubId());
                     AiClub aiClub = getAiClubById(ai.getClubId());
 
                     System.out.println("🧍 vs 🤖 유저 vs AI");
-                    System.out.println("Human: " + human.getUser().getUsername() + " | Club ID: " + humanClub.getClubId() + " | OVR: " + humanClub.getOvr());
-                    System.out.println("AI: " + ai.getUser().getUsername() + " | Club ID: " + aiClub.getClubId() + " | OVR: " + aiClub.getOvr());
+                    System.out.println("Human: " + human.getUser()
+                            .getUsername() + " | Club ID: " + humanClub.getClubId() + " | OVR: " + humanClub.getOvr());
+                    System.out.println("AI: " + ai.getUser()
+                            .getUsername() + " | Club ID: " + aiClub.getClubId() + " | OVR: " + aiClub.getOvr());
 
                     boolean humanWins = humanClub.getOvr() >= aiClub.getOvr();
                     winnerParticipant = humanWins ? human : ai;
+                    loserParticipant =
+                            humanWins ? ai :
+                                    human;
                 }
+
+                Long loserUserId = loserParticipant.getUser().getId();
+                participantRepository.eliminateParticipantByUserIdAndRound(loserUserId, round);
+                System.out.println("❌ 패배자 정보 - User ID: " + loserUserId);
 
                 match.setWinner(winnerParticipant.getUser());
                 match.setRound(round);
