@@ -159,4 +159,14 @@ public class MyPlayerService {
 
         myPlayerRepository.save(myPlayer);
     }
+
+    public Long getYellowCardCount(Long userId, Long clubId) {
+        Long count = myPlayerRepository.countYellowCards(userId, clubId);
+        return count != null ? count : 0L;
+    }
+
+    public Long getRedCardCount(Long userId, Long clubId) {
+        Long count = myPlayerRepository.countRedCards(userId, clubId);
+        return count != null ? count : 0L;
+    }
 }

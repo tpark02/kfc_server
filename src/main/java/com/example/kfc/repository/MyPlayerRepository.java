@@ -51,4 +51,12 @@ public interface MyPlayerRepository extends JpaRepository<MyPlayer, Long> {
     int resetSeqCnt(@Param("userId") Long userId,
                     @Param("clubId") Long clubId);
 
+    @Query("SELECT SUM(p.yellowCard) FROM MyPlayer p WHERE p.userId = :userId AND p.clubId = :clubId")
+    Long countYellowCards(@Param("userId") Long userId,
+                          @Param("clubId") Long clubId);
+
+    @Query("SELECT SUM(p.redCard) FROM MyPlayer p WHERE p.userId = :userId AND p.clubId = :clubId")
+    Long countRedCards(@Param("userId") Long userId,
+                       @Param("clubId") Long clubId);
+
 }
