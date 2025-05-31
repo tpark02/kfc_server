@@ -83,7 +83,7 @@ public class MyClubService {
             formation.setP14(null);
             formation.setP15(null);
             formation.setP16(null);
-//            formation.setP17(null);
+            formation.setP17(null);
 //            formation.setP18(null);
 //            formation.setP19(null);
 //            formation.setP20(null);
@@ -146,7 +146,7 @@ public class MyClubService {
         List<Long> playerIds = request.getPlayers();
         List<MyPlayer> existingPlayers = myPlayerRepository.findByUserIdAndClubId(userId, clubId);
 
-        // ✅ if not 16, then stop
+        // ✅ if not 17, then stop
         if (existingPlayers.size() != RandomTeamService.numberOfTotalPlayers) {
             String str = String.format("❌ Cannot update. Expected %d players, found %d",
                                        RandomTeamService.numberOfTotalPlayers,
@@ -156,7 +156,7 @@ public class MyClubService {
         }
 
 
-        // 🔁 over write 16 players sequencially
+        // 🔁 over write 17 players sequencially
         for (int i = 0; i < RandomTeamService.numberOfTotalPlayers; i++) {
             Long playerId = playerIds.get(i);
 

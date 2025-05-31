@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class RandomTeamService {
-    public static int numberOfTotalPlayers = 16;
-    public static int numberOfBenchPlayers = 5;
+    public static int numberOfTotalPlayers = 17;
+    public static int numberOfBenchPlayers = 6;
     private final PlayerService playerService;
     private final UserInfoService userInfoService;
     private final Random random = new Random();

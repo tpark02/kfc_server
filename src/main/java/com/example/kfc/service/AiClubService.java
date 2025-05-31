@@ -119,7 +119,7 @@ public class AiClubService {
 
         // bench players
         List<PlayerDto> benchplayers = playersPool.stream()
-                .limit(15)
+                .limit(RandomTeamService.numberOfTotalPlayers)
                 .map(PlayerDto::from)
                 .toList();
 
@@ -139,14 +139,25 @@ public class AiClubService {
         }
 
         // update ai formation
-        aiFormationService.updateFormationPlayers(clubId, formation,
-                                                  playerIds.get(0), playerIds.get(1), playerIds.get(2),
-                                                  playerIds.get(3), playerIds.get(4),
-                                                  playerIds.get(5), playerIds.get(6), playerIds.get(7),
-                                                  playerIds.get(8), playerIds.get(9),
-                                                  playerIds.get(10), playerIds.get(11), playerIds.get(12),
-                                                  playerIds.get(13), playerIds.get(14),
-                                                  playerIds.get(15));
+        aiFormationService.updateFormationPlayers(clubId,
+                                                  formation,
+                                                  playerIds.get(0),
+                                                  playerIds.get(1),
+                                                  playerIds.get(2),
+                                                  playerIds.get(3),
+                                                  playerIds.get(4),
+                                                  playerIds.get(5),
+                                                  playerIds.get(6),
+                                                  playerIds.get(7),
+                                                  playerIds.get(8),
+                                                  playerIds.get(9),
+                                                  playerIds.get(10),
+                                                  playerIds.get(11),
+                                                  playerIds.get(12),
+                                                  playerIds.get(13),
+                                                  playerIds.get(14),
+                                                  playerIds.get(15),
+                                                  playerIds.get(16));
     }
 
     //CLUB_ID  	NAME  	USER_ID  	OVR  	PRICE  	AGE  	PACE  	DEF  	ATK  	CCH  	STM

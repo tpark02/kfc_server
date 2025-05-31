@@ -28,7 +28,7 @@ public class FormationDto {
     private Long p14;
     private Long p15;
     private Long p16;
-//    private Long p17;
+    private Long p17;
 //    private Long p18;
 //    private Long p19;
 //    private Long p20;

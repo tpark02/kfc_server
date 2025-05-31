@@ -442,6 +442,29 @@ INSERT INTO my_player (
     60, 60, 60, 60, 60
 );
 
+INSERT INTO my_player (
+    user_id, player_id, club_id, yellow_card, red_card, rank, name, ovr, pac, sho, pas, dri, def, phy,
+    acceleration, sprint_speed, positioning, finishing, shot_power, long_shots, volleys, penalties,
+    vision, crossing, free_kick_accuracy, short_passing, long_passing, curve,
+    dribbling, agility, balance, reactions, ball_control, composure,
+    interceptions, heading_accuracy, def_awareness, standing_tackle, sliding_tackle,
+    jumping, stamina, strength, aggression,
+    pos, weak_foot, skill_moves, preferred_foot, height, weight, alternative_positions,
+    age, nation, league, team, play_style, url, img,
+    gk_diving, gk_handling, gk_kicking, gk_positioning, gk_reflexes
+) VALUES (
+    1, 1016, 1, 0, 0, 0, 'Player 1016', '60', 60, 60, 60, 60, 60, 60,
+    60, 60, 60, 60, 60, 60, 60, 60,
+    60, 60, 60, 60, 60, 60,
+    60, 60, 60, 60, 60, 60,
+    60, 60, 60, 60, 60,
+    60, 60, 60, 60,
+    'ST', 3, 3, 'Right', '180cm', '75kg', 'CAM,CF',
+    25, 'Korea', 'K League', 'FC Seoul', 'Power Shot', 'https://player.url/1016', 'https://player.img/1016.png',
+    60, 60, 60, 60, 60
+);
+
+-- temp club 2 player insert
 
 INSERT INTO my_player (
     user_id, player_id, club_id, yellow_card, red_card, rank, name, ovr, pac, sho, pas, dri, def, phy,
@@ -770,6 +793,28 @@ INSERT INTO my_player (
     60, 60, 60, 60,
     'ST', 3, 3, 'Right', '180cm', '75kg', 'CAM,CF',
     25, 'Korea', 'K League', 'FC Seoul', 'Power Shot', 'https://player.url/2015', 'https://player.img/2015.png',
+    60, 60, 60, 60, 60
+);
+
+INSERT INTO my_player (
+    user_id, player_id, club_id, yellow_card, red_card, rank, name, ovr, pac, sho, pas, dri, def, phy,
+    acceleration, sprint_speed, positioning, finishing, shot_power, long_shots, volleys, penalties,
+    vision, crossing, free_kick_accuracy, short_passing, long_passing, curve,
+    dribbling, agility, balance, reactions, ball_control, composure,
+    interceptions, heading_accuracy, def_awareness, standing_tackle, sliding_tackle,
+    jumping, stamina, strength, aggression,
+    pos, weak_foot, skill_moves, preferred_foot, height, weight, alternative_positions,
+    age, nation, league, team, play_style, url, img,
+    gk_diving, gk_handling, gk_kicking, gk_positioning, gk_reflexes
+) VALUES (
+    1, 2016, 2, 0, 0, 0, 'Player 2016', '60', 60, 60, 60, 60, 60, 60,
+    60, 60, 60, 60, 60, 60, 60, 60,
+    60, 60, 60, 60, 60, 60,
+    60, 60, 60, 60, 60, 60,
+    60, 60, 60, 60, 60,
+    60, 60, 60, 60,
+    'ST', 3, 3, 'Right', '180cm', '75kg', 'CAM,CF',
+    25, 'Korea', 'K League', 'FC Seoul', 'Power Shot', 'https://player.url/2016', 'https://player.img/2016.png',
     60, 60, 60, 60, 60
 );
 
@@ -1148,7 +1193,27 @@ INSERT INTO my_player (
     60, 60, 60, 60, 60
 );
 
-
+INSERT INTO my_player (
+    user_id, player_id, club_id, yellow_card, red_card, rank, name, ovr, pac, sho, pas, dri, def, phy,
+    acceleration, sprint_speed, positioning, finishing, shot_power, long_shots, volleys, penalties,
+    vision, crossing, free_kick_accuracy, short_passing, long_passing, curve,
+    dribbling, agility, balance, reactions, ball_control, composure,
+    interceptions, heading_accuracy, def_awareness, standing_tackle, sliding_tackle,
+    jumping, stamina, strength, aggression,
+    pos, weak_foot, skill_moves, preferred_foot, height, weight, alternative_positions,
+    age, nation, league, team, play_style, url, img,
+    gk_diving, gk_handling, gk_kicking, gk_positioning, gk_reflexes
+) VALUES (
+    1, 3016, 3, 0, 0, 0, 'Player 3016', '60', 60, 60, 60, 60, 60, 60,
+    60, 60, 60, 60, 60, 60, 60, 60,
+    60, 60, 60, 60, 60, 60,
+    60, 60, 60, 60, 60, 60,
+    60, 60, 60, 60, 60,
+    60, 60, 60, 60,
+    'ST', 3, 3, 'Right', '180cm', '75kg', 'CAM,CF',
+    25, 'Korea', 'K League', 'FC Seoul', 'Power Shot', 'https://player.url/3016', 'https://player.img/3016.png',
+    60, 60, 60, 60, 60
+);
 
 --INSERT INTO season (id, name, started) VALUES (1, '테스트 시즌', FALSE);
 
