@@ -83,16 +83,16 @@ public class MyClubService {
             formation.setP14(null);
             formation.setP15(null);
             formation.setP16(null);
-            formation.setP17(null);
-            formation.setP18(null);
-            formation.setP19(null);
-            formation.setP20(null);
-            formation.setP21(null);
-            formation.setP22(null);
-            formation.setP23(null);
-            formation.setP24(null);
-            formation.setP25(null);
-            formation.setP26(null);
+//            formation.setP17(null);
+//            formation.setP18(null);
+//            formation.setP19(null);
+//            formation.setP20(null);
+//            formation.setP21(null);
+//            formation.setP22(null);
+//            formation.setP23(null);
+//            formation.setP24(null);
+//            formation.setP25(null);
+//            formation.setP26(null);
             formationRepository.save(formation);
         }
 
@@ -120,7 +120,9 @@ public class MyClubService {
 //        }
 
         var lst = request.getPlayers().stream().filter(p -> p != null).toList();
-        if (lst.size() != 26) throw new IllegalArgumentException("Exactly 26 players must be provided");
+        if (lst.size() != RandomTeamService.numberOfTotalPlayers) throw new IllegalArgumentException(
+                String.format("Exactly %d players must be provided", RandomTeamService.numberOfTotalPlayers)
+        );
         // 📦 클럽 기본 정보 업데이트
         existing.setName(request.getClubName());
         existing.setOvr(request.getOvr());
@@ -144,17 +146,21 @@ public class MyClubService {
         List<Long> playerIds = request.getPlayers();
         List<MyPlayer> existingPlayers = myPlayerRepository.findByUserIdAndClubId(userId, clubId);
 
-        // ✅ 26명이 아니면 중단
-        if (existingPlayers.size() != 26) {
-            log.info("❌ Cannot update. Expected 26 players, found " + existingPlayers.size());
-            throw new IllegalArgumentException("❌ Cannot update. Expected 26 players, found " + existingPlayers.size());
+        // ✅ if not 16, then stop
+        if (existingPlayers.size() != RandomTeamService.numberOfTotalPlayers) {
+            String str = String.format("❌ Cannot update. Expected %d players, found %d",
+                                       RandomTeamService.numberOfTotalPlayers,
+                                       existingPlayers.size());
+            log.info(str);
+            throw new IllegalArgumentException(str);
         }
 
-        // 🔁 26명 순서대로 덮어쓰기
-        for (int i = 0; i < 26; i++) {
+
+        // 🔁 over write 16 players sequencially
+        for (int i = 0; i < RandomTeamService.numberOfTotalPlayers; i++) {
             Long playerId = playerIds.get(i);
 
-            // 포메이션 P1 ~ P26 설정
+            // set formation from p1 ~ p16
             try {
                 Method setter = Formation.class.getMethod("setP" + (i + 1), Long.class);
                 setter.invoke(formation, playerId);

@@ -8,7 +8,7 @@ import java.util.List;
 public class MyClubRequest {
     private String clubName;
     private String formationName;
-    private List<Long> players; // must be 26
+    private List<Long> players; // must be 16
     private Long ovr;
     private Long price;
     private Long age;

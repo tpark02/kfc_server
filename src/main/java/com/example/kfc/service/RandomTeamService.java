@@ -17,6 +17,8 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class RandomTeamService {
+    public static int numberOfTotalPlayers = 16;
+    public static int numberOfBenchPlayers = 5;
     private final PlayerService playerService;
     private final UserInfoService userInfoService;
     private final Random random = new Random();
@@ -114,7 +116,7 @@ public class RandomTeamService {
                 userInfoService.getUserById(1L);    // TODO : when account system added, this should come from userId from the front-end
         // bench players
         List<PlayerDto> benchplayers = playersPool.stream()
-                .limit(15)
+                .limit(numberOfBenchPlayers)
                 .map(PlayerDto::from)
                 .toList();
 

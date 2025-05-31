@@ -130,12 +130,12 @@ public class AiClubService {
                 .toList();
 
         List<Integer> playerIds = playerList.stream()
-                .limit(26)
+                .limit(RandomTeamService.numberOfTotalPlayers)
                 .map(p -> p.getId().intValue())
                 .toList();
 
-        if (playerIds.size() < 26) {
-            throw new IllegalStateException("⚠️ 26명의 선수가 필요합니다. 현재: " + playerIds.size());
+        if (playerIds.size() < RandomTeamService.numberOfTotalPlayers) {
+            throw new IllegalStateException(String.format("You need %d players", playerIds.size()));
         }
 
         // update ai formation
@@ -146,12 +146,7 @@ public class AiClubService {
                                                   playerIds.get(8), playerIds.get(9),
                                                   playerIds.get(10), playerIds.get(11), playerIds.get(12),
                                                   playerIds.get(13), playerIds.get(14),
-                                                  playerIds.get(15), playerIds.get(16), playerIds.get(17),
-                                                  playerIds.get(18), playerIds.get(19),
-                                                  playerIds.get(20), playerIds.get(21), playerIds.get(22),
-                                                  playerIds.get(23), playerIds.get(24),
-                                                  playerIds.get(25));
-
+                                                  playerIds.get(15));
     }
 
     //CLUB_ID  	NAME  	USER_ID  	OVR  	PRICE  	AGE  	PACE  	DEF  	ATK  	CCH  	STM
