@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 @RequiredArgsConstructor
@@ -83,7 +84,7 @@ public class RandomTeamService {
         List<PlayerDto> lst = new ArrayList<>();
         Set<Integer> usedIds = new HashSet<>();
 
-        selectedPlayers.stream().forEach(p -> {
+        selectedPlayers.forEach(p -> {
             lst.add(PlayerDto.from(p));
         });
         //my team ovr 계산
@@ -121,6 +122,10 @@ public class RandomTeamService {
                 .toList();
 
         lst.addAll(benchplayers);
+
+        // setting idx to playerDto
+        IntStream.range(0, lst.size())
+                .forEach(i -> lst.get(i).setIdx((long) i));
 
         return  RandomSquadResponse.builder()
                 .content(lst)

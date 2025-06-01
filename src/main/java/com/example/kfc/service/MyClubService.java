@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 @Slf4j
 @Service
@@ -31,7 +33,6 @@ public class MyClubService {
 //    public MyClub saveClub(MyClub club) {
 //        return myClubRepository.save(club);
 //    }
-
     public MyClub getClubByUserIdAndClubId(Long userId, Long clubId) {
         System.out.println(
                 "getClubByUserIdAndClubId - " +
@@ -106,6 +107,9 @@ public class MyClubService {
         for (MyPlayer player : players)
             player.resetStats();
 
+        IntStream.range(0, players.size())
+                .forEach(i -> players.get(i).setIdx((long) i));
+
         myPlayerRepository.saveAll(players);
 
         return Optional.of(myClubRepository.save(existing));
@@ -173,6 +177,7 @@ public class MyClubService {
                     .orElseThrow(() -> new IllegalArgumentException("Player not found: " + playerId));
 
             MyPlayer target = existingPlayers.get(i);
+            target.setIdx((long) i);
             myPlayerService.updateMyPlayer(source, target); // 👈 여기가 핵심 UPDATE
         }
 

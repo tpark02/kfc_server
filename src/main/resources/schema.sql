@@ -144,7 +144,7 @@ CREATE TABLE my_player (
     yellow_card BIGINT DEFAULT 0,
     red_card BIGINT DEFAULT 0,
     seq_cnt BIGINT DEFAULT 0,
-
+    idx BIGINT DEFAULT 0,
     rank BIGINT DEFAULT 0,
     name VARCHAR(100),
     ovr BIGINT DEFAULT 0,

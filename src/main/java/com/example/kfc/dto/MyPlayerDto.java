@@ -15,6 +15,7 @@ public class MyPlayerDto {
     private Long clubId;
     private Long yellowCard;
     private Long redCard;
+    private Long idx;
     private Long rank;
     private String name;
     private Long ovr;
@@ -81,6 +82,7 @@ public class MyPlayerDto {
                 player.getClubId(),
                 player.getYellowCard(),
                 player.getRedCard(),
+                player.getIdx(),
                 player.getRank(),
                 player.getName(),
                 player.getOvr(),

@@ -34,6 +34,9 @@ public class MyPlayer {
     private Long seq_cnt;
 
     @Column
+    private Long idx;
+
+    @Column
     private Long rank;
 
     @Column
@@ -213,6 +216,7 @@ public class MyPlayer {
         this.redCard = 0L;
         this.rank = 0L;
         this.seq_cnt = 0L;
+        this.idx = 0L;
         // Base stats
         this.ovr = 0L;
         this.pac = 0L;
@@ -301,6 +305,7 @@ public class MyPlayer {
         myPlayer.setRedCard(0L);
         myPlayer.setRank(0L); // optional default
         myPlayer.setSeq_cnt(0L);
+        myPlayer.setIdx(0L);
 
         myPlayer.setPac(player.getPac());
         myPlayer.setSho(player.getSho());

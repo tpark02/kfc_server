@@ -59,4 +59,8 @@ public interface MyPlayerRepository extends JpaRepository<MyPlayer, Long> {
     Long countRedCards(@Param("userId") Long userId,
                        @Param("clubId") Long clubId);
 
+    @Modifying
+    @Transactional
+    @Query("UPDATE MyPlayer p SET p.idx = :idx WHERE p.userId = :userId AND p.clubId = :clubId AND p.playerId = :playerId")
+    int updateIdxByUserIdAndClubIdAndPlayerId(Long idx, Long userId, Long clubId, Long playerId);
 }

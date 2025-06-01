@@ -5,11 +5,14 @@ import com.example.kfc.entity.Player;
 import com.example.kfc.repository.MyPlayerRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MyPlayerService {
@@ -51,7 +54,8 @@ public class MyPlayerService {
     public void setRedCard(Long userId, Long clubId, Long playerId, Long cnt, Long seq_cnt) {
         int updated = myPlayerRepository.updateRedCard(userId, clubId, playerId, cnt, seq_cnt);
         if (updated == 0) {
-            throw new IllegalStateException("❌ Failed to update red card: no matching player found. - playerId : " + playerId);
+            throw new IllegalStateException(
+                    "❌ Failed to update red card: no matching player found. - playerId : " + playerId);
         }
     }
 
@@ -62,7 +66,8 @@ public class MyPlayerService {
     public void resetYellowCards(Long userId, Long clubId) {
         int updated = myPlayerRepository.resetYellowCard(userId, clubId);
         if (updated == 0) {
-            throw new IllegalStateException("❌ Failed to reset yellow cards: No matching players found for the given user and club.");
+            throw new IllegalStateException(
+                    "❌ Failed to reset yellow cards: No matching players found for the given user and club.");
         }
     }
 
@@ -73,7 +78,8 @@ public class MyPlayerService {
     public void resetRedCards(Long userId, Long clubId) {
         int updated = myPlayerRepository.resetRedCard(userId, clubId);
         if (updated == 0) {
-            throw new IllegalStateException("❌ Failed to reset red cards: No matching players found for the given user and club.");
+            throw new IllegalStateException(
+                    "❌ Failed to reset red cards: No matching players found for the given user and club.");
         }
     }
 
@@ -84,7 +90,8 @@ public class MyPlayerService {
     public void resetSeqCnt(Long userId, Long clubId) {
         int updated = myPlayerRepository.resetSeqCnt(userId, clubId);
         if (updated == 0) {
-            throw new IllegalStateException("❌ Failed to reset seq_cnt: No matching players found for the given user and club.");
+            throw new IllegalStateException(
+                    "❌ Failed to reset seq_cnt: No matching players found for the given user and club.");
         }
     }
 
@@ -168,5 +175,18 @@ public class MyPlayerService {
     public Long getRedCardCount(Long userId, Long clubId) {
         Long count = myPlayerRepository.countRedCards(userId, clubId);
         return count != null ? count : 0L;
+    }
+
+    public void updateIdxForClub(Long userId, Long clubId, Map<Long, Long> rosterMap) {
+        try {
+            rosterMap.forEach((playerId, idx) -> {
+                System.out.println(String.format("🔁 Updating idx for userId=%d, clubId=%d, playerId=%d, idx=%d",
+                                                 userId, clubId, playerId, idx));
+                myPlayerRepository.updateIdxByUserIdAndClubIdAndPlayerId(idx, userId, clubId, playerId);
+            });
+        } catch (Exception e) {
+            log.error("❌ Failed to update idx for userId={}, clubId={}, error={}", userId, clubId, e.getMessage(), e);
+            throw new RuntimeException("Failed to update player idx", e);
+        }
     }
 }

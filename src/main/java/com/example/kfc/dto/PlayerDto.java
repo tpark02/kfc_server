@@ -10,6 +10,7 @@ import lombok.*;
 @Setter
 public class PlayerDto {
     private Long id;
+    private Long idx;
     private Long rank;
     private String name;
     private Long ovr;
@@ -71,6 +72,7 @@ public class PlayerDto {
     public static PlayerDto from(Player player) {
         return new PlayerDto(
                 player.getId(),
+                -1L,    // playerDto default idx : -1
                 player.getRank(),
                 player.getName(),
                 player.getOvr(),

@@ -169,6 +169,4 @@ public class AiClubService {
                     "ai - updateAiClub - not updated : " + userId + ", " + ovr + ", " + price + ", " + age + ", " + pace + ", " + def + ", " + atk + ", " + cch + ", " + stm);
         }
     }
-
-
 }

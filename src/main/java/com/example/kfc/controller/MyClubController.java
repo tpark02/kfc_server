@@ -1,6 +1,8 @@
 package com.example.kfc.controller;
 
 import com.example.kfc.Request.MyClubRequest;
+import com.example.kfc.Request.SquadSearchRequest;
+import com.example.kfc.Request.UpdateRosterRequest;
 import com.example.kfc.dto.MyClubDto;
 import com.example.kfc.dto.MyPlayerDto;
 import com.example.kfc.entity.Formation;
@@ -16,9 +18,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.IntStream;
 
 @CrossOrigin(origins = "http://localhost:5173") // Vite dev 서버 주소
 @RestController
@@ -43,6 +44,7 @@ public class MyClubController {
                 List<MyPlayer> myPlayers = myPlayerService.getMyPlayer(userId, club.getClubId());
 
                 var lst = myPlayers.stream().map(MyPlayerDto::from).toList();
+
 
                 Formation f = club.getFormations();
                 var formationName = f.getName();
@@ -125,6 +127,24 @@ public class MyClubController {
         try {
             var updatedClub = myClubService.resetClub(userId, clubId).orElse(null);
             return updatedClub != null ? ResponseEntity.ok("club deleted") : ResponseEntity.ok("club deletion failed");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/myclub/updateroster")
+    public ResponseEntity<String> updateRoater(@RequestBody UpdateRosterRequest request) {
+        try {
+            Long userId = request.getUserId();
+            Long clubId = request.getClubId();
+            Map<Long, Long> rosterMap = request.getRosterMap();
+
+            System.out.println("✅ userId: " + request.getUserId());
+            System.out.println("✅ clubId: " + request.getClubId());
+            System.out.println("✅ rosterMap: " + request.getRosterMap());
+
+            myPlayerService.updateIdxForClub(userId, clubId, rosterMap);
+            return ResponseEntity.ok("club saved");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
