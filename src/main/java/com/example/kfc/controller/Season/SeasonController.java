@@ -2,17 +2,26 @@ package com.example.kfc.controller.Season;
 
 import com.example.kfc.Request.CreateSeasonRequest;
 import com.example.kfc.Response.JoinSeasonResponse;
+import com.example.kfc.data.FormationUtil;
 import com.example.kfc.dto.MatchResponse;
+import com.example.kfc.dto.MyPlayerDto;
 import com.example.kfc.dto.ParticipantDto;
 import com.example.kfc.dto.SeasonDto;
+import com.example.kfc.entity.AiFormation;
+import com.example.kfc.entity.MyPlayer;
+import com.example.kfc.entity.Player;
 import com.example.kfc.entity.Season.Match;
 import com.example.kfc.entity.Season.Season;
 import com.example.kfc.entity.Season.SeasonParticipant;
 import com.example.kfc.entity.UserInfo;
+import com.example.kfc.repository.AiFormationRepository;
 import com.example.kfc.repository.Season.MatchRepository;
 import com.example.kfc.repository.Season.SeasonParticipantRepository;
 import com.example.kfc.repository.Season.SeasonRepository;
 import com.example.kfc.repository.UserInfoRepository;
+import com.example.kfc.service.MyPlayerService;
+import com.example.kfc.service.PlayerService;
+import com.example.kfc.service.RandomTeamService;
 import com.example.kfc.service.Season.SeasonService;
 import com.example.kfc.service.Season.TournamentService;
 import jakarta.transaction.Transactional;
@@ -20,7 +29,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.lang.reflect.Method;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "http://localhost:5173")
@@ -34,6 +44,11 @@ public class SeasonController {
     private final UserInfoRepository userInfoRepository;
     private final SeasonRepository seasonRepository;
     private final SeasonService seasonService;
+    private final MyPlayerService myPlayerService;
+    private final AiFormationRepository aiFormationRepository;
+    private final PlayerService playerService;
+
+    public static Map<Long, Long> matchParticipantsInfoMap = new HashMap<>();
 
     @Transactional
     @PostMapping("/{seasonId}/join")
@@ -80,14 +95,83 @@ public class SeasonController {
             String player1 = match.getPlayer1() != null ? match.getPlayer1().getUsername() : "❓";
             String player2 = match.getPlayer2() != null ? match.getPlayer2().getUsername() : "❓";
             String winner = match.getWinner() != null ? match.getWinner().getUsername() : "TBD";
+
+            boolean isAi1 = match.getIsAi1();
+            boolean isAi2 = match.getIsAi2();
+
+            List<MyPlayerDto> lst1 = null;
+            List<MyPlayerDto> lst2 = null;
+
+            if (isAi1) {
+               lst1 = makeAiMyPlayerDtoList(match.getPlayer1().getId(), match.getClubId1());
+            } else {
+                List<MyPlayer> myPlayerList = myPlayerService.getMyPlayer(match.getPlayer1().getId(), match.getClubId1());
+                lst1 = myPlayerList.stream().map(MyPlayerDto::from).collect(Collectors.toList());
+            }
+
+            if (isAi2) {
+                lst2 = makeAiMyPlayerDtoList(match.getPlayer2().getId(), match.getClubId2());
+            } else {
+                List<MyPlayer> myPlayerList = myPlayerService.getMyPlayer(match.getPlayer2().getId(), match.getClubId2());
+                lst2 = myPlayerList.stream().map(MyPlayerDto::from).collect(Collectors.toList());
+            }
+
             return new MatchResponse(
                     match.getId(),
                     match.getRound(),
                     player1,
                     player2,
-                    winner
+                    winner,
+                    lst1,
+                    lst2
             );
         }).toList();
+    }
+
+    @Transactional
+    public List<MyPlayerDto> makeAiMyPlayerDtoList(Long userId, Long clubId) {
+        try {
+            List<AiFormation> ailst = aiFormationRepository.findByClub_ClubId(clubId).orElseThrow(
+                    () -> new IllegalArgumentException("AI Formation not found by club id - " + clubId));
+
+            int size = FormationUtil.formationNames.size();
+            Random r = SeasonService.random;
+            String formationName = FormationUtil.formationNames.get(r.nextInt(size));
+
+            AiFormation aiFormation = ailst.stream()
+                    .filter(f -> f.getName().equals(formationName))
+                    .findFirst()
+                    .orElse(null);
+
+            return validateAiFormation(aiFormation, userId, clubId, 0L, 0L);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("makeMyPlayerDtoList failed");
+        }
+    }
+
+    @Transactional
+    public List<MyPlayerDto> validateAiFormation(AiFormation aiFormation, Long userId, Long clubId, Long yellowCard, Long redCard) {
+        List<MyPlayerDto> lst = new ArrayList<>();
+
+        for (int i = 1; i <= RandomTeamService.numberOfTotalPlayers; i++) {
+            String methodName = "getP" + i;
+            try {
+                Method method = AiFormation.class.getMethod(methodName);
+                Long value = (Long) method.invoke(aiFormation);
+
+                // 예: null 값이 있으면 예외 던짐
+                if (value == null) {
+                    throw new IllegalArgumentException("❌ p" + i + " is null in formation: " + aiFormation.getName());
+                }
+
+                Player player = playerService.searchPlayerById(value);
+                MyPlayerDto myPlayerDto = MyPlayerDto.from(player, userId, clubId, yellowCard, redCard, (long) i);
+                lst.add(myPlayerDto);
+            } catch (ReflectiveOperationException e) {
+                throw new RuntimeException(" validateAiFormation Failed to access " + methodName, e);
+            }
+        }
+        return lst;
     }
 
 //    @PostMapping("/create")

@@ -14,6 +14,10 @@ public class FormationUtil {
 
     public static final Set<String> ATTACKERS;
 
+    public static final List<String> formationNames = List.of(
+            "442", "433", "352", "4231", "451", "343", "532",
+            "541", "41212", "4222", "4321", "4132", "424");
+
     static {
         formationPosition = new HashMap<>();
 

@@ -1,6 +1,7 @@
 package com.example.kfc.dto;
 
 import com.example.kfc.entity.MyPlayer;
+import com.example.kfc.entity.Player;
 import lombok.*;
 
 @NoArgsConstructor
@@ -73,6 +74,75 @@ public class MyPlayerDto {
     private Long gkKicking;
     private Long gkPositioning;
     private Long gkReflexes;
+
+    public static MyPlayerDto from(Player player, Long userId, Long clubId, Long yellowCard, Long redCard, Long idx) {
+        return new MyPlayerDto(
+                0L,
+                userId,
+                player.getId(),
+                clubId,
+                yellowCard,
+                redCard,
+                idx,
+                player.getRank(),
+                player.getName(),
+                player.getOvr(),
+                player.getPac(),
+                player.getSho(),
+                player.getPas(),
+                player.getDri(),
+                player.getDef(),
+                player.getPhy(),
+                player.getAcceleration(),
+                player.getSprintSpeed(),
+                player.getPositioning(),
+                player.getFinishing(),
+                player.getShotPower(),
+                player.getLongShots(),
+                player.getVolleys(),
+                player.getPenalties(),
+                player.getVision(),
+                player.getCrossing(),
+                player.getFreeKickAccuracy(),
+                player.getShortPassing(),
+                player.getLongPassing(),
+                player.getCurve(),
+                player.getDribbling(),
+                player.getAgility(),
+                player.getBalance(),
+                player.getReactions(),
+                player.getBallControl(),
+                player.getComposure(),
+                player.getInterceptions(),
+                player.getHeadingAccuracy(),
+                player.getDefAwareness(),
+                player.getStandingTackle(),
+                player.getSlidingTackle(),
+                player.getJumping(),
+                player.getStamina(),
+                player.getStrength(),
+                player.getAggression(),
+                player.getPos(),
+                player.getWeakFoot(),
+                player.getSkillMoves(),
+                player.getPreferredFoot(),
+                player.getHeight(),
+                player.getWeight(),
+                player.getAlternativePositions(),
+                player.getAge(),
+                player.getNation(),
+                player.getLeague(),
+                player.getTeam(),
+                player.getPlayStyle(),
+                player.getUrl(),
+                player.getImg(),
+                player.getGkDiving(),
+                player.getGkHandling(),
+                player.getGkKicking(),
+                player.getGkPositioning(),
+                player.getGkReflexes()
+        );
+    }
 
     public static MyPlayerDto from(MyPlayer player) {
         return new MyPlayerDto(

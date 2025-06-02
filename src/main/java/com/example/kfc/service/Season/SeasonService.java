@@ -2,6 +2,7 @@ package com.example.kfc.service.Season;
 
 import com.example.kfc.config.AiStartupRunner;
 import com.example.kfc.config.AiUserCache;
+import com.example.kfc.controller.Season.SeasonController;
 import com.example.kfc.dto.ParticipantDto;
 import com.example.kfc.dto.SeasonDto;
 import com.example.kfc.entity.AiClub;

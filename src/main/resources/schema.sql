@@ -217,8 +217,12 @@ CREATE TABLE season_match (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     season_id BIGINT,
     player1_id BIGINT,
+    player1_club_id BIGINT,
     player2_id BIGINT,
+    player2_club_id BIGINT,
     winner_id BIGINT,
+    is_ai1 BOOLEAN,
+    is_ai2 BOOLEAN,
     round INT
 );
 
