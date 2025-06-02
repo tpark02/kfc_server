@@ -1,6 +1,7 @@
 package com.example.kfc.service;
 
 import com.example.kfc.Request.MyClubRequest;
+import com.example.kfc.dto.MyPlayerDto;
 import com.example.kfc.entity.*;
 import com.example.kfc.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -8,8 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Method;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
@@ -147,7 +148,11 @@ public class MyClubService {
         }
         formation.setName(request.getFormationName());
 
-        List<Long> playerIds = request.getPlayers();
+        List<MyPlayerDto> myPlayerDtoLst = request.getPlayers();
+
+        // sort received myplayer list by idx
+        myPlayerDtoLst.sort(Comparator.comparingLong(MyPlayerDto::getIdx));
+
         List<MyPlayer> existingPlayers = myPlayerRepository.findByUserIdAndClubId(userId, clubId);
 
         // ✅ if not 17, then stop
@@ -162,27 +167,122 @@ public class MyClubService {
 
         // 🔁 over write 17 players sequencially
         for (int i = 0; i < RandomTeamService.numberOfTotalPlayers; i++) {
-            Long playerId = playerIds.get(i);
+            Long playerId = myPlayerDtoLst.get(i).getPlayerId();
 
-            // set formation from p1 ~ p16
-            try {
-                Method setter = Formation.class.getMethod("setP" + (i + 1), Long.class);
-                setter.invoke(formation, playerId);
-            } catch (Exception e) {
-                throw new RuntimeException("Failed to set formation P" + (i + 1), e);
+            boolean isMyPlayerExist = existingPlayers.stream()
+                    .anyMatch(p -> p.getPlayerId().equals(playerId));
+
+            // is My Player exist?
+            if (isMyPlayerExist) {
+                System.out.println("set existing player - " + playerId);
+                MyPlayerDto updated = myPlayerDtoLst.stream()
+                        .filter(p -> p.getPlayerId().equals(playerId))
+                        .findFirst()
+                        .orElseThrow(() -> new IllegalArgumentException("❌ Player not found with ID: " + playerId));
+
+                //MyPlayer target = MyPlayer.fromMyPlayerDto(dto);
+                //myPlayerService.updateExistingPlayer(target);
+
+                MyPlayer existingPlayer = existingPlayers.stream()
+                        .filter(p -> p.getPlayerId().equals(playerId))
+                        .findFirst()
+                        .orElseThrow(() -> new IllegalArgumentException("❌ Player not found with ID: " + playerId));
+
+
+                existingPlayer.setClubId(updated.getClubId());
+                existingPlayer.setName(updated.getName());
+                existingPlayer.setOvr(updated.getOvr());
+                existingPlayer.setPos(updated.getPos());
+                existingPlayer.setNation(updated.getNation());
+                existingPlayer.setLeague(updated.getLeague());
+                existingPlayer.setTeam(updated.getTeam());
+                existingPlayer.setImg(updated.getImg());
+                existingPlayer.setIdx(updated.getIdx());
+                existingPlayer.setYellowCard(updated.getYellowCard());
+                existingPlayer.setRedCard(updated.getRedCard());
+                existingPlayer.setRank(updated.getRank());
+                existingPlayer.setSeq_cnt(0L);
+
+                // 능력치
+                existingPlayer.setPac(updated.getPac());
+                existingPlayer.setSho(updated.getSho());
+                existingPlayer.setPas(updated.getPas());
+                existingPlayer.setDri(updated.getDri());
+                existingPlayer.setDef(updated.getDef());
+                existingPlayer.setPhy(updated.getPhy());
+
+                // 세부 능력치
+                existingPlayer.setAcceleration(updated.getAcceleration());
+                existingPlayer.setSprintSpeed(updated.getSprintSpeed());
+                existingPlayer.setPositioning(updated.getPositioning());
+                existingPlayer.setFinishing(updated.getFinishing());
+                existingPlayer.setShotPower(updated.getShotPower());
+                existingPlayer.setLongShots(updated.getLongShots());
+                existingPlayer.setVolleys(updated.getVolleys());
+                existingPlayer.setPenalties(updated.getPenalties());
+
+                // 패스 등등
+                existingPlayer.setVision(updated.getVision());
+                existingPlayer.setCrossing(updated.getCrossing());
+                existingPlayer.setShortPassing(updated.getShortPassing());
+                existingPlayer.setLongPassing(updated.getLongPassing());
+                existingPlayer.setCurve(updated.getCurve());
+
+                // 드리블 등등
+                existingPlayer.setDribbling(updated.getDribbling());
+                existingPlayer.setAgility(updated.getAgility());
+                existingPlayer.setBalance(updated.getBalance());
+                existingPlayer.setReactions(updated.getReactions());
+                existingPlayer.setBallControl(updated.getBallControl());
+                existingPlayer.setComposure(updated.getComposure());
+
+                // 수비 능력
+                existingPlayer.setInterceptions(updated.getInterceptions());
+                existingPlayer.setHeadingAccuracy(updated.getHeadingAccuracy());
+                existingPlayer.setDefAwareness(updated.getDefAwareness());
+                existingPlayer.setStandingTackle(updated.getStandingTackle());
+                existingPlayer.setSlidingTackle(updated.getSlidingTackle());
+
+                // 신체 및 성향
+                existingPlayer.setJumping(updated.getJumping());
+                existingPlayer.setStamina(updated.getStamina());
+                existingPlayer.setStrength(updated.getStrength());
+                existingPlayer.setAggression(updated.getAggression());
+
+                existingPlayer.setWeakFoot(updated.getWeakFoot());
+                existingPlayer.setSkillMoves(updated.getSkillMoves());
+                existingPlayer.setPreferredFoot(updated.getPreferredFoot());
+                existingPlayer.setHeight(updated.getHeight());
+                existingPlayer.setWeight(updated.getWeight());
+                existingPlayer.setAlternativePositions(updated.getAlternativePositions());
+                existingPlayer.setAge(updated.getAge());
+                existingPlayer.setPlayStyle(updated.getPlayStyle());
+                existingPlayer.setUrl(updated.getUrl());
+
+                // GK 전용 스탯
+                existingPlayer.setGkDiving(updated.getGkDiving());
+                existingPlayer.setGkHandling(updated.getGkHandling());
+                existingPlayer.setGkKicking(updated.getGkKicking());
+                existingPlayer.setGkPositioning(updated.getGkPositioning());
+                existingPlayer.setGkReflexes(updated.getGkReflexes());
+            } else {
+                // set formation from p1 ~ p16
+                try {
+                    Method setter = Formation.class.getMethod("setP" + (i + 1), Long.class);
+                    setter.invoke(formation, playerId);
+                } catch (Exception e) {
+                    throw new RuntimeException("Failed to set formation P" + (i + 1), e);
+                }
+                // Player 원본 데이터
+                Player source = playerRepository.searchPlayerById(playerId)
+                        .orElseThrow(() -> new IllegalArgumentException("Player not found: " + playerId));
+                MyPlayer target = existingPlayers.get(i);
+                target.setIdx((long) i);
+                myPlayerService.updateNewPlayer(source, target); // 👈 여기가 핵심 UPDATE
             }
-
-            // Player 원본 데이터
-            Player source = playerRepository.searchPlayerById(playerId)
-                    .orElseThrow(() -> new IllegalArgumentException("Player not found: " + playerId));
-
-            MyPlayer target = existingPlayers.get(i);
-            target.setIdx((long) i);
-            myPlayerService.updateMyPlayer(source, target); // 👈 여기가 핵심 UPDATE
         }
 
         formationRepository.save(formation);
-
         return Optional.of(myClubRepository.save(existing));
     }
 

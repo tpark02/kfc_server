@@ -1,5 +1,6 @@
 package com.example.kfc.entity;
 
+import com.example.kfc.dto.MyPlayerDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -288,79 +289,154 @@ public class MyPlayer {
         this.age = 0L;
     }
 
-    public static MyPlayer from(Player player, Long userId, Long clubId) {
+    public static MyPlayer fromMyPlayerDto(MyPlayerDto dto) {
         MyPlayer myPlayer = new MyPlayer();
-        myPlayer.setUserId(userId);
-        myPlayer.setPlayerId(player.getId());
-        myPlayer.setClubId(clubId);
-        myPlayer.setName(player.getName());
-        myPlayer.setOvr(player.getOvr());
-        myPlayer.setPos(player.getPos());
-        myPlayer.setNation(player.getNation());
-        myPlayer.setLeague(player.getLeague());
-        myPlayer.setTeam(player.getTeam());
-        myPlayer.setImg(player.getImg());
+        myPlayer.setUserId(dto.getUserId());
+        myPlayer.setPlayerId(dto.getPlayerId());
+        myPlayer.setClubId(dto.getClubId());
+        myPlayer.setName(dto.getName());
+        myPlayer.setOvr(dto.getOvr());
+        myPlayer.setPos(dto.getPos());
+        myPlayer.setNation(dto.getNation());
+        myPlayer.setLeague(dto.getLeague());
+        myPlayer.setTeam(dto.getTeam());
+        myPlayer.setImg(dto.getImg());
 
-        myPlayer.setYellowCard(0L);
-        myPlayer.setRedCard(0L);
+        myPlayer.setIdx(dto.getIdx());
+        myPlayer.setYellowCard(dto.getYellowCard());
+        myPlayer.setRedCard(dto.getRedCard());
         myPlayer.setRank(0L); // optional default
         myPlayer.setSeq_cnt(0L);
-        myPlayer.setIdx(0L);
 
-        myPlayer.setPac(player.getPac());
-        myPlayer.setSho(player.getSho());
-        myPlayer.setPas(player.getPas());
-        myPlayer.setDri(player.getDri());
-        myPlayer.setDef(player.getDef());
-        myPlayer.setPhy(player.getPhy());
+        myPlayer.setPac(dto.getPac());
+        myPlayer.setSho(dto.getSho());
+        myPlayer.setPas(dto.getPas());
+        myPlayer.setDri(dto.getDri());
+        myPlayer.setDef(dto.getDef());
+        myPlayer.setPhy(dto.getPhy());
 
-        myPlayer.setAcceleration(player.getAcceleration());
-        myPlayer.setSprintSpeed(player.getSprintSpeed());
-        myPlayer.setPositioning(player.getPositioning());
-        myPlayer.setFinishing(player.getFinishing());
-        myPlayer.setShotPower(player.getShotPower());
-        myPlayer.setLongShots(player.getLongShots());
-        myPlayer.setVolleys(player.getVolleys());
-        myPlayer.setPenalties(player.getPenalties());
-        myPlayer.setVision(player.getVision());
-        myPlayer.setCrossing(player.getCrossing());
-        myPlayer.setShortPassing(player.getShortPassing());
-        myPlayer.setLongPassing(player.getLongPassing());
-        myPlayer.setCurve(player.getCurve());
-        myPlayer.setDribbling(player.getDribbling());
-        myPlayer.setAgility(player.getAgility());
-        myPlayer.setBalance(player.getBalance());
-        myPlayer.setReactions(player.getReactions());
-        myPlayer.setBallControl(player.getBallControl());
-        myPlayer.setComposure(player.getComposure());
+        myPlayer.setAcceleration(dto.getAcceleration());
+        myPlayer.setSprintSpeed(dto.getSprintSpeed());
+        myPlayer.setPositioning(dto.getPositioning());
+        myPlayer.setFinishing(dto.getFinishing());
+        myPlayer.setShotPower(dto.getShotPower());
+        myPlayer.setLongShots(dto.getLongShots());
+        myPlayer.setVolleys(dto.getVolleys());
+        myPlayer.setPenalties(dto.getPenalties());
+        myPlayer.setVision(dto.getVision());
+        myPlayer.setCrossing(dto.getCrossing());
+        myPlayer.setShortPassing(dto.getShortPassing());
+        myPlayer.setLongPassing(dto.getLongPassing());
+        myPlayer.setCurve(dto.getCurve());
+        myPlayer.setDribbling(dto.getDribbling());
+        myPlayer.setAgility(dto.getAgility());
+        myPlayer.setBalance(dto.getBalance());
+        myPlayer.setReactions(dto.getReactions());
+        myPlayer.setBallControl(dto.getBallControl());
+        myPlayer.setComposure(dto.getComposure());
 
-        myPlayer.setInterceptions(player.getInterceptions());
-        myPlayer.setHeadingAccuracy(player.getHeadingAccuracy());
-        myPlayer.setDefAwareness(player.getDefAwareness());
-        myPlayer.setStandingTackle(player.getStandingTackle());
-        myPlayer.setSlidingTackle(player.getSlidingTackle());
+        myPlayer.setInterceptions(dto.getInterceptions());
+        myPlayer.setHeadingAccuracy(dto.getHeadingAccuracy());
+        myPlayer.setDefAwareness(dto.getDefAwareness());
+        myPlayer.setStandingTackle(dto.getStandingTackle());
+        myPlayer.setSlidingTackle(dto.getSlidingTackle());
 
-        myPlayer.setJumping(player.getJumping());
-        myPlayer.setStamina(player.getStamina());
-        myPlayer.setStrength(player.getStrength());
-        myPlayer.setAggression(player.getAggression());
+        myPlayer.setJumping(dto.getJumping());
+        myPlayer.setStamina(dto.getStamina());
+        myPlayer.setStrength(dto.getStrength());
+        myPlayer.setAggression(dto.getAggression());
 
-        myPlayer.setWeakFoot(player.getWeakFoot());
-        myPlayer.setSkillMoves(player.getSkillMoves());
-        myPlayer.setPreferredFoot(player.getPreferredFoot());
-        myPlayer.setHeight(player.getHeight());
-        myPlayer.setWeight(player.getWeight());
-        myPlayer.setAlternativePositions(player.getAlternativePositions());
-        myPlayer.setAge(player.getAge());
-        myPlayer.setPlayStyle(player.getPlayStyle());
-        myPlayer.setUrl(player.getUrl());
+        myPlayer.setWeakFoot(dto.getWeakFoot());
+        myPlayer.setSkillMoves(dto.getSkillMoves());
+        myPlayer.setPreferredFoot(dto.getPreferredFoot());
+        myPlayer.setHeight(dto.getHeight());
+        myPlayer.setWeight(dto.getWeight());
+        myPlayer.setAlternativePositions(dto.getAlternativePositions());
+        myPlayer.setAge(dto.getAge());
+        myPlayer.setPlayStyle(dto.getPlayStyle());
+        myPlayer.setUrl(dto.getUrl());
 
-        myPlayer.setGkDiving(player.getGkDiving());
-        myPlayer.setGkHandling(player.getGkHandling());
-        myPlayer.setGkKicking(player.getGkKicking());
-        myPlayer.setGkPositioning(player.getGkPositioning());
-        myPlayer.setGkReflexes(player.getGkReflexes());
+        myPlayer.setGkDiving(dto.getGkDiving());
+        myPlayer.setGkHandling(dto.getGkHandling());
+        myPlayer.setGkKicking(dto.getGkKicking());
+        myPlayer.setGkPositioning(dto.getGkPositioning());
+        myPlayer.setGkReflexes(dto.getGkReflexes());
 
         return myPlayer;
     }
+//    public static MyPlayer from(dto dto, Long userId, Long clubId) {
+//        MyPlayer myPlayer = new MyPlayer();
+//        myPlayer.setUserId(userId);
+//        myPlayer.setPlayerId(dto.getId());
+//        myPlayer.setClubId(clubId);
+//        myPlayer.setName(dto.getName());
+//        myPlayer.setOvr(dto.getOvr());
+//        myPlayer.setPos(dto.getPos());
+//        myPlayer.setNation(dto.getNation());
+//        myPlayer.setLeague(dto.getLeague());
+//        myPlayer.setTeam(dto.getTeam());
+//        myPlayer.setImg(dto.getImg());
+//
+//        myPlayer.setYellowCard(0L);
+//        myPlayer.setRedCard(0L);
+//        myPlayer.setRank(0L); // optional default
+//        myPlayer.setSeq_cnt(0L);
+//        myPlayer.setIdx(0L);
+//
+//        myPlayer.setPac(dto.getPac());
+//        myPlayer.setSho(dto.getSho());
+//        myPlayer.setPas(dto.getPas());
+//        myPlayer.setDri(dto.getDri());
+//        myPlayer.setDef(dto.getDef());
+//        myPlayer.setPhy(dto.getPhy());
+//
+//        myPlayer.setAcceleration(dto.getAcceleration());
+//        myPlayer.setSprintSpeed(dto.getSprintSpeed());
+//        myPlayer.setPositioning(dto.getPositioning());
+//        myPlayer.setFinishing(dto.getFinishing());
+//        myPlayer.setShotPower(dto.getShotPower());
+//        myPlayer.setLongShots(dto.getLongShots());
+//        myPlayer.setVolleys(dto.getVolleys());
+//        myPlayer.setPenalties(dto.getPenalties());
+//        myPlayer.setVision(dto.getVision());
+//        myPlayer.setCrossing(dto.getCrossing());
+//        myPlayer.setShortPassing(dto.getShortPassing());
+//        myPlayer.setLongPassing(dto.getLongPassing());
+//        myPlayer.setCurve(dto.getCurve());
+//        myPlayer.setDribbling(dto.getDribbling());
+//        myPlayer.setAgility(dto.getAgility());
+//        myPlayer.setBalance(dto.getBalance());
+//        myPlayer.setReactions(dto.getReactions());
+//        myPlayer.setBallControl(dto.getBallControl());
+//        myPlayer.setComposure(dto.getComposure());
+//
+//        myPlayer.setInterceptions(dto.getInterceptions());
+//        myPlayer.setHeadingAccuracy(dto.getHeadingAccuracy());
+//        myPlayer.setDefAwareness(dto.getDefAwareness());
+//        myPlayer.setStandingTackle(dto.getStandingTackle());
+//        myPlayer.setSlidingTackle(dto.getSlidingTackle());
+//
+//        myPlayer.setJumping(dto.getJumping());
+//        myPlayer.setStamina(dto.getStamina());
+//        myPlayer.setStrength(dto.getStrength());
+//        myPlayer.setAggression(dto.getAggression());
+//
+//        myPlayer.setWeakFoot(dto.getWeakFoot());
+//        myPlayer.setSkillMoves(dto.getSkillMoves());
+//        myPlayer.setPreferredFoot(dto.getPreferredFoot());
+//        myPlayer.setHeight(dto.getHeight());
+//        myPlayer.setWeight(dto.getWeight());
+//        myPlayer.setAlternativePositions(dto.getAlternativePositions());
+//        myPlayer.setAge(dto.getAge());
+//        myPlayer.setPlayStyle(dto.getPlayStyle());
+//        myPlayer.setUrl(dto.getUrl());
+//
+//        myPlayer.setGkDiving(dto.getGkDiving());
+//        myPlayer.setGkHandling(dto.getGkHandling());
+//        myPlayer.setGkKicking(dto.getGkKicking());
+//        myPlayer.setGkPositioning(dto.getGkPositioning());
+//        myPlayer.setGkReflexes(dto.getGkReflexes());
+//
+//        return myPlayer;
+//    }
 }

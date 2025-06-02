@@ -23,11 +23,11 @@ public class MyPlayerService {
         return myPlayerRepository.findByUserIdAndClubId(userId, clubId);
     }
 
-    @Transactional
-    public void addMyPlayer(Player player, Long userId, Long clubId) {
-        MyPlayer myPlayer = MyPlayer.from(player, userId, clubId);
-        myPlayerRepository.save(myPlayer);
-    }
+//    @Transactional
+//    public void addMyPlayer(Player player, Long userId, Long clubId) {
+//        MyPlayer myPlayer = MyPlayer.from(player, userId, clubId);
+//        myPlayerRepository.save(myPlayer);
+//    }
 
     //    @Transactional
 //    public Optional<List<Long>> addNewClub(Long userId, Long clubId) {
@@ -96,7 +96,12 @@ public class MyPlayerService {
     }
 
     @Transactional
-    public void updateMyPlayer(Player source, MyPlayer myPlayer) {
+    void updateExistingPlayer(MyPlayer myPlayer) {
+        myPlayerRepository.save(myPlayer);
+    }
+
+    @Transactional
+    public void updateNewPlayer(Player source, MyPlayer myPlayer) {
         myPlayer.setPlayerId(source.getId());
         myPlayer.setName(source.getName());
         myPlayer.setOvr(source.getOvr());

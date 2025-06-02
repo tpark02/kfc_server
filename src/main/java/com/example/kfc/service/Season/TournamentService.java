@@ -86,7 +86,6 @@ public class TournamentService {
                 Random random = SeasonService.random;
 
                 if (!aIsAi && !bIsAi) {
-
                     // get yellow cards from a b
                     Long yellowCntA = myPlayerService.getYellowCardCount(a.getUser().getId(), a.getClubId());
                     Long yellowCntB = myPlayerService.getYellowCardCount(b.getUser().getId(), b.getClubId());
@@ -95,27 +94,35 @@ public class TournamentService {
                     MyClub clubA = myClubService.getClubByUserIdAndClubId(a.getUser().getId(), a.getClubId());
                     MyClub clubB = myClubService.getClubByUserIdAndClubId(b.getUser().getId(), b.getClubId());
 
+                    // deduct ovr yellow cards
                     Long adjustedOvrA = clubA.getOvr() - yellowCntA * 5;
                     Long adjustedOvrB = clubB.getOvr() - yellowCntB * 5;
+
+                    // deduct ovr red cards
+                    Long redCntA = myPlayerService.getRedCardCount(a.getUser().getId(), a.getClubId());
+                    Long redCntB = myPlayerService.getRedCardCount(b.getUser().getId(), b.getClubId());
+
+                    adjustedOvrA -= (redCntA * 10);
+                    adjustedOvrB -= (redCntB * 10);
 
                     UserInfo winnerUser = a.getUser();
                     if (!Objects.equals(adjustedOvrA, adjustedOvrB)) {
                         winnerUser = (adjustedOvrA > adjustedOvrB) ? a.getUser() : b.getUser();
                     }
 
-                    System.out.println("🧍 User vs User");
-                    System.out.println("A: " + a.getUser().getUsername() + " | Club ID: " + clubA.getClubId() + " | OVR: " + clubA.getOvr());
-                    System.out.println("B: " + b.getUser().getUsername() + " | Club ID: " + clubB.getClubId() + " | OVR: " + clubB.getOvr());
+                    System.out.println("🧍 User vs 🧍 User");
+                    System.out.println("A: " + a.getUser().getUsername() + " | Club ID: " + clubA.getClubId() + " | adjusted OVR: " + adjustedOvrA);
+                    System.out.println("B: " + b.getUser().getUsername() + " | Club ID: " + clubB.getClubId() + " | adjusted  OVR: " + adjustedOvrB);
 
                     winnerParticipant = (winnerUser == null || winnerUser.equals(a.getUser())) ? a : b;
                     loserParticipant = (winnerUser == null || winnerUser.equals(a.getUser())) ? b : a;
 
                     // reset yellow and red cards
-                    myPlayerService.resetYellowCards(a.getUser().getId(), a.getClubId());
-                    myPlayerService.resetRedCards(a.getUser().getId(), a.getClubId());
-
-                    myPlayerService.resetYellowCards(b.getUser().getId(), b.getClubId());
-                    myPlayerService.resetRedCards(b.getUser().getId(), b.getClubId());
+//                    myPlayerService.resetYellowCards(a.getUser().getId(), a.getClubId());
+//                    myPlayerService.resetRedCards(a.getUser().getId(), a.getClubId());
+//
+//                    myPlayerService.resetYellowCards(b.getUser().getId(), b.getClubId());
+//                    myPlayerService.resetRedCards(b.getUser().getId(), b.getClubId());
 
                     if (random.nextBoolean()) {
                         int cntA = generateYellowCardCount(random);
@@ -136,7 +143,7 @@ public class TournamentService {
                     AiClub clubA = getAiClubById(a.getClubId());
                     AiClub clubB = getAiClubById(b.getClubId());
 
-                    System.out.println("🤖 AI vs AI");
+                    System.out.println("🤖 AI vs 🤖 AI");
                     System.out.println("A (AI): " + a.getUser().getUsername() + " | Club ID: " + clubA.getClubId() + " | OVR: " + clubA.getOvr());
                     System.out.println("B (AI): " + b.getUser().getUsername() + " | Club ID: " + clubB.getClubId() + " | OVR: " + clubB.getOvr());
 
@@ -149,20 +156,22 @@ public class TournamentService {
                     MyClub humanClub = myClubService.getClubByUserIdAndClubId(human.getUser().getId(), human.getClubId());
                     AiClub aiClub = getAiClubById(ai.getClubId());
 
-                    System.out.println("🧍 vs 🤖 User vs AI");
-                    System.out.println("Human: " + human.getUser().getUsername() + " | Club ID: " + humanClub.getClubId() + " | OVR: " + humanClub.getOvr());
-                    System.out.println("AI: " + ai.getUser().getUsername() + " | Club ID: " + aiClub.getClubId() + " | OVR: " + aiClub.getOvr());
-
-                    // subtract yellow from ovr
                     Long yellowCnt = myPlayerService.getYellowCardCount(humanClub.getUser().getId(), humanClub.getClubId());
+                    Long redCnt = myPlayerService.getRedCardCount(humanClub.getUser().getId(), humanClub.getClubId());
 
-                    boolean humanWins = humanClub.getOvr() - (yellowCnt * 5) >= aiClub.getOvr();
+                    // deduct ovr yellow cards
+                    Long adjustedOvr = humanClub.getOvr() - (yellowCnt * 5);
+
+                    // deduct ovr reds cards
+                    adjustedOvr -= (redCnt * 10);
+
+                    boolean humanWins = adjustedOvr >= aiClub.getOvr();
                     winnerParticipant = humanWins ? human : ai;
                     loserParticipant = humanWins ? ai : human;
 
                     // reset yellow and red
-                    myPlayerService.resetYellowCards(human.getUser().getId(), human.getClubId());
-                    myPlayerService.resetRedCards(human.getUser().getId(), human.getClubId());
+//                    myPlayerService.resetYellowCards(human.getUser().getId(), human.getClubId());
+//                    myPlayerService.resetRedCards(human.getUser().getId(), human.getClubId());
 
                     // set yellow
                     if (random.nextBoolean()) {
@@ -175,6 +184,10 @@ public class TournamentService {
                         int c = generateRedCardsCount(random);
                         setRedCard(human.getUser().getId(), human.getClubId(), c, 0L);
                     }
+
+                    System.out.println("🧍 vs 🤖 User vs AI");
+                    System.out.println("Human: " + human.getUser().getUsername() + " | Club ID: " + humanClub.getClubId() + " | adjusted OVR: " + adjustedOvr);
+                    System.out.println("AI: " + ai.getUser().getUsername() + " | Club ID: " + aiClub.getClubId() + " | OVR: " + aiClub.getOvr());
                 }
 
                 Long loserUserId = loserParticipant.getUser().getId();
@@ -230,7 +243,7 @@ public class TournamentService {
     private void setYellowCard(Long userId, Long clubId, int cnt) {
         try {
             List<MyPlayer> myPlayers = myPlayerService.getMyPlayer(userId, clubId);
-            int size = myPlayers.size();
+            int size = 11;
 
             if (cnt > size) {
                 throw new IllegalArgumentException("💥 Not enough players to give yellow cards. Total: " + size);
@@ -270,7 +283,7 @@ public class TournamentService {
     private void setRedCard(Long userId, Long clubId, int cnt, Long seq_cnt) {
         try {
             List<MyPlayer> myPlayers = myPlayerService.getMyPlayer(userId, clubId);
-            int size = myPlayers.size();
+            int size = 11;
 
             if (cnt > size) {
                 throw new IllegalArgumentException("💥 Not enough players to give red cards. Total: " + size);

@@ -1,5 +1,7 @@
 package com.example.kfc.Request;
 
+import com.example.kfc.dto.MyPlayerDto;
+import com.example.kfc.dto.PlayerDto;
 import lombok.Getter;
 
 import java.util.List;
@@ -8,7 +10,7 @@ import java.util.List;
 public class MyClubRequest {
     private String clubName;
     private String formationName;
-    private List<Long> players; // must be 17
+    private List<MyPlayerDto> players; // must be 17
     private Long ovr;
     private Long price;
     private Long age;
