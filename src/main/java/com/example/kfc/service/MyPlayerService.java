@@ -19,6 +19,9 @@ public class MyPlayerService {
     @Autowired
     private MyPlayerRepository myPlayerRepository;
 
+    public MyPlayer getMyPlayerById(Long userId, Long clubId, Long playerId) {
+        return myPlayerRepository.findByUserIdAndClubIdAndPlayerId(userId, clubId, playerId).orElseThrow(()-> new IllegalStateException("❌ my player not found - userid, clubid, playerid : " + userId + " : " + clubId + " : " + playerId));
+    }
     public List<MyPlayer> getMyPlayer(Long userId, Long clubId) {
         return myPlayerRepository.findByUserIdAndClubId(userId, clubId);
     }

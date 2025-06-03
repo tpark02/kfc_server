@@ -85,7 +85,8 @@ CREATE TABLE user_info (
     username VARCHAR(50),
     email VARCHAR(100),
     password VARCHAR(255),
-    is_ai BOOLEAN
+    is_ai BOOLEAN,
+    coin BIGINT DEFAULT 0
 );
 
 CREATE TABLE my_club (

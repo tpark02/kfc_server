@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MyPlayerRepository extends JpaRepository<MyPlayer, Long> {
-    Optional<MyPlayer> findByIdAndUserIdAndClubId(Long id, Long userId, Long clubId);
+    Optional<MyPlayer> findByUserIdAndClubIdAndPlayerId(Long userId, Long clubId, Long playerId);
     List<MyPlayer> findByUserIdAndClubId(Long userId, Long clubId);
 
     @Transactional
