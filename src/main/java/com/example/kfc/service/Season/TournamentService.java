@@ -30,7 +30,7 @@ public class TournamentService {
     private final MyClubService myClubService;
     private final MyPlayerService myPlayerService;
     private final FormationService formationService;
-    private final PlayerService playerService;
+    private final UserInfoService userInfoService;
 
     public void tryStartTournament(Season season) {
         try {
@@ -228,6 +228,13 @@ public class TournamentService {
                 participantRepository.eliminateParticipantByUserIdAndRound(loserUserId, round);
                 System.out.println("❌ Eliminated participant - User ID: " + loserUserId);
 
+                // add user coins
+                if (!winnerParticipant.getUser().isAi()) {
+                    UserInfo winner = winnerParticipant.getUser();
+                    winner.setCoin(2L * round);
+                    userInfoService.save(winner);
+                }
+
                 match.setWinner(winnerParticipant.getUser());
                 match.setRound(round);
                 matchRepository.save(match);
@@ -246,6 +253,12 @@ public class TournamentService {
         }
         if (!players.isEmpty()) {
             log.info("🏆 Final Winner: " + players.get(0).getUser().getUsername());
+            UserInfo winner = players.get(0).getUser();
+            if (!winner.isAi()) {
+                Long coin = winner.getCoin();
+                winner.setCoin(coin + 2L);
+                userInfoService.save(winner);
+            }
         }
     }
 

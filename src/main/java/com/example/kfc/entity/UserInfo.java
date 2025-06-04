@@ -23,6 +23,7 @@ public class UserInfo {
     private String username;
     private String email;
     private String password;
+    private Long coin;
 
     @Column(name = "is_ai")
     private boolean isAi = false;

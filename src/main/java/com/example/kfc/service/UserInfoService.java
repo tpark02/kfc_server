@@ -2,6 +2,7 @@ package com.example.kfc.service;
 
 import com.example.kfc.entity.UserInfo;
 import com.example.kfc.repository.UserInfoRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,9 +10,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class UserInfoService {
-    @Autowired
-    private UserInfoRepository userInfoRepository;
+
+    private final UserInfoRepository userInfoRepository;
 
     public Optional<UserInfo> findUserInfoById(Long id) {
         return userInfoRepository.findById(id);

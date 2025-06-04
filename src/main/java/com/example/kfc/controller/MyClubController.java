@@ -23,7 +23,6 @@ import java.util.stream.IntStream;
 
 @CrossOrigin(origins = "http://localhost:5173") // Vite dev 서버 주소
 @RestController
-//@RequestMapping("/api")
 @RequiredArgsConstructor
 public class MyClubController {
 
