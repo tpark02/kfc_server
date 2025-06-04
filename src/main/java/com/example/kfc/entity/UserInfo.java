@@ -24,6 +24,8 @@ public class UserInfo {
     private String email;
     private String password;
     private Long coin;
+    private Long tournamentToken;
+    private Long leagueToken;
 
     @Column(name = "is_ai")
     private boolean isAi = false;
