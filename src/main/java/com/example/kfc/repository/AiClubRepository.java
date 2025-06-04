@@ -14,13 +14,13 @@ public interface AiClubRepository extends JpaRepository<AiClub, Long> {
                 "c.pace = :pace, c.def = :def, c.atk = :atk, c.cch = :cch, c.stm = :stm " +
                 "WHERE c.clubId = :id")
         int updateClubInfoById(@Param("id") Long id,
-                               @Param("ovr") int ovr,
-                               @Param("price") int price,
-                               @Param("age") int age,
-                               @Param("pace") int pace,
-                               @Param("def") int def,
-                               @Param("atk") int atk,
-                               @Param("cch") int cch,
-                               @Param("stm") int stm);
+                               @Param("ovr") Long ovr,
+                               @Param("price") Long price,
+                               @Param("age") Long age,
+                               @Param("pace") Long pace,
+                               @Param("def") Long def,
+                               @Param("atk") Long atk,
+                               @Param("cch") Long cch,
+                               @Param("stm") Long stm);
 
 }

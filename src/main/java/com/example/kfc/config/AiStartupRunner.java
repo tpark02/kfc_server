@@ -28,57 +28,60 @@ public class AiStartupRunner implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) {
 
-        // ai club beginner insert
-        aiClubService.updateAiClubAndFormation(1L, "442", 63L);
-        aiClubService.updateAiClubAndFormation(1L, "433", 63L);
-        aiClubService.updateAiClubAndFormation(1L, "352", 63L);
-        aiClubService.updateAiClubAndFormation(1L, "4231", 63L);
-        aiClubService.updateAiClubAndFormation(1L, "451", 63L);
-        aiClubService.updateAiClubAndFormation(1L, "343", 63L);
-        aiClubService.updateAiClubAndFormation(1L, "532", 63L);
-        aiClubService.updateAiClubAndFormation(1L, "541", 63L);
-        aiClubService.updateAiClubAndFormation(1L, "41212", 63L);
-        aiClubService.updateAiClubAndFormation(1L, "4222", 63L);
-        aiClubService.updateAiClubAndFormation(1L, "4321", 63L);
-        aiClubService.updateAiClubAndFormation(1L, "4132", 63L);
-        aiClubService.updateAiClubAndFormation(1L, "424", 63L);
+// ai club beginner insert
+        aiClubService.updateAiClubAndFormation(1L, "442", 630L);
+        aiClubService.updateAiClubAndFormation(1L, "433", 630L);
+        aiClubService.updateAiClubAndFormation(1L, "352", 630L);
+        aiClubService.updateAiClubAndFormation(1L, "4231", 630L);
+        aiClubService.updateAiClubAndFormation(1L, "451", 630L);
+        aiClubService.updateAiClubAndFormation(1L, "343", 630L);
+        aiClubService.updateAiClubAndFormation(1L, "532", 630L);
+        aiClubService.updateAiClubAndFormation(1L, "541", 630L);
+        aiClubService.updateAiClubAndFormation(1L, "41212", 630L);
+        aiClubService.updateAiClubAndFormation(1L, "4222", 630L);
+        aiClubService.updateAiClubAndFormation(1L, "4321", 630L);
+        aiClubService.updateAiClubAndFormation(1L, "4132", 630L);
+        aiClubService.updateAiClubAndFormation(1L, "424", 630L);
 
-        // ai club intermediate insert
-        aiClubService.updateAiClubAndFormation(2L, "442", 73L);
-        aiClubService.updateAiClubAndFormation(2L, "433", 73L);
-        aiClubService.updateAiClubAndFormation(2L, "352", 73L);
-        aiClubService.updateAiClubAndFormation(2L, "4231", 73L);
-        aiClubService.updateAiClubAndFormation(2L, "451", 73L);
-        aiClubService.updateAiClubAndFormation(2L, "343", 73L);
-        aiClubService.updateAiClubAndFormation(2L, "532", 73L);
-        aiClubService.updateAiClubAndFormation(2L, "541", 73L);
-        aiClubService.updateAiClubAndFormation(2L, "41212", 73L);
-        aiClubService.updateAiClubAndFormation(2L, "4222", 73L);
-        aiClubService.updateAiClubAndFormation(2L, "4321", 73L);
-        aiClubService.updateAiClubAndFormation(2L, "4132", 73L);
-        aiClubService.updateAiClubAndFormation(2L, "424", 73L);
+// ai club intermediate insert
+        aiClubService.updateAiClubAndFormation(2L, "442", 730L);
+        aiClubService.updateAiClubAndFormation(2L, "433", 730L);
+        aiClubService.updateAiClubAndFormation(2L, "352", 730L);
+        aiClubService.updateAiClubAndFormation(2L, "4231", 730L);
+        aiClubService.updateAiClubAndFormation(2L, "451", 730L);
+        aiClubService.updateAiClubAndFormation(2L, "343", 730L);
+        aiClubService.updateAiClubAndFormation(2L, "532", 730L);
+        aiClubService.updateAiClubAndFormation(2L, "541", 730L);
+        aiClubService.updateAiClubAndFormation(2L, "41212", 730L);
+        aiClubService.updateAiClubAndFormation(2L, "4222", 730L);
+        aiClubService.updateAiClubAndFormation(2L, "4321", 730L);
+        aiClubService.updateAiClubAndFormation(2L, "4132", 730L);
+        aiClubService.updateAiClubAndFormation(2L, "424", 730L);
 
-        // ai club exprt insert
-        aiClubService.updateAiClubAndFormation(3L, "442", 83L);
-        aiClubService.updateAiClubAndFormation(3L, "433", 83L);
-        aiClubService.updateAiClubAndFormation(3L, "352", 83L);
-        aiClubService.updateAiClubAndFormation(3L, "4231", 83L);
-        aiClubService.updateAiClubAndFormation(3L, "451", 83L);
-        aiClubService.updateAiClubAndFormation(3L, "343", 83L);
-        aiClubService.updateAiClubAndFormation(3L, "532", 83L);
-        aiClubService.updateAiClubAndFormation(3L, "541", 83L);
-        aiClubService.updateAiClubAndFormation(3L, "41212", 83L);
-        aiClubService.updateAiClubAndFormation(3L, "4222", 83L);
-        aiClubService.updateAiClubAndFormation(3L, "4321", 83L);
-        aiClubService.updateAiClubAndFormation(3L, "4132", 83L);
-        aiClubService.updateAiClubAndFormation(3L, "424", 83L);
+// ai club expert insert
+        aiClubService.updateAiClubAndFormation(3L, "442", 830L);
+        aiClubService.updateAiClubAndFormation(3L, "433", 830L);
+        aiClubService.updateAiClubAndFormation(3L, "352", 830L);
+        aiClubService.updateAiClubAndFormation(3L, "4231", 830L);
+        aiClubService.updateAiClubAndFormation(3L, "451", 830L);
+        aiClubService.updateAiClubAndFormation(3L, "343", 830L);
+        aiClubService.updateAiClubAndFormation(3L, "532", 830L);
+        aiClubService.updateAiClubAndFormation(3L, "541", 830L);
+        aiClubService.updateAiClubAndFormation(3L, "41212", 830L);
+        aiClubService.updateAiClubAndFormation(3L, "4222", 830L);
+        aiClubService.updateAiClubAndFormation(3L, "4321", 830L);
+        aiClubService.updateAiClubAndFormation(3L, "4132", 830L);
+        aiClubService.updateAiClubAndFormation(3L, "424", 830L);
+
 
         for (Long i = 1l; i <= 3L; i++) {
             Long finalI = i;
-            AiClub club = aiClubRepository.findById(i).orElseThrow(() -> new IllegalArgumentException("AI Club does not exist with club id - " + finalI));
+            AiClub club = aiClubRepository.findById(i)
+                    .orElseThrow(() -> new IllegalArgumentException("AI Club does not exist with club id - " + finalI));
             aiClubList.add(club);
 
-            List<AiFormation> lst = aiFormationRepository.findByClub_ClubId(finalI).orElseThrow(() -> new IllegalArgumentException("AI Formation does not exist with club id - " + finalI));;
+            List<AiFormation> lst = aiFormationRepository.findByClub_ClubId(finalI).orElseThrow(
+                    () -> new IllegalArgumentException("AI Formation does not exist with club id - " + finalI)); ;
 
             aiFormationList.put(finalI, lst);
         }

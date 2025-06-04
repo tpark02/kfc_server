@@ -112,10 +112,10 @@ public class AiClubService {
 
         // update ai club
         //CLUB_ID  	NAME  	USER_ID  	OVR  	PRICE  	AGE  	PACE  	DEF  	ATK  	CCH  	STM
-        updateAiClub(clubId, Math.toIntExact(ovr), Math.toIntExact(squadValue), Math.toIntExact(teamAge),
-                     Math.toIntExact(paceIndex), Math.toIntExact(def), Math.toIntExact(atk),
-                     Math.toIntExact(clubCohesion),
-                     Math.toIntExact(teamStamina));
+        updateAiClub(clubId, ovr, squadValue, teamAge,
+                     paceIndex, def, atk,
+                     clubCohesion,
+                     teamStamina);
 
         // bench players
         List<PlayerDto> benchplayers = playersPool.stream()
@@ -161,7 +161,7 @@ public class AiClubService {
     }
 
     //CLUB_ID  	NAME  	USER_ID  	OVR  	PRICE  	AGE  	PACE  	DEF  	ATK  	CCH  	STM
-    public void updateAiClub(Long userId, int ovr, int price, int age, int pace, int def, int atk, int cch, int stm) {
+    public void updateAiClub(Long userId, Long ovr, Long price, Long age, Long pace, Long def, Long atk, Long cch, Long stm) {
         try {
             aiClubRepository.updateClubInfoById(userId, ovr, price, age, pace, def, atk, cch, stm);
         } catch (Exception e) {
