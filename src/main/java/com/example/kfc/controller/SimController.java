@@ -30,6 +30,6 @@ public class SimController {
 
     @PostMapping("/simulate/generate-schedule")
     public List<MatchDto> generateRandomSchedule(@RequestBody SimGenerateRequest request) {
-        return simService.generateRandomSchedule(request.getMyTeamName(), request.getUserId(), request.getClubId());
+        return simService.generateRandomSchedule(request.getUserId(), request.getClubId());
     }
 }

@@ -6,7 +6,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class SimGenerateRequest {
-    private String myTeamName;
+//    private String myTeamName;
     private Long userId;
     private Long clubId;
 }

@@ -73,7 +73,7 @@ public class SimService {
         return new SimResultResponse(table, logs);
     }
 
-    public List<MatchDto> generateRandomSchedule(String myTeamName, Long userId, Long clubId) {
+    public List<MatchDto> generateRandomSchedule(Long userId, Long clubId) {
         try {
             List<Team> teams = teamRepository.findRandom20Teams();
 
@@ -107,7 +107,7 @@ public class SimService {
 
                 // 매치 생성 및 추가
                 schedule.add(new MatchDto(
-                        myTeamName,
+                        club.getName(),
                         opponentTeam,
                         i + 1,
                         avgOvr,
