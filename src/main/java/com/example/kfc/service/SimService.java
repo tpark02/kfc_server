@@ -11,10 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
 
@@ -77,7 +74,6 @@ public class SimService {
     }
 
     public List<MatchDto> generateRandomSchedule(String myTeamName, Long userId, Long clubId) {
-        AtomicReference<String> opponent = null;
         try {
             List<Team> teams = teamRepository.findRandom20Teams();
 
@@ -85,45 +81,52 @@ public class SimService {
                 throw new IllegalStateException("2개 이상의 팀이 필요합니다.");
             }
 
-            // 홀수면 BYE 팀 추가
+            // 홀수일 경우 BYE 팀 추가
             if (teams.size() % 2 != 0) {
                 teams.add(new Team("BYE"));
             }
 
-//            myTeamMembers.forEach(p -> System.out.println("ovr: " + p.getOvr()));
-//
-//            double avg = myTeamMembers.stream()
-//                    .mapToLong(PlayerDto::getOvr)
-//                    .average()
-//                    .orElse(0.0);
-
-            //System.out.println("avg: " + avg);
-
-//            Long myTeamOvr = (long) avg;
-            //System.out.println("long avg: " + myTeamOvr);
-
-            var club = myClubService.getClubByUserIdAndClubId(userId,
-                                       clubId);
-
+            // 사용자 클럽 정보 가져오기
+            var club = myClubService.getClubByUserIdAndClubId(userId, clubId);
             List<MatchDto> schedule = new ArrayList<>();
-            opponent = new AtomicReference<>("");
 
-            AtomicReference<String> finalOpponent = opponent;
-            IntStream.range(0, teams.size())
-                    .forEach(i -> {
-                        log.info(i + " : " + teams.get(i).getTeam());
-                        finalOpponent.set(teams.get(i).getTeam());
-                        Long avgOvr = playerRepository.avgOvrTeam(finalOpponent.get().toLowerCase());
-                        String res = club.getOvr() > avgOvr ? "W" : "L";
-                        var lst = playerRepository.searchClub(teams.get(i).getTeam()).stream().map(PlayerDto::from).toList();
-                        schedule.add(new MatchDto(myTeamName, finalOpponent.toString(), i + 1, avgOvr, res, lst));
-                    });
+            for (int i = 0; i < teams.size(); i++) {
+                String opponentTeam = teams.get(i).getTeam();
 
+                // 평균 OVR 조회
+                Long avgOvr = playerRepository.avgOvrTeam(opponentTeam.toLowerCase());
+
+                // 선수 목록 조회
+                List<PlayerDto> members = playerRepository.searchClub(opponentTeam)
+                        .stream()
+                        .map(PlayerDto::from)
+                        .toList();
+
+                // 승패 계산
+                String result = club.getOvr() > avgOvr ? "W" : "L";
+
+                // 매치 생성 및 추가
+                schedule.add(new MatchDto(
+                        myTeamName,
+                        opponentTeam,
+                        i + 1,
+                        avgOvr,
+                        result,
+                        members,
+                        0L
+                ));
+            }
+
+            // add stats to the won matches
+            schedule.forEach(m -> {
+                if (m.getRes().equals("W")) {
+                    m.setAddStats(1L);
+                }
+            });
             return schedule;
         } catch (Exception e) {
-            log.info(String.valueOf(opponent));
-            log.info(e.toString());
-            return new ArrayList<MatchDto>();
+            log.error("❌ Failed to generate schedule", e);
+            return Collections.emptyList();
         }
     }
 }

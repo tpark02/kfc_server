@@ -23,10 +23,10 @@ public class SimController {
     @Autowired
     private final SimService simService;
 
-    @PostMapping("/api/simulate-league")
-    public SimResultResponse simulateLeague(@RequestBody SimRequest request) {
-        return simService.simulateLeague(request.getTeams());
-    }
+//    @PostMapping("/api/simulate-league")
+//    public SimResultResponse simulateLeague(@RequestBody SimRequest request) {
+//        return simService.simulateLeague(request.getTeams());
+//    }
 
     @PostMapping("/simulate/generate-schedule")
     public List<MatchDto> generateRandomSchedule(@RequestBody SimGenerateRequest request) {

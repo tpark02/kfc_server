@@ -18,4 +18,5 @@ public class MatchDto {
     private Long ovr;
     private String res;
     private List<PlayerDto> members;
+    private Long addStats;
 }

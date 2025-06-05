@@ -165,7 +165,7 @@ public class MyClubService {
         }
 
 
-        // 🔁 over write 17 players sequencially
+        // 🔁 over write 17 players sequentially
         for (int i = 0; i < RandomTeamService.numberOfTotalPlayers; i++) {
             Long playerId = myPlayerDtoLst.get(i).getPlayerId();
 
