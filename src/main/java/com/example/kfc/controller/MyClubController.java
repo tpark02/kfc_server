@@ -131,21 +131,21 @@ public class MyClubController {
         }
     }
 
-    @PostMapping("/myclub/updateroster")
-    public ResponseEntity<String> updateRoater(@RequestBody UpdateRosterRequest request) {
-        try {
-            Long userId = request.getUserId();
-            Long clubId = request.getClubId();
-            Map<Long, Long> rosterMap = request.getRosterMap();
-
-            System.out.println("✅ userId: " + request.getUserId());
-            System.out.println("✅ clubId: " + request.getClubId());
-            System.out.println("✅ rosterMap: " + request.getRosterMap());
-
-            myPlayerService.updateIdxForClub(userId, clubId, rosterMap);
-            return ResponseEntity.ok("club saved");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
-    }
+//    @PostMapping("/myclub/updateroster")
+//    public ResponseEntity<String> updateRoater(@RequestBody UpdateRosterRequest request) {
+//        try {
+//            Long userId = request.getUserId();
+//            Long clubId = request.getClubId();
+//            Map<Long, Long> rosterMap = request.getRosterMap();
+//
+//            System.out.println("✅ userId: " + request.getUserId());
+//            System.out.println("✅ clubId: " + request.getClubId());
+//            System.out.println("✅ rosterMap: " + request.getRosterMap());
+//
+//            myPlayerService.updateIdxForClub(userId, clubId, rosterMap);
+//            return ResponseEntity.ok("club saved");
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+//        }
+//    }
 }
