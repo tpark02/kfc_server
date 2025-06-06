@@ -75,6 +75,9 @@ INSERT INTO user_info (username, email, is_ai)
 VALUES
 ('tm8', 'tm8@example.com', false);
 
+UPDATE user_info
+SET coin = 10000
+where id = 1;
 
 -- 그 다음 my_club
 INSERT INTO my_club (name, user_id) VALUES (null,
@@ -1278,3 +1281,10 @@ VALUES ('Noah Yamamoto', 'noah.yamamoto@example.com', true);
 
 INSERT INTO user_info (username, email, is_ai)
 VALUES ('Isabella Rossi', 'isabella.rossi@example.com', true);
+
+-- my_store init 30 empty slots
+-- MySQL / PostgreSQL 공통
+INSERT INTO my_store (user_id)
+SELECT 1
+FROM generate_series(1, 1);
+

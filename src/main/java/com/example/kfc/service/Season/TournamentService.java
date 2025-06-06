@@ -1,12 +1,10 @@
 package com.example.kfc.service.Season;
 
-import com.example.kfc.config.AiStartupRunner;
-import com.example.kfc.dto.MyPlayerDto;
+import com.example.kfc.config.StartupRunner;
 import com.example.kfc.entity.*;
 import com.example.kfc.entity.Season.Match;
 import com.example.kfc.entity.Season.Season;
 import com.example.kfc.entity.Season.SeasonParticipant;
-import com.example.kfc.repository.FormationRepository;
 import com.example.kfc.repository.Season.MatchRepository;
 import com.example.kfc.repository.Season.SeasonParticipantRepository;
 import com.example.kfc.repository.Season.SeasonRepository;
@@ -458,7 +456,7 @@ private int generateYellowCardCount(Random random) {
 }
 
 private AiClub getAiClubById(Long clubId) {
-    return AiStartupRunner.aiClubList.stream()
+    return StartupRunner.aiClubList.stream()
             .filter(c -> c.getClubId().equals(clubId))
             .findFirst()
             .orElseThrow(() -> new IllegalArgumentException("AI club ID not found: " + clubId));

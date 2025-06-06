@@ -2,7 +2,7 @@ CREATE TABLE player (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     rank BIGINT DEFAULT 0,
     name VARCHAR(100),
-    ovr VARCHAR(5),
+    ovr BIGINT default 0,
     pac BIGINT DEFAULT 0,
     sho BIGINT DEFAULT 0,
     pas BIGINT DEFAULT 0,
@@ -65,7 +65,9 @@ CREATE TABLE player (
     gk_handling BIGINT DEFAULT 0,
     gk_kicking BIGINT DEFAULT 0,
     gk_positioning BIGINT DEFAULT 0,
-    gk_reflexes BIGINT DEFAULT 0
+    gk_reflexes BIGINT DEFAULT 0,
+
+    price BIGINT default 0
 );
 
 CREATE TABLE team (
@@ -298,4 +300,10 @@ CREATE TABLE ai_formation (
 --    p26 INT,
     FOREIGN KEY (club_id) REFERENCES ai_club
     (club_id)
+);
+
+CREATE TABLE my_store (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT,
+    player_id BIGINT default -1
 );

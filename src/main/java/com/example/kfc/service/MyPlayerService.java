@@ -16,8 +16,8 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class MyPlayerService {
-    @Autowired
-    private MyPlayerRepository myPlayerRepository;
+
+    private final MyPlayerRepository myPlayerRepository;
 
     public MyPlayer getMyPlayerById(Long userId, Long clubId, Long playerId) {
         return myPlayerRepository.findByUserIdAndClubIdAndPlayerId(userId, clubId, playerId).orElseThrow(()-> new IllegalStateException("❌ my player not found - userid, clubid, playerid : " + userId + " : " + clubId + " : " + playerId));

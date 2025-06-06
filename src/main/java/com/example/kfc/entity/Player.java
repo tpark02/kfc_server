@@ -187,4 +187,7 @@ public class Player {
 
     @Column
     private Long gkReflexes;
+
+    @Column
+    private Long price;
 }

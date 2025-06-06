@@ -68,6 +68,7 @@ public class PlayerDto {
     private Long gkKicking;
     private Long gkPositioning;
     private Long gkReflexes;
+    private Long price;
 
     public static PlayerDto from(Player player) {
         return new PlayerDto(
@@ -129,7 +130,8 @@ public class PlayerDto {
                 player.getGkHandling(),
                 player.getGkKicking(),
                 player.getGkPositioning(),
-                player.getGkReflexes()
+                player.getGkReflexes(),
+                player.getPrice()
         );
     }
 
@@ -196,7 +198,8 @@ public class PlayerDto {
                 dto.getGkHandling(),
                 dto.getGkKicking(),
                 dto.getGkPositioning(),
-                dto.getGkReflexes()
+                dto.getGkReflexes(),
+                dto.getPrice()
         );
     }
 
