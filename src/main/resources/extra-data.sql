@@ -1283,8 +1283,5 @@ INSERT INTO user_info (username, email, is_ai)
 VALUES ('Isabella Rossi', 'isabella.rossi@example.com', true);
 
 -- my_store init 30 empty slots
--- MySQL / PostgreSQL 공통
 INSERT INTO my_store (user_id)
-SELECT 1
-FROM generate_series(1, 1);
-
+SELECT 1 FROM system_range(1, 30);

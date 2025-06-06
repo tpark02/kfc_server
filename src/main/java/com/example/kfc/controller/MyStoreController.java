@@ -1,6 +1,8 @@
 package com.example.kfc.controller;
 
 import com.example.kfc.Request.MyStoreUpdateRequest;
+import com.example.kfc.dto.MyPlayerDto;
+import com.example.kfc.dto.MyStoreDto;
 import com.example.kfc.entity.MyStore;
 import com.example.kfc.entity.Player;
 import com.example.kfc.entity.UserInfo;
@@ -9,11 +11,9 @@ import com.example.kfc.service.PlayerService;
 import com.example.kfc.service.UserInfoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -30,7 +30,7 @@ public class MyStoreController {
     private final UserInfoService userInfoService;
     private final Map<Long, ReentrantLock> rowLocks = new ConcurrentHashMap<>();
 
-    @PutMapping("/store/update/")
+    @PutMapping("/mystore/update/")
     public ResponseEntity<String> updateMyStore(@RequestBody MyStoreUpdateRequest request) {
         Long userId = request.getUserId();
         Long playerId = request.getPlayerId();
@@ -64,7 +64,7 @@ public class MyStoreController {
             userInfoService.save(userinfo);
 
             // ✅ Update store
-            boolean res = myStoreService.updateMyStore(rowId, userId, playerId);
+            boolean res = myStoreService.updateMyStore(rowId, userId, player);
 
             if (res) {
                 return ResponseEntity.ok("✅ Updated successfully.");
@@ -77,6 +77,11 @@ public class MyStoreController {
         } finally {
             lock.unlock();
         }
+    }
+
+    @GetMapping("/mystore/getmystore/{userId}")
+    public List<MyStoreDto> getMyStore(@PathVariable Long userId) {
+        return myStoreService.getMyStore(userId).stream().map(MyStoreDto::from).toList();
     }
 }
 

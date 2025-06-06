@@ -304,6 +304,72 @@ CREATE TABLE ai_formation (
 
 CREATE TABLE my_store (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    user_id BIGINT,
-    player_id BIGINT default -1
+    user_id BIGINT DEFAULT 0,
+    player_id BIGINT default -1,
+    rank BIGINT DEFAULT 0,
+    name VARCHAR(100),
+    ovr BIGINT default 0,
+    pac BIGINT DEFAULT 0,
+    sho BIGINT DEFAULT 0,
+    pas BIGINT DEFAULT 0,
+    dri BIGINT DEFAULT 0,
+    def BIGINT DEFAULT 0,
+    phy BIGINT DEFAULT 0,
+
+    acceleration BIGINT DEFAULT 0,
+    sprint_speed BIGINT DEFAULT 0,
+    positioning BIGINT DEFAULT 0,
+    finishing BIGINT DEFAULT 0,
+    shot_power BIGINT DEFAULT 0,
+    long_shots BIGINT DEFAULT 0,
+    volleys BIGINT DEFAULT 0,
+    penalties BIGINT DEFAULT 0,
+
+    vision BIGINT DEFAULT 0,
+    crossing BIGINT DEFAULT 0,
+    free_kick_accuracy BIGINT DEFAULT 0,
+    short_passing BIGINT DEFAULT 0,
+    long_passing BIGINT DEFAULT 0,
+    curve BIGINT DEFAULT 0,
+
+    dribbling BIGINT DEFAULT 0,
+    agility BIGINT DEFAULT 0,
+    balance BIGINT DEFAULT 0,
+    reactions BIGINT DEFAULT 0,
+    ball_control BIGINT DEFAULT 0,
+    composure BIGINT DEFAULT 0,
+
+    interceptions BIGINT DEFAULT 0,
+    heading_accuracy BIGINT DEFAULT 0,
+    def_awareness BIGINT DEFAULT 0,
+    standing_tackle BIGINT DEFAULT 0,
+    sliding_tackle BIGINT DEFAULT 0,
+
+    jumping BIGINT DEFAULT 0,
+    stamina BIGINT DEFAULT 0,
+    strength BIGINT DEFAULT 0,
+    aggression BIGINT DEFAULT 0,
+
+    pos VARCHAR(10),
+    weak_foot BIGINT DEFAULT 0,
+    skill_moves BIGINT DEFAULT 0,
+    preferred_foot VARCHAR(10),
+    height VARCHAR(30),
+    weight VARCHAR(30),
+    alternative_positions VARCHAR(50),
+
+    age BIGINT DEFAULT 0,
+    nation VARCHAR(50),
+    league VARCHAR(100),
+    team VARCHAR(100),
+    play_style VARCHAR(255),
+
+    url VARCHAR(255),
+    img VARCHAR(255),
+
+    gk_diving BIGINT DEFAULT 0,
+    gk_handling BIGINT DEFAULT 0,
+    gk_kicking BIGINT DEFAULT 0,
+    gk_positioning BIGINT DEFAULT 0,
+    gk_reflexes BIGINT DEFAULT 0
 );
