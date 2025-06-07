@@ -21,20 +21,20 @@ public class MyStore {
     @Column
     private Long playerId;
 
-//    @Column
-//    private Long clubId;
+    @Column
+    private Long clubId;
 
-//    @Column
-//    private Long yellowCard;
-//
-//    @Column
-//    private Long redCard;
+    @Column
+    private Long yellowCard;
 
-//    @Column
-//    private Long seq_cnt;
-//
-//    @Column
-//    private Long idx;
+    @Column
+    private Long redCard;
+
+    @Column
+    private Long seq_cnt;
+
+    @Column
+    private Long idx;
 
     @Column
     private Long rank;

@@ -20,6 +20,11 @@ public interface MyStoreRepository extends JpaRepository<MyStore, Long> {
     @Query("""
     UPDATE MyStore s SET 
         s.playerId = :playerId,
+        s.clubId = :clubId,
+        s.yellowCard = :yellowCard,
+        s.redCard = :redCard,
+        s.seq_cnt = :seqCnt,
+        s.idx = :idx,
         s.rank = :rank,
         s.name = :name,
         s.ovr = :ovr,
@@ -83,6 +88,11 @@ public interface MyStoreRepository extends JpaRepository<MyStore, Long> {
             @Param("id") Long id,
             @Param("userId") Long userId,
             @Param("playerId") Long playerId,
+            @Param("clubId") Long clubId,
+            @Param("yellowCard") Long yellowCard,
+            @Param("redCard") Long redCard,
+            @Param("seqCnt") Long seqCnt,
+            @Param("idx") Long idx,
             @Param("rank") Long rank,
             @Param("name") String name,
             @Param("ovr") Long ovr,
@@ -139,7 +149,9 @@ public interface MyStoreRepository extends JpaRepository<MyStore, Long> {
             @Param("gkHandling") Long gkHandling,
             @Param("gkKicking") Long gkKicking,
             @Param("gkPositioning") Long gkPositioning,
-            @Param("gkReflexes") Long gkReflexes);
+            @Param("gkReflexes") Long gkReflexes
+                                  );
+
 
     @Query("SELECT s FROM MyStore s WHERE s.userId = :userId")
     List<MyStore> getMyStoreData(@Param("userId") Long userId);

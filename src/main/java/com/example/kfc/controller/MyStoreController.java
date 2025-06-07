@@ -30,8 +30,8 @@ public class MyStoreController {
     private final UserInfoService userInfoService;
     private final Map<Long, ReentrantLock> rowLocks = new ConcurrentHashMap<>();
 
-    @PutMapping("/mystore/update/")
-    public ResponseEntity<String> updateMyStore(@RequestBody MyStoreUpdateRequest request) {
+    @PutMapping("/mystore/buyplayer/")
+    public ResponseEntity<String> updateNewPlayer(@RequestBody MyStoreUpdateRequest request) {
         Long userId = request.getUserId();
         Long playerId = request.getPlayerId();
         // 🔐 Lock per userId
@@ -51,7 +51,7 @@ public class MyStoreController {
 
             // 🧩 Find first empty store slot
             List<MyStore> lst = myStoreService.getMyStore(userId);
-            var storeOpt = lst.stream().filter(m -> m.getPlayerId().equals(-1L)).findFirst();
+            var storeOpt = lst.stream().filter(m -> m.getPlayerId().equals(0L)).findFirst();
 
             if (storeOpt.isEmpty()) {
                 return ResponseEntity.ok().body("❌ No empty slot found. userId = " + userId);
@@ -64,7 +64,7 @@ public class MyStoreController {
             userInfoService.save(userinfo);
 
             // ✅ Update store
-            boolean res = myStoreService.updateMyStore(rowId, userId, player);
+            boolean res = myStoreService.updateNewPlayer(rowId, userId, player);
 
             if (res) {
                 return ResponseEntity.ok("✅ Updated successfully.");

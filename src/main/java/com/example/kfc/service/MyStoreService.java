@@ -25,10 +25,16 @@ public class MyStoreService {
     }
 
     @Transactional
-    public boolean updateMyStore(Long id, Long userId, Player player) {
+    public boolean updateNewPlayer(Long id, Long userId, Player player) {
         int result = myStoreRepository.updateMyStoreByIdAndUserId(
-                id, userId,
+                id,
+                userId,
                 player.getId(),
+                -1L, // clubId
+                0L,  // yellowCard
+                0L,  // redCard
+                0L,  // seq_cnt
+                -1L, // idx
                 player.getRank(),
                 player.getName(),
                 player.getOvr(),
@@ -91,7 +97,6 @@ public class MyStoreService {
         return result > 0;
     }
 
-
 //    public Pair<Long, Long> findIdRangeByUserId(Long userId) {
 //        Object[] result = myStoreRepository.findIdRangeByUserId(userId).orElseThrow(() -> new IllegalArgumentException("No range found for userId=" + userId));
 //
@@ -102,9 +107,6 @@ public class MyStoreService {
 
     public List<MyStore> getMyStore(Long userId) {
         List<MyStore> lst = myStoreRepository.getMyStoreData(userId);
-        if (lst.isEmpty()) {
-            throw new IllegalArgumentException("No my store data found for userId=" + userId);
-        }
         return lst;
     }
 }
