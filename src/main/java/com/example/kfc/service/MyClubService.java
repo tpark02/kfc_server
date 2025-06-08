@@ -3,6 +3,7 @@ package com.example.kfc.service;
 import com.example.kfc.Request.MyClubRequest;
 import com.example.kfc.dto.MyPlayerDto;
 import com.example.kfc.entity.*;
+import com.example.kfc.manager.LockManager;
 import com.example.kfc.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -12,18 +13,13 @@ import org.springframework.stereotype.Service;
 import java.lang.reflect.Method;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class MyClubService {
-    private final Map<Long, ReentrantLock> clubLocks = new ConcurrentHashMap<>();
 
     private final MyClubRepository myClubRepository;
     private final UserInfoRepository userInfoRepository;
@@ -37,6 +33,7 @@ public class MyClubService {
     // ai club
     private final AiClubService aiClubService;
     private final AiFormationService aiFormationService;
+    private final LockManager<Long> clubLockManager = new LockManager<>();
 
     //    public MyClub saveClub(MyClub club) {
 //        return myClubRepository.save(club);
@@ -55,9 +52,7 @@ public class MyClubService {
 
     public Optional<MyClub> resetClub(Long userId, Long clubId) {
         // 클럽별 락 가져오기
-        ReentrantLock lock = clubLocks.computeIfAbsent(clubId, k -> new ReentrantLock());
-
-        lock.lock(); // 락 획득
+        clubLockManager.lock(clubId);
         try {
             MyClub existing = myClubRepository.findByClubIdAndUserId(clubId, userId)
                     .orElseThrow(() -> new IllegalArgumentException("Club not found"));
@@ -101,15 +96,13 @@ public class MyClubService {
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
-            lock.unlock(); // 락 해제
+            clubLockManager.unlock(clubId);
         }
     }
 
     @Transactional
     public Optional<MyClub> updateMyClub(Long userId, Long clubId, MyClubRequest request) {
-        ReentrantLock lock = clubLocks.computeIfAbsent(clubId, id -> new ReentrantLock());
-        lock.lock(); // 🔒 랍 흡매
-
+        clubLockManager.lock(clubId);
         try {
             MyClub existing = myClubRepository.findByClubIdAndUserId(clubId, userId)
                     .orElseThrow(() -> new IllegalArgumentException("Club not found"));
@@ -236,7 +229,7 @@ public class MyClubService {
             log.info("update my club error - {}", e.getMessage());
             return Optional.empty();
         } finally {
-            lock.unlock(); // 🔓 랍 해제
+            clubLockManager.unlock(clubId);
         }
     }
 

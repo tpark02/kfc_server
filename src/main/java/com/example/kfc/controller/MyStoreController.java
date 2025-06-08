@@ -6,17 +6,13 @@ import com.example.kfc.dto.MyStoreDto;
 import com.example.kfc.entity.MyStore;
 import com.example.kfc.entity.Player;
 import com.example.kfc.entity.UserInfo;
+import com.example.kfc.manager.LockManager;
 import com.example.kfc.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.ReentrantLock;
 
 @CrossOrigin(origins = "http://localhost:5173")
 @Slf4j
@@ -26,15 +22,14 @@ public class MyStoreController {
     private final PlayerService playerService;
     private final MyPlayerService myPlayerService;
     private final UserInfoService userInfoService;
-    private final Map<Long, ReentrantLock> rowLocks = new ConcurrentHashMap<>();
+    private final LockManager<Long> userLockManager = new LockManager<>();
 
     @PutMapping("/mystore/buyplayer/")
     public ResponseEntity<String> buyplayer(@RequestBody MyStoreUpdateRequest request) {
         Long userId = request.getUserId();
         Long playerId = request.getPlayerId();
         // 🔐 Lock per userId
-        ReentrantLock lock = rowLocks.computeIfAbsent(userId, id -> new ReentrantLock());
-        lock.lock();
+        userLockManager.lock(userId);
 
         try {
             // 💰 Get and check user coin balance
@@ -77,7 +72,7 @@ public class MyStoreController {
             log.error("❌ Exception during store update: {}", e.getMessage(), e);
             return ResponseEntity.internalServerError().body("❗ Internal server error.");
         } finally {
-            lock.unlock();
+            userLockManager.unlock(userId);
         }
     }
 }

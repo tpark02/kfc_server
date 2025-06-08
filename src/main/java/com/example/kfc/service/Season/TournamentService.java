@@ -5,6 +5,7 @@ import com.example.kfc.entity.*;
 import com.example.kfc.entity.Season.Match;
 import com.example.kfc.entity.Season.Season;
 import com.example.kfc.entity.Season.SeasonParticipant;
+import com.example.kfc.manager.LockManager;
 import com.example.kfc.repository.Season.MatchRepository;
 import com.example.kfc.repository.Season.SeasonParticipantRepository;
 import com.example.kfc.repository.Season.SeasonRepository;
@@ -17,14 +18,13 @@ import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class TournamentService {
-    private final Map<Long, ReentrantLock> seasonLocks = new ConcurrentHashMap<>();
+    private final LockManager<Long> seasonLockManager = new LockManager<>();
 
     private final SeasonRepository seasonRepository;
     private final SeasonParticipantRepository participantRepository;
@@ -35,8 +35,7 @@ public class TournamentService {
     private final UserInfoService userInfoService;
 
     public void tryStartTournament(Season season) {
-        ReentrantLock lock = seasonLocks.computeIfAbsent(season.getId(), id -> new ReentrantLock());
-        lock.lock();
+        seasonLockManager.lock(season.getId());
         try {
             if (season.isStarted()) return;
 
@@ -65,7 +64,7 @@ public class TournamentService {
         } catch (Exception e) {
             log.error("❌ TournamentService - tryStartTournament exception occurred: " + e.getMessage(), e);
         } finally {
-            lock.unlock();
+            seasonLockManager.unlock(season.getId());
         }
 }
 
