@@ -305,7 +305,7 @@ public class MyPlayer {
         myPlayer.setIdx(dto.getIdx());
         myPlayer.setYellowCard(dto.getYellowCard());
         myPlayer.setRedCard(dto.getRedCard());
-        myPlayer.setRank(0L); // optional default
+        myPlayer.setRank(dto.getRank());
         myPlayer.setSeq_cnt(0L);
 
         myPlayer.setPac(dto.getPac());

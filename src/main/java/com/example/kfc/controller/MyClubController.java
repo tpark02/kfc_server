@@ -40,33 +40,13 @@ public class MyClubController {
             List<MyClubDto> result = new ArrayList<>();
 
             for (MyClub club : clubs) {
-                List<MyPlayer> myPlayers = myPlayerService.getMyPlayer(userId, club.getClubId());
+                List<MyPlayer> myPlayers = myPlayerService.getMyPlayers(userId, club.getClubId());
 
                 var lst = myPlayers.stream().map(MyPlayerDto::from).toList();
 
 
                 Formation f = club.getFormations();
                 var formationName = f.getName();
-                //List<PlayerDto> playerDtos = new ArrayList<>();
-
-//            for (int i = 1; i <= 26; i++) {
-//                try {
-//                    Method getter = Formation.class.getMethod("getP" + i);
-//                    Long playerId = (Long) getter.invoke(f);
-//                    if (playerId != null) {
-//                        Player player =
-//                        playerRepository.searchPlayerById(playerId).orElse(null);
-//
-//                        if (player == null) {
-//                            throw new IllegalArgumentException("player does not exist [" + playerId.toString() + "]");
-//                        }
-//
-//                        playerDtos.add(PlayerDto.from(player));
-//                    }
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
 
                 MyClubDto dto = new MyClubDto(
                         club.getClubId(),

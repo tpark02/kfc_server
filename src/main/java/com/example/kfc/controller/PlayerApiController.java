@@ -150,7 +150,7 @@ public class PlayerApiController {
     public List<PlayerDto> getMyClubPlayers(@PathVariable Long userId, @PathVariable Long clubId) {
         try {
             UserInfo user = userInfoService.getUserById(userId);
-            List<MyPlayer> myPlayers = myPlayerService.getMyPlayer(userId, clubId);
+            List<MyPlayer> myPlayers = myPlayerService.getMyPlayers(userId, clubId);
             return myPlayers.stream().map(p -> {
                 var player = playerService.searchPlayerById(p.getPlayerId());
                 return PlayerDto.from(player);

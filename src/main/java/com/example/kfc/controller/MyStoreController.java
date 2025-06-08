@@ -6,9 +6,7 @@ import com.example.kfc.dto.MyStoreDto;
 import com.example.kfc.entity.MyStore;
 import com.example.kfc.entity.Player;
 import com.example.kfc.entity.UserInfo;
-import com.example.kfc.service.MyStoreService;
-import com.example.kfc.service.PlayerService;
-import com.example.kfc.service.UserInfoService;
+import com.example.kfc.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.repository.query.Param;
@@ -26,7 +24,7 @@ import java.util.concurrent.locks.ReentrantLock;
 @RequiredArgsConstructor
 public class MyStoreController {
     private final PlayerService playerService;
-    private final MyStoreService myStoreService;
+    private final MyPlayerService myPlayerService;
     private final UserInfoService userInfoService;
     private final Map<Long, ReentrantLock> rowLocks = new ConcurrentHashMap<>();
 
@@ -50,21 +48,25 @@ public class MyStoreController {
             }
 
             // 🧩 Find first empty store slot
-            List<MyStore> lst = myStoreService.getMyStore(userId);
-            var storeOpt = lst.stream().filter(m -> m.getPlayerId().equals(0L)).findFirst();
+//            List<MyStore> lst = myStoreService.getMyStore(userId);
+//            var storeOpt = lst.stream().filter(m -> m.getPlayerId().equals(0L)).findFirst();
+//
+//            if (storeOpt.isEmpty()) {
+//                return ResponseEntity.ok().body("❌ No empty slot found. userId = " + userId);
+//            }
+            Player dummy = playerService.findMaxId();
+            var emptySpot = myPlayerService.getMyPlayersByPlayerId(userId, 1L, dummy.getId());
 
-            if (storeOpt.isEmpty()) {
-                return ResponseEntity.ok().body("❌ No empty slot found. userId = " + userId);
+            if (emptySpot.size() <= 0) {
+                return ResponseEntity.ok().body("❌ No Empty Space for a new player");
             }
-
-            Long rowId = storeOpt.get().getId();
 
             // 💸 Deduct coin
             userinfo.setCoin(userCoin - price);
             userInfoService.save(userinfo);
 
             // ✅ Update store
-            boolean res = myStoreService.updateNewPlayer(rowId, userId, player);
+            boolean res = myPlayerService.updateNewPlayer(player, emptySpot.get(0));
 
             if (res) {
                 return ResponseEntity.ok("✅ Updated successfully.");
@@ -77,11 +79,6 @@ public class MyStoreController {
         } finally {
             lock.unlock();
         }
-    }
-
-    @GetMapping("/mystore/getmystore/{userId}")
-    public List<MyStoreDto> getMyStore(@PathVariable Long userId) {
-        return myStoreService.getMyStore(userId).stream().map(MyStoreDto::from).toList();
     }
 }
 

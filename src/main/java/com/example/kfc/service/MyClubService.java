@@ -107,9 +107,8 @@ public class MyClubService {
 
     @Transactional
     public Optional<MyClub> updateMyClub(Long userId, Long clubId, MyClubRequest request) {
-        // 클럽별 락 가져오기 또는 생성
         ReentrantLock lock = clubLocks.computeIfAbsent(clubId, id -> new ReentrantLock());
-        lock.lock(); // 🔒 락 획득
+        lock.lock(); // 🔒 랍 흡매
 
         try {
             MyClub existing = myClubRepository.findByClubIdAndUserId(clubId, userId)
@@ -122,7 +121,7 @@ public class MyClubService {
                 );
             }
 
-            // 클럽 정보 업데이트
+            // 클러 정보 업데이트
             existing.setName(request.getClubName());
             existing.setOvr(request.getOvr());
             existing.setAtk(request.getAttack());
@@ -156,28 +155,23 @@ public class MyClubService {
                 Long playerId = updated.getPlayerId();
 
                 try {
-                    // 포메이션에 선수 배치
                     Method setter = Formation.class.getMethod("setP" + (i + 1), Long.class);
                     setter.invoke(formation, playerId);
                 } catch (Exception e) {
                     throw new RuntimeException("Failed to set formation P" + (i + 1), e);
                 }
 
-                // 기존 MyPlayer에 데이터 덮어쓰기
                 MyPlayer target = existingPlayers.get(i);
+                target.setUserId(userId);
+                target.setPlayerId(updated.getPlayerId());
                 target.setClubId(updated.getClubId());
-                target.setName(updated.getName());
-                target.setOvr(updated.getOvr());
-                target.setPos(updated.getPos());
-                target.setNation(updated.getNation());
-                target.setLeague(updated.getLeague());
-                target.setTeam(updated.getTeam());
-                target.setImg(updated.getImg());
                 target.setIdx(updated.getIdx());
                 target.setYellowCard(updated.getYellowCard());
                 target.setRedCard(updated.getRedCard());
                 target.setRank(updated.getRank());
                 target.setSeq_cnt(0L);
+                target.setName(updated.getName());
+                target.setOvr(updated.getOvr());
                 target.setPac(updated.getPac());
                 target.setSho(updated.getSho());
                 target.setPas(updated.getPas());
@@ -194,6 +188,7 @@ public class MyClubService {
                 target.setPenalties(updated.getPenalties());
                 target.setVision(updated.getVision());
                 target.setCrossing(updated.getCrossing());
+                target.setFreeKickAccuracy(updated.getFreeKickAccuracy());
                 target.setShortPassing(updated.getShortPassing());
                 target.setLongPassing(updated.getLongPassing());
                 target.setCurve(updated.getCurve());
@@ -219,8 +214,12 @@ public class MyClubService {
                 target.setWeight(updated.getWeight());
                 target.setAlternativePositions(updated.getAlternativePositions());
                 target.setAge(updated.getAge());
+                target.setNation(updated.getNation());
+                target.setLeague(updated.getLeague());
+                target.setTeam(updated.getTeam());
                 target.setPlayStyle(updated.getPlayStyle());
                 target.setUrl(updated.getUrl());
+                target.setImg(updated.getImg());
                 target.setGkDiving(updated.getGkDiving());
                 target.setGkHandling(updated.getGkHandling());
                 target.setGkKicking(updated.getGkKicking());
@@ -228,14 +227,16 @@ public class MyClubService {
                 target.setGkReflexes(updated.getGkReflexes());
             }
 
-            // ✅ 저장 단계
             myPlayerRepository.saveAll(existingPlayers);
             formationRepository.save(formation);
             myClubRepository.save(existing);
 
             return Optional.of(existing);
+        } catch (Exception e) {
+            log.info("update my club error - {}", e.getMessage());
+            return Optional.empty();
         } finally {
-            lock.unlock(); // 🔓 락 해제
+            lock.unlock(); // 🔓 랍 해제
         }
     }
 

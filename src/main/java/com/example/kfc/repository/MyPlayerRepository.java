@@ -11,7 +11,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MyPlayerRepository extends JpaRepository<MyPlayer, Long> {
-    Optional<MyPlayer> findByUserIdAndClubIdAndPlayerId(Long userId, Long clubId, Long playerId);
+    @Query("SELECT m FROM MyPlayer m WHERE m.userId = :userId AND m.clubId = :clubId AND m.playerId = :playerId")
+    List<MyPlayer> findAllMatchingPlayerId(@Param("userId") Long userId,
+                                           @Param("clubId") Long clubId,
+                                           @Param("playerId") Long playerId);
     List<MyPlayer> findByUserIdAndClubId(Long userId, Long clubId);
 
     @Transactional

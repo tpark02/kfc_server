@@ -105,14 +105,14 @@ public class SeasonController {
             if (isAi1) {
                lst1 = makeAiMyPlayerDtoList(match.getPlayer1().getId(), match.getClubId1());
             } else {
-                List<MyPlayer> myPlayerList = myPlayerService.getMyPlayer(match.getPlayer1().getId(), match.getClubId1());
+                List<MyPlayer> myPlayerList = myPlayerService.getMyPlayers(match.getPlayer1().getId(), match.getClubId1());
                 lst1 = myPlayerList.stream().map(MyPlayerDto::from).collect(Collectors.toList());
             }
 
             if (isAi2) {
                 lst2 = makeAiMyPlayerDtoList(match.getPlayer2().getId(), match.getClubId2());
             } else {
-                List<MyPlayer> myPlayerList = myPlayerService.getMyPlayer(match.getPlayer2().getId(), match.getClubId2());
+                List<MyPlayer> myPlayerList = myPlayerService.getMyPlayers(match.getPlayer2().getId(), match.getClubId2());
                 lst2 = myPlayerList.stream().map(MyPlayerDto::from).collect(Collectors.toList());
             }
 
@@ -153,7 +153,7 @@ public class SeasonController {
     public List<MyPlayerDto> validateAiFormation(AiFormation aiFormation, Long userId, Long clubId, Long yellowCard, Long redCard) {
         List<MyPlayerDto> lst = new ArrayList<>();
 
-        for (int i = 1; i <= RandomTeamService.numberOfTotalPlayers; i++) {
+        for (int i = 1; i <= RandomTeamService.numberOfAiPlayers; i++) {
             String methodName = "getP" + i;
             try {
                 Method method = AiFormation.class.getMethod(methodName);

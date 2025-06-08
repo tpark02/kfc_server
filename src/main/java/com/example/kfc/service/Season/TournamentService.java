@@ -88,19 +88,32 @@ private void calcTournament(Season season, List<SeasonParticipant> players) {
 
         long totalOvr = 0L;
 
+        List<MyPlayer> allMyPlayers = myPlayerService.getMyPlayers(userId, clubId); // 전체 MyPlayer 리스트
+
         for (int j = 1; j <= RandomTeamService.numberOfTotalPlayers; j++) {
             try {
-                Method getter = Formation.class.getMethod("getP" + j); // 🛠️ index fixed
+                Method getter = Formation.class.getMethod("getP" + j); // P1 ~ P17
                 Long playerId = (Long) getter.invoke(formation);
 
                 if (playerId != null) {
-                    MyPlayer myPlayer = myPlayerService.getMyPlayerById(userId, clubId, playerId);
+                    int targetIdx = j - 1; // idx는 0-based
 
-                    long adjustedOvr = myPlayer.getOvr()
-                            - myPlayer.getYellowCard() * 5L
-                            - myPlayer.getRedCard() * 10L;
+                    // playerId와 idx가 둘 다 일치하는 MyPlayer 찾기
+                    Optional<MyPlayer> matched = allMyPlayers.stream()
+                            .filter(my -> my.getPlayerId().equals(playerId) && my.getIdx().equals((long) targetIdx))
+                            .findFirst();
 
-                    totalOvr += adjustedOvr;
+                    if (matched.isPresent()) {
+                        MyPlayer myPlayer = matched.get();
+
+                        long adjustedOvr = myPlayer.getOvr()
+                                - myPlayer.getYellowCard() * 5L
+                                - myPlayer.getRedCard() * 10L;
+
+                        totalOvr += adjustedOvr;
+                    } else {
+                        System.err.println("❌ No matching player for idx=" + targetIdx + ", playerId=" + playerId);
+                    }
                 }
             } catch (Exception e) {
                 System.err.println("⚠️ Failed to process player at P" + j + " for userId: " + userId);
@@ -464,7 +477,7 @@ private AiClub getAiClubById(Long clubId) {
 
 private void setYellowCard(Long userId, Long clubId, int cnt) {
     try {
-        List<MyPlayer> myPlayers = myPlayerService.getMyPlayer(userId, clubId);
+        List<MyPlayer> myPlayers = myPlayerService.getMyPlayers(userId, clubId);
         int size = 11;
 
         if (cnt > size) {
@@ -504,7 +517,7 @@ private void setYellowCard(Long userId, Long clubId, int cnt) {
 
 private void setRedCard(Long userId, Long clubId, int cnt, Long seq_cnt) {
     try {
-        List<MyPlayer> myPlayers = myPlayerService.getMyPlayer(userId, clubId);
+        List<MyPlayer> myPlayers = myPlayerService.getMyPlayers(userId, clubId);
         int size = 11;
 
         if (cnt > size) {
