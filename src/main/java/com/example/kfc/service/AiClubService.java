@@ -1,6 +1,7 @@
 package com.example.kfc.service;
 
 import com.example.kfc.data.FormationUtil;
+import com.example.kfc.dto.MyPlayerDto;
 import com.example.kfc.dto.PlayerDto;
 import com.example.kfc.entity.Player;
 import com.example.kfc.repository.AiClubRepository;
@@ -93,33 +94,32 @@ public class AiClubService {
 
         // total squad value
         Long squadValue = lst.stream()
-                .mapToLong(FormationUtil::estimateValue)
+                .mapToLong(p -> FormationUtil.estimateValue(p, PlayerDto::getOvr, PlayerDto::getPos, PlayerDto::getName))
                 .sum();
-        // atk, def
-        Map<String, Long> atkdef = FormationUtil.getDefenseAttackSplit(lst);
-        Long atk = atkdef.get("attack");
-        Long def = atkdef.get("defense");
 
-        // get PaceIndex
-        Long paceIndex = FormationUtil.getPaceIndex(lst);
-        // get TeamAge
-        Long teamAge = FormationUtil.getTeamAge(lst);
-        // club cohesion
-        Long clubCohesion = FormationUtil.getClubCohesion(lst);
-        // stamina
-        Long teamStamina = FormationUtil.getTeamStamina(lst);
+        Long pace =
+                FormationUtil.getAverageStat(lst
+                        , PlayerDto::getPac);
+        Long age = FormationUtil.getAverageStat(lst, PlayerDto::getAge);
+        Long stamina = FormationUtil.getAverageStat(lst, PlayerDto::getStamina);
+
+        Map<String, Long> split = FormationUtil.getAttackDefenseSplit(lst, PlayerDto::getSho, PlayerDto::getDef);
+        Long attack = split.get("attack");
+        Long defense = split.get("defense");
+
+        Long cohesion = FormationUtil.getClubCohesion(lst, PlayerDto::getTeam);
 
 
         // update ai club
         //CLUB_ID  	NAME  	USER_ID  	OVR  	PRICE  	AGE  	PACE  	DEF  	ATK  	CCH  	STM
-        updateAiClub(clubId, ovr, squadValue, teamAge,
-                     paceIndex, def, atk,
-                     clubCohesion,
-                     teamStamina);
+        updateAiClub(clubId, ovr, squadValue, age,
+                     pace, defense, attack,
+                     cohesion,
+                     stamina);
 
         // bench players
         List<PlayerDto> benchplayers = playersPool.stream()
-                .limit(RandomTeamService.numberOfTotalPlayers)
+                .limit(RandomTeamService.numberOfAiPlayers)
                 .map(PlayerDto::from)
                 .toList();
 
@@ -130,11 +130,11 @@ public class AiClubService {
                 .toList();
 
         List<Integer> playerIds = playerList.stream()
-                .limit(RandomTeamService.numberOfTotalPlayers)
+                .limit(RandomTeamService.numberOfAiPlayers)
                 .map(p -> p.getId().intValue())
                 .toList();
 
-        if (playerIds.size() < RandomTeamService.numberOfTotalPlayers) {
+        if (playerIds.size() < RandomTeamService.numberOfAiPlayers) {
             throw new IllegalStateException(String.format("You need %d players", playerIds.size()));
         }
 

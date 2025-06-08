@@ -100,4 +100,8 @@ public class PlayerService {
     public List<Player> searchPlayersByOvr(Long ovr) {
         return playerRepository.findByOvrLessThanEqual(ovr);
     }
+
+    public Player findMaxId() {
+        return playerRepository.findPlayerWithMaxId();
+    }
 }

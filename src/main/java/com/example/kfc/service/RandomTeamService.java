@@ -2,10 +2,8 @@ package com.example.kfc.service;
 
 import com.example.kfc.Response.RandomSquadResponse;
 import com.example.kfc.data.FormationUtil;
-import com.example.kfc.dto.CountryDto;
-import com.example.kfc.dto.LeagueDto;
-import com.example.kfc.dto.PlayerDto;
-import com.example.kfc.dto.TeamDto;
+import com.example.kfc.dto.*;
+import com.example.kfc.entity.MyPlayer;
 import com.example.kfc.entity.Player;
 import com.example.kfc.entity.UserInfo;
 import lombok.RequiredArgsConstructor;
@@ -18,13 +16,16 @@ import java.util.stream.IntStream;
 @Service
 @RequiredArgsConstructor
 public class RandomTeamService {
-    public static int numberOfTotalPlayers = 17;
+    public static int numberOfTotalPlayers = 27;
+    public static int numberOfAiPlayers = 17;
     public static int numberOfBenchPlayers = 6;
+    public static int numberOfBuyPlayers = 10;
+
     private final PlayerService playerService;
     private final UserInfoService userInfoService;
     private final Random random = new Random();
 
-    public RandomSquadResponse generateRandomTeamByPosition(String formation, List<CountryDto> countries, List<LeagueDto> leagues, List<TeamDto> clubs) {
+    public RandomSquadResponse generateRandomTeamByPosition(String formation, List<CountryDto> countries, List<LeagueDto> leagues, List<TeamDto> clubs, Long userId) {
         List<String> positionRequirement =
                 FormationUtil.formationPosition.get(
                 formation);
@@ -81,14 +82,16 @@ public class RandomTeamService {
 
         int chemistry = calculateChemistry(selectedPlayers);
 
-        List<PlayerDto> lst = new ArrayList<>();
+        List<MyPlayerDto> lst = new ArrayList<>();
         Set<Integer> usedIds = new HashSet<>();
-
-        selectedPlayers.forEach(p -> {
-            lst.add(PlayerDto.from(p));
+        IntStream.range(0, selectedPlayers.size()).forEach(i -> {
+            Player p = selectedPlayers.get(i);
+            MyPlayerDto myPlayerDto = MyPlayerDto.from(p, userId, 1L, 0L, 0L, (long) i);
+            lst.add(myPlayerDto);
         });
+
         //my team ovr 계산
-        double avg = lst.stream().mapToLong(PlayerDto::getOvr).average().orElse(0.0);
+        double avg = lst.stream().mapToLong(MyPlayerDto::getOvr).average().orElse(0.0);
         System.out.println("random formation - avg: " + avg);
 
         Long myTeamOvr = (long) avg;
@@ -97,47 +100,72 @@ public class RandomTeamService {
 
         // total squad value
         Long squadValue = lst.stream()
-                .mapToLong(FormationUtil::estimateValue)
+                .mapToLong(p -> FormationUtil.estimateValue(p, MyPlayerDto::getOvr, MyPlayerDto::getPos, MyPlayerDto::getName))
                 .sum();
+
         // atk, def
-        Map<String, Long> atkdef = FormationUtil.getDefenseAttackSplit(lst);
+        Map<String, Long> atkdef = FormationUtil.getDefenseAttackSplit(lst, MyPlayerDto::getDef, MyPlayerDto::getSho);
         Long atk = atkdef.get("attack");
         Long def = atkdef.get("defense");
 
-        // get PaceIndex
-        Long paceIndex = FormationUtil.getPaceIndex(lst);
-        // get TeamAge
-        Long teamAge = FormationUtil.getTeamAge(lst);
-        // club cohesion
-        Long clubCohesion = FormationUtil.getClubCohesion(lst);
-        // stamina
-        Long teamStamina = FormationUtil.getTeamStamina(lst);
+        Long pace = FormationUtil.getAverageStat(lst, MyPlayerDto::getPac);
+        Long age = FormationUtil.getAverageStat(lst, MyPlayerDto::getAge);
+        Long stamina = FormationUtil.getAverageStat(lst, MyPlayerDto::getStamina);
+        Long cohesion = FormationUtil.getClubCohesion(lst, MyPlayerDto::getTeam);
 
         UserInfo user =
                 userInfoService.getUserById(1L);    // TODO : when account system added, this should come from userId from the front-end
         // bench players
-        List<PlayerDto> benchplayers = playersPool.stream()
-                .limit(numberOfBenchPlayers)
-                .map(PlayerDto::from)
+        List<MyPlayerDto> benchPlayers = IntStream.range(0, numberOfBenchPlayers)
+                .mapToObj(i -> {
+                    MyPlayerDto dto = MyPlayerDto.from(
+                            playersPool.get(i),
+                            userId,
+                            1L,     // clubId
+                            0L,     // yellowCard
+                            0L,     // redCard
+                            (long) (i + 11) // idx: 11부터 시작
+                                                      );
+                    return dto;
+                })
                 .toList();
 
-        lst.addAll(benchplayers);
 
-        // setting idx to playerDto
-        IntStream.range(0, lst.size())
-                .forEach(i -> lst.get(i).setIdx((long) i));
+        lst.addAll(benchPlayers);
+
+        // buy players
+        Player dummy = playerService.findMaxId();
+        List<MyPlayerDto> buyPlayers = IntStream.range(0, numberOfBuyPlayers)
+                .mapToObj(i -> {
+                    MyPlayerDto dto = MyPlayerDto.from(
+                            dummy,
+                            userId,
+                            1L,     // clubId
+                            0L,     // yellowCard
+                            0L,     // redCard
+                            (long) (i + 17) // idx: 11부터 시작
+                                                      );
+                    return dto;
+                })
+                .toList();
+
+        lst.addAll(buyPlayers);
+
+//        // setting idx to playerDto
+//        IntStream.range(0, lst.size())
+//                .forEach(i -> lst.get(i).setIdx((long) i));
 
         return  RandomSquadResponse.builder()
-                .content(lst)
+                .myPlayerList(lst)
                 .chemistry((long) chemistry)
                 .myTeamOvr(myTeamOvr)
                 .myTeamSquadValue(squadValue)
-                .myTeamAge(teamAge)
-                .myTeamClubCohesion(clubCohesion)
+                .myTeamAge(age)
+                .myTeamClubCohesion(cohesion)
                 .myTeamAtk(atk)
                 .myTeamDef(def)
-                .myTeamPace(paceIndex)
-                .myTeamStamina(teamStamina)
+                .myTeamPace(pace)
+                .myTeamStamina(stamina)
                 .build();
     }
 

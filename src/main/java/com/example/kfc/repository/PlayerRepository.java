@@ -13,7 +13,8 @@ import java.util.Optional;
 public interface PlayerRepository extends JpaRepository<Player, Long> {
     @Query("SELECT ROUND(AVG(p.ovr)) FROM Player p WHERE LOWER(p.team) LIKE LOWER(CONCAT('%', :team, '%'))")
     Long avgOvrTeam(@Param("team") String team);
-
+    @Query("SELECT p FROM Player p WHERE p.id = (SELECT MAX(p2.id) FROM Player p2)")
+    Player findPlayerWithMaxId();
 
     @Query("SELECT p FROM Player p WHERE " +
             "(:nation IS NULL OR LOWER(p.nation) IN :nation) AND " +

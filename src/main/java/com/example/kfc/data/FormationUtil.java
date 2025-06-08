@@ -1,8 +1,11 @@
 package com.example.kfc.data;
 
+import com.example.kfc.dto.MyPlayerDto;
 import com.example.kfc.dto.PlayerDto;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.function.ToLongFunction;
 
 public class FormationUtil {
 
@@ -227,24 +230,27 @@ public class FormationUtil {
         ATTACKERS = Set.of("ST", "CF", "CAM", "LW", "RW", "LM", "RM");
     }
 
-    public static Long estimateValue(PlayerDto player) {
-        double baseValue = Math.pow(player.getOvr(), 2) * 1000;
-        double multiplier = POSITION_MULTIPLIER.getOrDefault(player.getPos(), 1.0);
-        System.out.println("estimating: " + player.getName() + " / pos=" + player.getPos() + " / ovr=" + player.getOvr());
+    public static <T> Long estimateValue(
+            T player,
+            ToLongFunction<T> getOvr,
+            Function<T, String> getPos,
+            Function<T, String> getName
+                                        ) {
+        double baseValue = Math.pow(getOvr.applyAsLong(player), 2) * 1000;
+        double multiplier = POSITION_MULTIPLIER.getOrDefault(getPos.apply(player), 1.0);
+        System.out.println("estimating: " + getName.apply(player) + " / pos=" + getPos.apply(player) + " / ovr=" + getOvr.applyAsLong(player));
 
         return Math.round(baseValue * multiplier);
     }
 
-    public static Map<String, Long> getDefenseAttackSplit(List<PlayerDto> players) {
-        double avgDef = players.stream()
-                .mapToLong(PlayerDto::getDef)
-                .average()
-                .orElse(0);
 
-        double avgSho = players.stream()
-                .mapToLong(PlayerDto::getSho)
-                .average()
-                .orElse(0);
+    public static <T> Map<String, Long> getDefenseAttackSplit(
+            List<T> players,
+            ToLongFunction<T> getDef,
+            ToLongFunction<T> getSho
+                                                             ) {
+        double avgDef = players.stream().mapToLong(getDef).average().orElse(0);
+        double avgSho = players.stream().mapToLong(getSho).average().orElse(0);
 
         Map<String, Long> result = new HashMap<>();
         result.put("defense", Math.round(avgDef));
@@ -252,29 +258,41 @@ public class FormationUtil {
         return result;
     }
 
-    public static Long getPaceIndex(List<PlayerDto> players) {
-        long sum = players.stream().mapToLong(PlayerDto::getPac).sum();
-        return (long) Math.round((float) sum / 11);
+    // 🟡 평균 스탯 계산 (pace, age, stamina 등)
+    public static <T> Long getAverageStat(List<T> players, ToLongFunction<T> getter) {
+        return (long) Math.round(
+                players.stream().filter(Objects::nonNull).mapToLong(getter).sum() / 11.0
+                                );
     }
 
-    public  static Long getTeamAge(List<PlayerDto> players) {
-        long sum = players.stream().mapToLong(PlayerDto::getAge).sum();
-        return (long) Math.round((float) sum / 11);
+    // 🔴 공격/수비 스플릿
+    public static <T> Map<String, Long> getAttackDefenseSplit(
+            List<T> players,
+            ToLongFunction<T> attackGetter,
+            ToLongFunction<T> defenseGetter
+                                                             ) {
+        double avgAtk = players.stream().mapToLong(attackGetter).average().orElse(0);
+        double avgDef = players.stream().mapToLong(defenseGetter).average().orElse(0);
+
+        Map<String, Long> result = new HashMap<>();
+        result.put("attack", Math.round(avgAtk));
+        result.put("defense", Math.round(avgDef));
+        return result;
     }
 
-    public static Long getClubCohesion(List<PlayerDto> players) {
-        Map<String, Long> clubCount = new HashMap<>();
-
-        for (var p : players) {
-            if (p != null && p.getTeam() != null && !p.getTeam().isEmpty()) {
-                clubCount.put(p.getTeam(), clubCount.getOrDefault(p.getTeam(), 0L) + 1);
-            }
+    // 🔵 클럽 결속도
+    public static <T> Long getClubCohesion(List<T> players, Function<T, String> teamGetter) {
+        Map<String, Long> teamCount = new HashMap<>();
+        for (T p : players) {
+            Optional.ofNullable(teamGetter.apply(p))
+                    .filter(team -> !team.isEmpty())
+                    .ifPresent(team -> teamCount.put(team, teamCount.getOrDefault(team, 0L) + 1));
         }
-        return clubCount.values().stream().max(Long::compareTo).orElse(0L) * 10L;
+        return teamCount.values().stream().max(Long::compareTo).orElse(0L) * 10L;
     }
 
-    public static Long getTeamStamina(List<PlayerDto> players) {
-        long sum = players.stream().mapToLong(PlayerDto::getStamina).sum();
-        return (long) Math.round((float) sum / 11);
+    // 🟢 스쿼드 밸류
+    public static <T> Long getSquadValue(List<T> players, Function<T, Long> valueEstimator) {
+        return players.stream().mapToLong(p -> valueEstimator.apply(p)).sum();
     }
 }

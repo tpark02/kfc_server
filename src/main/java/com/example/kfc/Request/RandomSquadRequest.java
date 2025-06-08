@@ -15,4 +15,5 @@ public class RandomSquadRequest {
     private List<CountryDto> countries;
     private List<LeagueDto> leagues;
     private List<TeamDto> clubs;
+    private Long userId;
 }

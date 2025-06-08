@@ -31,7 +31,7 @@ public class MyStoreController {
     private final Map<Long, ReentrantLock> rowLocks = new ConcurrentHashMap<>();
 
     @PutMapping("/mystore/buyplayer/")
-    public ResponseEntity<String> updateNewPlayer(@RequestBody MyStoreUpdateRequest request) {
+    public ResponseEntity<String> buyplayer(@RequestBody MyStoreUpdateRequest request) {
         Long userId = request.getUserId();
         Long playerId = request.getPlayerId();
         // 🔐 Lock per userId

@@ -1,5 +1,6 @@
 package com.example.kfc.Response;
 
+import com.example.kfc.dto.MyPlayerDto;
 import com.example.kfc.dto.PlayerDto;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,7 +10,7 @@ import java.util.List;
 @Getter
 @Builder
 public class RandomSquadResponse {
-    private List<PlayerDto> content;
+    private List<MyPlayerDto> myPlayerList;
     private Long myTeamOvr;
     private Long chemistry;
 //    private String myTeamName;

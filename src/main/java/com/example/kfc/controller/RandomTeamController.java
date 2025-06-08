@@ -29,6 +29,7 @@ public class RandomTeamController {
         List<CountryDto> countries = request.getCountries();
         List<LeagueDto> leagues = request.getLeagues();
         List<TeamDto> clubs = request.getClubs();
+        Long userId = request.getUserId();
 
         for (var c : countries) System.out.println(c.getName());
         for (var c : leagues) System.out.println(c.getName());
@@ -36,7 +37,7 @@ public class RandomTeamController {
 
         System.out.println(formation);
 
-        var res = randomTeamService.generateRandomTeamByPosition(formation, countries, leagues, clubs);
+        var res = randomTeamService.generateRandomTeamByPosition(formation, countries, leagues, clubs, userId);
         return res;
     }
 }
