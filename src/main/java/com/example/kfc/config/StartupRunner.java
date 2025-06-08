@@ -9,6 +9,7 @@ import com.example.kfc.service.PlayerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -90,5 +91,9 @@ public class StartupRunner implements ApplicationRunner {
         // 🟢 player.price 동기화
         playerService.multiplyOvrByTen();
         playerService.syncPriceWithOvr();
+
+        String hashed = new BCryptPasswordEncoder().encode("1234");
+        System.out.println("==========================");
+        System.out.println(hashed);
     }
 }

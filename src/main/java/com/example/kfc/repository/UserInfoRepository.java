@@ -14,4 +14,5 @@ public interface UserInfoRepository extends JpaRepository<UserInfo, Long> {
     Long findMaxId();
 
     List<UserInfo> findByIsAiTrue();
+    Optional<UserInfo> findByUsername(String username);
 }

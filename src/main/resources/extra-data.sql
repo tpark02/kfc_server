@@ -57,8 +57,13 @@
 --team_name = 'MyTeam');
 
 -- 먼저 user_info
-INSERT INTO user_info (username, email, is_ai)
-VALUES ('tm1', 'tm1@example.com', false);
+INSERT INTO user_info (username, email, password, is_ai)
+VALUES (
+  'tm1',
+  'tm1@example.com',
+  '$2a$10$ou7nB.HI6uXXah7jx2Iw1OSDPUtR.QUhDz.3KxfDSHH631yhJuZT2',
+  false
+);
 INSERT INTO user_info (username, email, is_ai)
 VALUES ('tm2', 'tm2@example.com', false);
 INSERT INTO user_info (username, email, is_ai)
