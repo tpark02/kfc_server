@@ -29,8 +29,11 @@ public class StartupRunner implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
+        // 🟢 player.price 동기화
+//        playerService.multiplyOvrByTen();
+//        playerService.syncPriceWithOvr();
 
-// ai club beginner insert
+        // ai club beginner insert
         aiClubService.updateAiClubAndFormation(1L, "442", 630L);
         aiClubService.updateAiClubAndFormation(1L, "433", 630L);
         aiClubService.updateAiClubAndFormation(1L, "352", 630L);
@@ -87,10 +90,6 @@ public class StartupRunner implements ApplicationRunner {
 
             aiFormationList.put(finalI, lst);
         }
-
-        // 🟢 player.price 동기화
-        playerService.multiplyOvrByTen();
-        playerService.syncPriceWithOvr();
 
         String hashed = new BCryptPasswordEncoder().encode("1234");
         System.out.println("==========================");

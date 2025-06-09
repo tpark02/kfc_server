@@ -27,20 +27,20 @@ public class PlayerService {
 
     public void multiplyOvrByTen() {
         String sql = """
-            UPDATE player
-            SET ovr = CAST(CAST(ovr AS BIGINT) * 10 AS VARCHAR)
-            WHERE ovr REGEXP '^[0-9]+$';
-            """;
+        UPDATE player
+        SET ovr = ovr * 10
+        WHERE ovr IS NOT NULL;
+        """;
         int updated = jdbcTemplate.update(sql);
         System.out.println("✅ Multiplied ovr by 10 for " + updated + " players");
     }
 
     public void syncPriceWithOvr() {
         String sql = """
-                UPDATE player
-                SET price = (CAST(ovr AS BIGINT) / 100) * 10
-                WHERE ovr REGEXP '^[0-9]+$';
-                """;
+        UPDATE player
+        SET price = (ovr / 100) * 10
+        WHERE ovr IS NOT NULL;
+        """;
         int updated = jdbcTemplate.update(sql);
         System.out.println("✅ Synced " + updated + " player prices with ovr");
     }
