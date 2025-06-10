@@ -31,4 +31,11 @@ public class MyClub {
     private Long atk;
     private Long cch;
     private Long stm;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "team_logo_id", referencedColumnName = "id")
+    private TeamLogo teamLogo;
+
+    @Column
+    private String nation;
 }

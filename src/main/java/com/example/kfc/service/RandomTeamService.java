@@ -8,12 +8,14 @@ import com.example.kfc.entity.Player;
 import com.example.kfc.entity.UserInfo;
 import com.example.kfc.manager.LockManager;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class RandomTeamService {
@@ -40,7 +42,9 @@ public class RandomTeamService {
                 throw new IllegalArgumentException("존재하지 않는 포메이션입니다: " + formation);
             }
 
-            List<Player> playersPool = playerService.searchPlayersByFilters(countries, leagues, clubs);
+            List<Player> playersPool = playerService.searchPlayersByFilters(countries, leagues, clubs).stream()
+                    .filter(p -> !p.getPos().isEmpty() && !p.getName().equals("dummy"))
+                    .collect(Collectors.toList());
 
             if (playersPool.isEmpty()) {
                 throw new IllegalStateException("필터 조건에 맞는 선수가 없습니다.");
@@ -176,6 +180,10 @@ public class RandomTeamService {
                     .myTeamPace(pace)
                     .myTeamStamina(stamina)
                     .build();
+        } catch (Exception e) {
+            userLockManager.unlock(userId);
+            log.info("generate random team error - ", e.getMessage());
+            throw new RuntimeException(e);
         } finally {
             userLockManager.unlock(userId);
         }

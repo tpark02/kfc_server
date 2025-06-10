@@ -15,8 +15,8 @@ public class MyClubDto {
     private Long clubId;
     private String name;
     private String formationName;
-//    private List<FormationDto> formations; // ✅ 추가됨
     private List<MyPlayerDto> players;
+
     private Long ovr;
     private Long price;
     private Long age;
@@ -25,4 +25,7 @@ public class MyClubDto {
     private Long attack;
     private Long clubCohesion;
     private Long stamina;
+
+    private String nation;         // ✅ new field
+    private String teamLogoImg;    // ✅ for `teamLogo.logoImg`
 }

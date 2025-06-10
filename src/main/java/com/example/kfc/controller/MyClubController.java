@@ -54,7 +54,9 @@ public class MyClubController {
                         formationName,
                         lst,
                         club.getOvr(), club.getPrice(), club.getAge(), club.getPace(), club.getDef(),
-                        club.getAtk(), club.getCch(), club.getStm()
+                        club.getAtk(), club.getCch(), club.getStm(),
+                        club.getNation(), // ✅ newly added
+                        club.getTeamLogo() != null ? club.getTeamLogo().getLogoImg() : null // ✅ logo img
                 );
 
                 result.add(dto);
