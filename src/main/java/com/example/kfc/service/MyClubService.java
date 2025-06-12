@@ -29,6 +29,7 @@ public class MyClubService {
     private final MyPlayerService myPlayerService;
     private final PlayerService playerService;
     private final RandomTeamService randomTeamService;
+    private final TeamLogoRepository teamLogoRepository;
 
     // ai club
     private final AiClubService aiClubService;
@@ -124,6 +125,11 @@ public class MyClubService {
             existing.setPrice(request.getPrice());
             existing.setAge(request.getAge());
             existing.setStm(request.getStamina());
+            existing.setNation(request.getMyNation());
+
+            TeamLogo teamLogo = teamLogoRepository.findById(request.getMyLogoId())
+                    .orElseThrow(() -> new IllegalArgumentException("Logo not found - " + request.getMyLogoId()));
+            existing.setTeamLogo(teamLogo);
 
             // 포메이션 조회 또는 생성
             Formation formation = formationRepository.findByClub(existing).orElseGet(Formation::new);

@@ -8,6 +8,8 @@ import java.util.List;
 
 @Getter
 public class MyClubRequest {
+    private String myNation;
+    private Long myLogoId;
     private String clubName;
     private String formationName;
     private List<MyPlayerDto> players; // must be 17

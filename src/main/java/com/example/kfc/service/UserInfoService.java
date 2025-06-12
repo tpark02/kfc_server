@@ -4,6 +4,8 @@ import com.example.kfc.entity.UserInfo;
 import com.example.kfc.repository.UserInfoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -17,6 +19,16 @@ public class UserInfoService {
 
     public Optional<UserInfo> findUserInfoById(Long id) {
         return userInfoRepository.findById(id);
+    }
+
+    public Long getCurrentUserId() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+
+        UserInfo user = userInfoRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return user.getId();
     }
 
     public UserInfo getUserById(Long userId) {

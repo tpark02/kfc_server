@@ -1,8 +1,6 @@
 package com.example.kfc.controller;
 
 import com.example.kfc.Request.MyClubRequest;
-import com.example.kfc.Request.SquadSearchRequest;
-import com.example.kfc.Request.UpdateRosterRequest;
 import com.example.kfc.dto.MyClubDto;
 import com.example.kfc.dto.MyPlayerDto;
 import com.example.kfc.entity.Formation;
@@ -19,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-import java.util.stream.IntStream;
 
 @CrossOrigin(origins = "http://localhost:5173") // Vite dev 서버 주소
 @RestController
@@ -84,7 +81,6 @@ public class MyClubController {
 //            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 //        }
 //    }
-
     @PutMapping("/updatemyclub/{userId}/{clubId}")
     public ResponseEntity<String> updateMyClub(
             @PathVariable Long userId,
