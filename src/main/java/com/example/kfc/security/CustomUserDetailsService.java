@@ -20,10 +20,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         UserInfo user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        return new org.springframework.security.core.userdetails.User(
-                user.getUsername(),
-                user.getPassword(), // 🔐 여기에 Bcrypt 인코딩된 비번이 들어가야 함
-                new ArrayList<>()
-        );
+        return new CustomUserDetails(user); // ✅ 커스텀 UserDetails 사용
     }
 }

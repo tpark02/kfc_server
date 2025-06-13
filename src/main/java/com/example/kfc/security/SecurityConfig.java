@@ -19,13 +19,13 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthFilter jwtAuthFilter) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)  // ✅ 최신 방식
-                .cors(cors -> {})                       // ✅ 기본 CORS 허용 (필요 시 설정 추가 가능)
+                .cors(cors -> {})                       // ✅ 기본 CORS 허용
                 .headers(headers -> headers
                                  .frameOptions(frame -> frame.disable()) // ✅ H2 Console 사용 가능하도록
                         )
                 .authorizeHttpRequests(auth -> auth
                                                .requestMatchers("/api/login", "/api/register", "/h2-console/**").permitAll()
-                                               .anyRequest().authenticated()
+                                               .requestMatchers("/api/me").authenticated().anyRequest().authenticated()
                                       )
                 .sessionManagement(sess -> sess
                                            .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // ✅ JWT 사용 시 필수

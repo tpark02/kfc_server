@@ -161,6 +161,7 @@ public class MyClubService {
                 }
 
                 MyPlayer target = existingPlayers.get(i);
+                target.setPos(updated.getPos());
                 target.setUserId(userId);
                 target.setPlayerId(updated.getPlayerId());
                 target.setClubId(updated.getClubId());
