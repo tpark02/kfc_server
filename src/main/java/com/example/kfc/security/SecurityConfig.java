@@ -24,7 +24,8 @@ public class SecurityConfig {
                                  .frameOptions(frame -> frame.disable()) // ✅ H2 Console 사용 가능하도록
                         )
                 .authorizeHttpRequests(auth -> auth
-                                               .requestMatchers("/api/login", "/api/register", "/h2-console/**").permitAll()
+                                               .requestMatchers("/api/login", "/api/signup", "/api/register", "/h2" +
+                                                       "-console/**").permitAll()
                                                .requestMatchers("/api/me").authenticated().anyRequest().authenticated()
                                       )
                 .sessionManagement(sess -> sess

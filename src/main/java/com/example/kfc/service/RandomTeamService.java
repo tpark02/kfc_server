@@ -127,7 +127,7 @@ public class RandomTeamService {
 
             UserInfo user =
                     userInfoService.getUserById(
-                            1L);    // TODO : when account system added, this should come from userId from the front-end
+                            userId);    // TODO : when account system added, this should come from userId from the front-end
             // bench players
             List<MyPlayerDto> benchPlayers = IntStream.range(0, numberOfBenchPlayers)
                     .mapToObj(i -> {

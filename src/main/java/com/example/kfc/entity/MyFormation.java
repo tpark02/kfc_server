@@ -11,7 +11,7 @@ import lombok.*;
 @Getter
 @Setter
 @Table(name = "my_formation")
-public class Formation {
+public class MyFormation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,9 +19,8 @@ public class Formation {
 
     private String name;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "club_id", nullable = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
     @JsonBackReference
     private MyClub club;
 

@@ -6,24 +6,25 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Setter
 @Getter
+@Setter
 public class MyClub {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private Long clubId;
 
     private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false) // ✔ FK가 user.id 참조
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
     private UserInfo user;
 
-//    @OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
     @OneToOne(mappedBy = "club", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonManagedReference
-    private Formation formations;
-    // getter/setter 생략
+    private MyFormation formation;
 
     private Long ovr;
     private Long price;

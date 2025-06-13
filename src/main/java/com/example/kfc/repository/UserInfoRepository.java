@@ -15,4 +15,5 @@ public interface UserInfoRepository extends JpaRepository<UserInfo, Long> {
 
     List<UserInfo> findByIsAiTrue();
     Optional<UserInfo> findByUsername(String username);
+    boolean existsByUsername(String username);
 }

@@ -1,16 +1,12 @@
 package com.example.kfc.controller;
 
 import com.example.kfc.Request.UserInfoRequest;
-import com.example.kfc.dto.FormationDto;
-import com.example.kfc.dto.MyClubDto;
-import com.example.kfc.dto.MyPlayerDto;
-import com.example.kfc.dto.UserInfoDto;
+import com.example.kfc.dto.*;
 import com.example.kfc.entity.UserInfo;
-import com.example.kfc.service.FormationService;
+import com.example.kfc.service.MyFormationService;
 import com.example.kfc.service.MyClubService;
 import com.example.kfc.service.MyPlayerService;
 import com.example.kfc.service.UserInfoService;
-import com.sun.tools.jconsole.JConsoleContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -21,16 +17,17 @@ import java.util.List;
 import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:5173")
+@RequestMapping("/api")
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 public class UserInfoController {
     private final UserInfoService userInfoService;
     private final MyClubService myClubService;
-    private final FormationService formationService;
+    private final MyFormationService myFormationService;
     private final MyPlayerService myPlayerService;
 
-    @PostMapping("/userInfo/")
+    @PostMapping("/userInfo")
     public UserInfoDto getUserInfoById(@RequestBody UserInfoRequest request) {
         Long userId = request.getUserId();
         UserInfo info = userInfoService.findUserInfoById(userId)
@@ -38,13 +35,13 @@ public class UserInfoController {
         return UserInfoDto.from(info);
     }
 
-    @GetMapping("/api/me")
+    @GetMapping("/me")
     public ResponseEntity<Map<String, Object>> getCurrentUserInfo() {
         Long userId = userInfoService.getCurrentUserId();
 
         var userinfo = userInfoService.getUserById(userId);
         var myclub = myClubService.getClubsByUser(userinfo).get(0);
-        var formation = formationService.getFormationsByClub(myclub).orElseThrow(() -> new IllegalArgumentException(
+        var formation = myFormationService.getFormationsByClub(myclub).orElseThrow(() -> new IllegalArgumentException(
                 " user info controller - /api/me - getCurrentUserInfo errr - getting formation"));
         var myPlayers = myPlayerService.getMyPlayers(userId, 1L);
         List<MyPlayerDto> myPlayerDtoList = myPlayers.stream().map(MyPlayerDto::from).toList();

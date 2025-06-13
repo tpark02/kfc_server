@@ -1,20 +1,19 @@
 package com.example.kfc.dto;
 
 import com.example.kfc.entity.MyClub;
-import com.example.kfc.entity.MyPlayer;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @ToString
 @Getter
 @Setter
 public class MyClubDto {
+    private Long id;
     private Long clubId;
     private String name;
     private String formationName;
@@ -34,9 +33,10 @@ public class MyClubDto {
 
     public static MyClubDto from(MyClub club) {
         return new MyClubDto(
+                club.getId(),
                 club.getClubId(),
                 club.getName(),
-                club.getFormations() != null ? club.getFormations().getName() : null, // ✅ 여기!
+                club.getFormation() != null ? club.getFormation().getName() : null, // ✅ 여기!
                 null, // players는 이후 처리
                 club.getOvr(),
                 club.getPrice(),

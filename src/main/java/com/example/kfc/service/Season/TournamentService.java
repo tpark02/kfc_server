@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -31,7 +30,7 @@ public class TournamentService {
     private final MatchRepository matchRepository;
     private final MyClubService myClubService;
     private final MyPlayerService myPlayerService;
-    private final FormationService formationService;
+    private final MyFormationService myFormationService;
     private final UserInfoService userInfoService;
 
     public void tryStartTournament(Season season) {
@@ -82,7 +81,7 @@ private void calcTournament(Season season, List<SeasonParticipant> players) {
 
         MyClub club = myClubService.getClubByUserIdAndClubId(userId, clubId);
 
-        Formation formation = formationService.getFormationsByClub(club)
+        MyFormation myFormation = myFormationService.getFormationsByClub(club)
                 .orElseThrow(() -> new IllegalArgumentException("Club not found for clubId: " + clubId));
 
         long totalOvr = 0L;
@@ -91,8 +90,8 @@ private void calcTournament(Season season, List<SeasonParticipant> players) {
 
         for (int j = 1; j <= RandomTeamService.numberOfTotalPlayers; j++) {
             try {
-                Method getter = Formation.class.getMethod("getP" + j); // P1 ~ P17
-                Long playerId = (Long) getter.invoke(formation);
+                Method getter = MyFormation.class.getMethod("getP" + j); // P1 ~ P17
+                Long playerId = (Long) getter.invoke(myFormation);
 
                 if (playerId != null) {
                     int targetIdx = j - 1; // idx는 0-based

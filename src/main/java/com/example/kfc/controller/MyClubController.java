@@ -3,7 +3,7 @@ package com.example.kfc.controller;
 import com.example.kfc.Request.MyClubRequest;
 import com.example.kfc.dto.MyClubDto;
 import com.example.kfc.dto.MyPlayerDto;
-import com.example.kfc.entity.Formation;
+import com.example.kfc.entity.MyFormation;
 import com.example.kfc.entity.MyClub;
 import com.example.kfc.entity.MyPlayer;
 import com.example.kfc.entity.UserInfo;
@@ -42,10 +42,11 @@ public class MyClubController {
                 var lst = myPlayers.stream().map(MyPlayerDto::from).toList();
 
 
-                Formation f = club.getFormations();
+                MyFormation f = club.getFormation();
                 var formationName = f.getName();
 
                 MyClubDto dto = new MyClubDto(
+                        club.getId(),
                         club.getClubId(),
                         club.getName(),
                         formationName,

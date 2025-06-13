@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +26,23 @@ public class MyPlayerService {
 
     public List<MyPlayer> getMyPlayers(Long userId, Long clubId) {
         return myPlayerRepository.findByUserIdAndClubId(userId, clubId);
+    }
+
+    public void createEmptyPlayers(Long userId, Long clubId) {
+        List<MyPlayer> players = new ArrayList<>();
+
+        for (long i = 1; i <= 27; i++) {
+            MyPlayer player = new MyPlayer();
+            player.setUserId(userId);
+            player.setClubId(clubId);
+            player.setIdx(i); // idx를 1~27로 지정
+
+            player.resetStats(); // 모든 stat 초기화
+
+            players.add(player);
+        }
+
+        myPlayerRepository.saveAll(players); // 일괄 저장
     }
 
 //    @Transactional

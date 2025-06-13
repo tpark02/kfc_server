@@ -3,7 +3,7 @@ package com.example.kfc.controller;
 import com.example.kfc.Request.SquadSearchRequest;
 import com.example.kfc.Response.PlayerPageResponse;
 import com.example.kfc.dto.PlayerDto;
-import com.example.kfc.service.FormationService;
+import com.example.kfc.service.MyFormationService;
 import com.example.kfc.service.PlayerService;
 import com.example.kfc.service.UserInfoService;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +25,7 @@ public class SquadApiController {
     private PlayerService playerService;
 
     @Autowired
-    private FormationService formationService;
+    private MyFormationService myFormationService;
 
     @Autowired
     private UserInfoService userInfoService;

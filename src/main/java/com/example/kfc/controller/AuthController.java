@@ -5,47 +5,69 @@ import com.example.kfc.dto.AuthResponse;
 import com.example.kfc.entity.UserInfo;
 import com.example.kfc.repository.UserInfoRepository;
 import com.example.kfc.security.JwtUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.kfc.service.AuthService;
+import com.example.kfc.service.MyFormationService;
+import com.example.kfc.service.MyClubService;
+import com.example.kfc.service.MyPlayerService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.*;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api")
 public class AuthController {
 
-    @Autowired private AuthenticationManager authenticationManager;
-    @Autowired private JwtUtil jwtUtil;
-    @Autowired private UserInfoRepository userRepository;
-    @Autowired private PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
+    private final UserInfoRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final AuthService authService;
+    private final UserInfoRepository userInfoRepository;
+    private final MyClubService myClubService;
+    private final MyFormationService myFormationService;
+    private final MyPlayerService myPlayerService;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
-                                          );
+        try {
+            // 👉 디버깅용 로그
+            UserInfo user = userInfoRepository.findByUsername(request.getUsername())
+                    .orElseThrow(() -> new IllegalArgumentException("User not found"));
+            boolean matched = passwordEncoder.matches(request.getPassword(), user.getPassword());
+            System.out.println("🧪 비밀번호 매칭 결과: " + matched);
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
+                                              );
 
-        String token = jwtUtil.generateToken(request.getUsername());
-        return ResponseEntity.ok(new AuthResponse(token));
+            String token = jwtUtil.generateToken(request.getUsername());
+            UserInfo userinfo = userInfoRepository.findByUsername(request.getUsername())
+                    .orElseThrow(() -> new IllegalArgumentException(
+                            "Auth Controller - User not found: " + request.getUsername()));
+
+            Long userId = userinfo.getId();
+
+
+//            myClubService.
+            return ResponseEntity.ok(new AuthResponse(token, userId));
+
+        } catch (AuthenticationException e) {
+            return ResponseEntity.status(401).body("❌ 아이디 또는 비밀번호가 일치하지 않습니다.");
+        }
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody AuthRequest request) {
-        if (userRepository.findByUsername(request.getUsername()).isPresent()) {
-            return ResponseEntity.badRequest().body("❌ 이미 존재하는 사용자입니다.");
+
+    @PostMapping("/signup")
+    public ResponseEntity<?> signup(@RequestBody AuthRequest request) {
+        try {
+            AuthResponse response = authService.signupAndGenerateToken(request);
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-
-        UserInfo newUser = new UserInfo();
-        newUser.setUsername(request.getUsername());
-        newUser.setPassword(passwordEncoder.encode(request.getPassword())); // ✅ bcrypt 적용
-        newUser.setCoin(0L);
-        newUser.setTournamentToken(0L);
-        newUser.setLeagueToken(0L);
-        newUser.setAi(false);
-
-        userRepository.save(newUser);
-        return ResponseEntity.ok("✅ 회원가입 성공");
     }
 }

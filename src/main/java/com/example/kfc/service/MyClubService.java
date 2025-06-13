@@ -23,7 +23,7 @@ public class MyClubService {
 
     private final MyClubRepository myClubRepository;
     private final UserInfoRepository userInfoRepository;
-    private final FormationRepository formationRepository;
+    private final MyFormationRepository myFormationRepository;
     private final MyPlayerRepository myPlayerRepository;
     private final PlayerRepository playerRepository;
     private final MyPlayerService myPlayerService;
@@ -36,9 +36,32 @@ public class MyClubService {
     private final AiFormationService aiFormationService;
     private final LockManager<Long> clubLockManager = new LockManager<>();
 
-    //    public MyClub saveClub(MyClub club) {
-//        return myClubRepository.save(club);
-//    }
+    public MyClub createClubForUser(Long userId, String clubName) {
+        // 1. 사용자 조회
+        UserInfo user = userInfoRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("❌ 존재하지 않는 사용자입니다: " + userId));
+
+        // 2. 클럽 생성 및 정보 설정
+        MyClub club = new MyClub();
+        club.setName(clubName);
+        club.setUser(user); // ✅ FK 연결
+        club.setClubId(1L);
+
+        // 3. 초기값 설정
+        club.setOvr(0L);
+        club.setAge(0L);
+        club.setPrice(0L);
+        club.setAtk(0L);
+        club.setDef(0L);
+        club.setCch(0L);
+        club.setPace(0L);
+        club.setStm(0L);
+        club.setNation(""); // 예시
+
+        // 4. 저장
+        return myClubRepository.save(club);
+    }
+
     public MyClub getClubByUserIdAndClubId(Long userId, Long clubId) {
         System.out.println(
                 "getClubByUserIdAndClubId - " +
@@ -70,15 +93,15 @@ public class MyClubService {
             existing.setStm(0L);
 
             // 포메이션 초기화
-            Optional<Formation> formationOpt = formationRepository.findByClub(existing);
+            Optional<MyFormation> formationOpt = myFormationRepository.findByClub(existing);
             if (formationOpt.isPresent()) {
-                Formation formation = formationOpt.get();
-                formation.setName("442");
+                MyFormation myFormation = formationOpt.get();
+                myFormation.setName("442");
                 for (int i = 1; i <= 17; i++) {
-                    Method setter = Formation.class.getMethod("setP" + i, Long.class);
-                    setter.invoke(formation, (Long) null);
+                    Method setter = MyFormation.class.getMethod("setP" + i, Long.class);
+                    setter.invoke(myFormation, (Long) null);
                 }
-                formationRepository.save(formation);
+                myFormationRepository.save(myFormation);
             }
 
             // 선수 초기화
@@ -132,11 +155,11 @@ public class MyClubService {
             existing.setTeamLogo(teamLogo);
 
             // 포메이션 조회 또는 생성
-            Formation formation = formationRepository.findByClub(existing).orElseGet(Formation::new);
-            if (formation.getId() == null) {
-                formation.setClub(existing);
+            MyFormation myFormation = myFormationRepository.findByClub(existing).orElseGet(MyFormation::new);
+            if (myFormation.getId() == null) {
+                myFormation.setClub(existing);
             }
-            formation.setName(request.getFormationName());
+            myFormation.setName(request.getFormationName());
 
             List<MyPlayerDto> myPlayerDtoLst = request.getPlayers();
             myPlayerDtoLst.sort(Comparator.comparingLong(MyPlayerDto::getIdx));
@@ -154,8 +177,8 @@ public class MyClubService {
                 Long playerId = updated.getPlayerId();
 
                 try {
-                    Method setter = Formation.class.getMethod("setP" + (i + 1), Long.class);
-                    setter.invoke(formation, playerId);
+                    Method setter = MyFormation.class.getMethod("setP" + (i + 1), Long.class);
+                    setter.invoke(myFormation, playerId);
                 } catch (Exception e) {
                     throw new RuntimeException("Failed to set formation P" + (i + 1), e);
                 }
@@ -228,7 +251,7 @@ public class MyClubService {
             }
 
             myPlayerRepository.saveAll(existingPlayers);
-            formationRepository.save(formation);
+            myFormationRepository.save(myFormation);
             myClubRepository.save(existing);
 
             return Optional.of(existing);

@@ -1,6 +1,6 @@
 package com.example.kfc.repository;
 
-import com.example.kfc.entity.Formation;
+import com.example.kfc.entity.MyFormation;
 import com.example.kfc.entity.MyClub;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,10 +10,10 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
-public interface FormationRepository extends JpaRepository<Formation, Long> {
+public interface MyFormationRepository extends JpaRepository<MyFormation, Long> {
     @Modifying
     @Transactional
-    @Query("UPDATE Formation f SET f.p1 = :p1, f.p2 = :p2, f.p3 = :p3, f.p4 = :p4, f.p5 = :p5, " +
+    @Query("UPDATE MyFormation f SET f.p1 = :p1, f.p2 = :p2, f.p3 = :p3, f.p4 = :p4, f.p5 = :p5, " +
             "f.p6 = :p6, f.p7 = :p7, f.p8 = :p8, f.p9 = :p9, f.p10 = :p10, f.p11 = :p11 " +
             "WHERE f.name = :name")
     int updateFormationByName(@Param("name") String name,
@@ -29,10 +29,10 @@ public interface FormationRepository extends JpaRepository<Formation, Long> {
                               @Param("p10") Long p10,
                               @Param("p11") Long p11);
 
-    @Query("SELECT p FROM Formation p WHERE "
+    @Query("SELECT p FROM MyFormation p WHERE "
             + "(:name IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%')))")
-    Formation searchFormationByName(@Param("name") String name);
+    MyFormation searchFormationByName(@Param("name") String name);
 
-    Optional<Formation> findByClub(MyClub club);
+    Optional<MyFormation> findByClub(MyClub club);
 }
 

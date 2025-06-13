@@ -1,6 +1,6 @@
 package com.example.kfc.dto;
 
-import com.example.kfc.entity.Formation;
+import com.example.kfc.entity.MyFormation;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -41,37 +41,37 @@ public class FormationDto {
     private Long p26;
     private Long p27;
 
-    public static FormationDto from(Formation formation) {
+    public static FormationDto from(MyFormation myFormation) {
         return new FormationDto(
-                formation.getId(),
-                formation.getName(),
-                formation.getP1(),
-                formation.getP2(),
-                formation.getP3(),
-                formation.getP4(),
-                formation.getP5(),
-                formation.getP6(),
-                formation.getP7(),
-                formation.getP8(),
-                formation.getP9(),
-                formation.getP10(),
-                formation.getP11(),
-                formation.getP12(),
-                formation.getP13(),
-                formation.getP14(),
-                formation.getP15(),
-                formation.getP16(),
-                formation.getP17(),
-                formation.getP18(),
-                formation.getP19(),
-                formation.getP20(),
-                formation.getP21(),
-                formation.getP22(),
-                formation.getP23(),
-                formation.getP24(),
-                formation.getP25(),
-                formation.getP26(),
-                formation.getP27()
+                myFormation.getId(),
+                myFormation.getName(),
+                myFormation.getP1(),
+                myFormation.getP2(),
+                myFormation.getP3(),
+                myFormation.getP4(),
+                myFormation.getP5(),
+                myFormation.getP6(),
+                myFormation.getP7(),
+                myFormation.getP8(),
+                myFormation.getP9(),
+                myFormation.getP10(),
+                myFormation.getP11(),
+                myFormation.getP12(),
+                myFormation.getP13(),
+                myFormation.getP14(),
+                myFormation.getP15(),
+                myFormation.getP16(),
+                myFormation.getP17(),
+                myFormation.getP18(),
+                myFormation.getP19(),
+                myFormation.getP20(),
+                myFormation.getP21(),
+                myFormation.getP22(),
+                myFormation.getP23(),
+                myFormation.getP24(),
+                myFormation.getP25(),
+                myFormation.getP26(),
+                myFormation.getP27()
         );
     }
 }

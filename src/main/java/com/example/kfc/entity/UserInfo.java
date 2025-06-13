@@ -20,11 +20,12 @@ public class UserInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // DB가 id 자동 생성
     private Long id;
+    @Column(unique = true)
     private String username;
     private String email;
     private String password;
     private Long coin;
-    private Long tournamentToken;
+    private long tournamentToken;
     private Long leagueToken;
 
     @Column(name = "is_ai")
