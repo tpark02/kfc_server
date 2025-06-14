@@ -236,7 +236,7 @@ public class FormationUtil {
             Function<T, String> getPos,
             Function<T, String> getName
                                         ) {
-        double baseValue = Math.pow(getOvr.applyAsLong(player), 2) * 1000;
+        double baseValue = Math.pow(getOvr.applyAsLong(player), 2);
         double multiplier = POSITION_MULTIPLIER.getOrDefault(getPos.apply(player), 1.0);
         System.out.println("estimating: " + getName.apply(player) + " / pos=" + getPos.apply(player) + " / ovr=" + getOvr.applyAsLong(player));
 

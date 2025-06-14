@@ -30,37 +30,30 @@ public class MyClubController {
     private final MyPlayerService myPlayerService;
 
     @GetMapping("/users/{userId}/myclubs")
-    public List<MyClubDto> getMyClubs(@PathVariable Long userId) {
+    public MyClubDto getMyClubs(@PathVariable Long userId) {
         try {
             UserInfo user = userInfoService.getUserById(userId);
             List<MyClub> clubs = myClubService.getClubsByUser(user);
-            List<MyClubDto> result = new ArrayList<>();
+            var club = clubs.get(0);
+            List<MyPlayer> myPlayers = myPlayerService.getMyPlayers(userId, club.getClubId());
 
-            for (MyClub club : clubs) {
-                List<MyPlayer> myPlayers = myPlayerService.getMyPlayers(userId, club.getClubId());
+            var lst = myPlayers.stream().map(MyPlayerDto::from).toList();
+            MyFormation f = club.getFormation();
 
-                var lst = myPlayers.stream().map(MyPlayerDto::from).toList();
+            var formationName = f.getName();
 
-
-                MyFormation f = club.getFormation();
-                var formationName = f.getName();
-
-                MyClubDto dto = new MyClubDto(
-                        club.getId(),
-                        club.getClubId(),
-                        club.getName(),
-                        formationName,
-                        lst,
-                        club.getOvr(), club.getPrice(), club.getAge(), club.getPace(), club.getDef(),
-                        club.getAtk(), club.getCch(), club.getStm(),
-                        club.getNation(), // ✅ newly added
-                        club.getTeamLogo() != null ? club.getTeamLogo().getLogoImg() : null // ✅ logo img
-                );
-
-                result.add(dto);
-            }
-
-            return result;
+            MyClubDto dto = new MyClubDto(
+                    club.getId(),
+                    club.getClubId(),
+                    club.getName(),
+                    formationName,
+                    lst,
+                    club.getOvr(), club.getPrice(), club.getAge(), club.getPace(), club.getDef(),
+                    club.getAtk(), club.getCch(), club.getStm(),
+                    club.getNation(), // ✅ newly added
+                    club.getTeamLogo() != null ? club.getTeamLogo().getLogoImg() : null // ✅ logo img
+            );
+            return dto;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -73,7 +66,7 @@ public class MyClubController {
 //
 //    }
 
-//    @PostMapping("/users/{userId}/myclubs")
+    //    @PostMapping("/users/{userId}/myclubs")
 //    public ResponseEntity<?> createMyClub(@PathVariable Long userId, @RequestBody MyClubRequest request) {
 //        try {
 //            myClubService.createMyClub(userId, request);
