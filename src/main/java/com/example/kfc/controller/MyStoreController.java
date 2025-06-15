@@ -1,8 +1,10 @@
 package com.example.kfc.controller;
 
 import com.example.kfc.Request.MyStoreUpdateRequest;
+import com.example.kfc.Response.BuyPlayerResponse;
 import com.example.kfc.dto.MyPlayerDto;
 import com.example.kfc.dto.MyStoreDto;
+import com.example.kfc.entity.MyPlayer;
 import com.example.kfc.entity.MyStore;
 import com.example.kfc.entity.Player;
 import com.example.kfc.entity.UserInfo;
@@ -12,6 +14,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @CrossOrigin(origins = "http://localhost:5173")
@@ -25,7 +30,7 @@ public class MyStoreController {
     private final LockManager<Long> userLockManager = new LockManager<>();
 
     @PutMapping("/mystore/buyplayer/")
-    public ResponseEntity<String> buyplayer(@RequestBody MyStoreUpdateRequest request) {
+    public BuyPlayerResponse buyplayer(@RequestBody MyStoreUpdateRequest request) {
         Long userId = request.getUserId();
         Long playerId = request.getPlayerId();
         // 🔐 Lock per userId
@@ -39,21 +44,14 @@ public class MyStoreController {
             var price = player.getPrice();
 
             if (userCoin < price) {
-                return ResponseEntity.ok().body("❌ Not enough coin");
+                return new BuyPlayerResponse(new ArrayList<>(), "❌ Not enough coin", "NO PLAYER");
             }
 
-            // 🧩 Find first empty store slot
-//            List<MyStore> lst = myStoreService.getMyStore(userId);
-//            var storeOpt = lst.stream().filter(m -> m.getPlayerId().equals(0L)).findFirst();
-//
-//            if (storeOpt.isEmpty()) {
-//                return ResponseEntity.ok().body("❌ No empty slot found. userId = " + userId);
-//            }
             Player dummy = playerService.findMaxId();
             var emptySpot = myPlayerService.getMyPlayersByPlayerId(userId, 1L, dummy.getId());
 
             if (emptySpot.size() <= 0) {
-                return ResponseEntity.ok().body("❌ No Empty Space for a new player");
+                return new BuyPlayerResponse(new ArrayList<>(), "❌ No Empty Space for a new player", "NO PLAYER");
             }
 
             // 💸 Deduct coin
@@ -63,14 +61,17 @@ public class MyStoreController {
             // ✅ Update store
             boolean res = myPlayerService.updateNewPlayer(player, emptySpot.get(0));
 
+            List<MyPlayer> resultList = new ArrayList<>();
             if (res) {
-                return ResponseEntity.ok("✅ Updated successfully.");
+                resultList = myPlayerService.getMyPlayers(userId, 1L);
+                return new BuyPlayerResponse(resultList, String.format("%s purchased successfully!", player.getName()), player.getName());
             } else {
-                return ResponseEntity.badRequest().body("❌ Update failed. No matching row.");
+                return new BuyPlayerResponse(new ArrayList<>(), "Purchase failed", "NO PLAYER");
             }
         } catch (Exception e) {
-            log.error("❌ Exception during store update: {}", e.getMessage(), e);
-            return ResponseEntity.internalServerError().body("❗ Internal server error.");
+            String error = toString().formatted("❌ Exception during store update: {}", e.getMessage(), e);
+            log.error(error);
+            return new BuyPlayerResponse(new ArrayList<>(), error, "NO PLAYER");
         } finally {
             userLockManager.unlock(userId);
         }
