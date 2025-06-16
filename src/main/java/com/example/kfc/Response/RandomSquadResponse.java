@@ -12,8 +12,6 @@ import java.util.List;
 public class RandomSquadResponse {
     private List<MyPlayerDto> myPlayerList;
     private Long myTeamOvr;
-    private Long chemistry;
-//    private String myTeamName;
     private Long myTeamClubCohesion;
     private Long myTeamStamina;
     private Long myTeamAge;
@@ -21,5 +19,4 @@ public class RandomSquadResponse {
     private Long myTeamDef;
     private Long myTeamPace;
     private Long myTeamSquadValue;
-//    private List<PlayerDto> benchPlayers;
 }

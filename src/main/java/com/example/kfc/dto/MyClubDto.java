@@ -13,7 +13,6 @@ import java.util.List;
 @Getter
 @Setter
 public class MyClubDto {
-    private Long id;
     private Long clubId;
     private String name;
     private String formationName;
@@ -30,11 +29,11 @@ public class MyClubDto {
 
     private String nation;
     private String teamLogoImg;
+    private Long teamLogoId;
 
     public static MyClubDto from(MyClub club) {
         return new MyClubDto(
                 club.getId(),
-                club.getClubId(),
                 club.getName(),
                 club.getFormation() != null ? club.getFormation().getName() : null, // ✅ 여기!
                 null, // players는 이후 처리
@@ -47,7 +46,8 @@ public class MyClubDto {
                 club.getCch(),
                 club.getStm(),
                 club.getNation(),
-                club.getTeamLogo() != null ? club.getTeamLogo().getLogoImg() : null
+                club.getTeamLogo() != null ? club.getTeamLogo().getLogoImg() : null,
+                club.getTeamLogo() != null ? club.getTeamLogo().getId() : null
         );
     }
 }

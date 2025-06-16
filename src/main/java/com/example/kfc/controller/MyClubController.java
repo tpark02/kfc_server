@@ -1,12 +1,10 @@
 package com.example.kfc.controller;
 
 import com.example.kfc.Request.MyClubRequest;
+import com.example.kfc.data.FormationUtil;
 import com.example.kfc.dto.MyClubDto;
 import com.example.kfc.dto.MyPlayerDto;
-import com.example.kfc.entity.MyFormation;
-import com.example.kfc.entity.MyClub;
-import com.example.kfc.entity.MyPlayer;
-import com.example.kfc.entity.UserInfo;
+import com.example.kfc.entity.*;
 import com.example.kfc.repository.PlayerRepository;
 import com.example.kfc.service.MyClubService;
 import com.example.kfc.service.MyPlayerService;
@@ -42,16 +40,46 @@ public class MyClubController {
 
             var formationName = f.getName();
 
+            // calc team ovr
+            double avg = lst.stream().mapToLong(MyPlayerDto::getOvr).average().orElse(0.0);
+            System.out.println("random formation - avg: " + avg);
+
+            Long myTeamOvr = (long) avg;
+
+            // total squad value
+            Long squadValue = lst.stream()
+                    .mapToLong(p -> FormationUtil.estimateValue(p, MyPlayerDto::getOvr, MyPlayerDto::getPos,
+                                                                MyPlayerDto::getName))
+                    .sum();
+
+            // atk, def
+            Map<String, Long> atkdef = FormationUtil.getDefenseAttackSplit(lst, MyPlayerDto::getDef,
+                                                                           MyPlayerDto::getSho);
+            Long atk = atkdef.get("attack");
+            Long def = atkdef.get("defense");
+
+            Long pace = FormationUtil.getAverageStat(lst, MyPlayerDto::getPac);
+            Long age = FormationUtil.getAverageStat(lst, MyPlayerDto::getAge);
+            Long stamina = FormationUtil.getAverageStat(lst, MyPlayerDto::getStamina);
+            Long cohesion = FormationUtil.getClubCohesion(lst, MyPlayerDto::getTeam);
+            int chemistry = calculateChemistry(lst);
+
             MyClubDto dto = new MyClubDto(
                     club.getId(),
-                    club.getClubId(),
                     club.getName(),
                     formationName,
                     lst,
-                    club.getOvr(), club.getPrice(), club.getAge(), club.getPace(), club.getDef(),
-                    club.getAtk(), club.getCch(), club.getStm(),
-                    club.getNation(), // ✅ newly added
-                    club.getTeamLogo() != null ? club.getTeamLogo().getLogoImg() : null // ✅ logo img
+                    myTeamOvr,
+                    squadValue,
+                    age,
+                    pace,
+                    def,
+                    atk,
+                    (long) cohesion,
+                    stamina,
+                    club.getNation(),
+                    club.getTeamLogo() != null ? club.getTeamLogo().getLogoImg() : null,
+                    club.getTeamLogo() != null ? club.getTeamLogo().getId() : null
             );
             return dto;
         } catch (Exception e) {
@@ -59,6 +87,28 @@ public class MyClubController {
         }
     }
 
+    public int calculateChemistry(List<MyPlayerDto> players) {
+        int chemistry = 0;
+
+        for (int i = 0; i < players.size(); i++) {
+            for (int j = i + 1; j < players.size(); j++) {
+                MyPlayerDto p1 = players.get(i);
+                MyPlayerDto p2 = players.get(j);
+
+                if (p1.getNation().equals(p2.getNation())) {
+                    chemistry += 5; // 같은 국가
+                }
+                if (p1.getLeague().equals(p2.getLeague())) {
+                    chemistry += 3; // 같은 리그
+                }
+                if (p1.getTeam().equals(p2.getTeam())) {
+                    chemistry += 7; // 같은 팀
+                }
+            }
+        }
+
+        return chemistry;
+    }
 //    TODO: perhaps used later for creating login. because a user must have 3 clubs
 //    @GetMapping("/users/{userId}/myplayers")
 //    public List<MyClubDto> getMyPlayers(@PathVariable Long userId) {

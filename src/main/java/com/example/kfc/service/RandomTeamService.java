@@ -90,44 +90,16 @@ public class RandomTeamService {
                 throw new IllegalStateException("선수 11명을 완성할 수 없습니다. 현재 인원: " + selectedPlayers.size());
             }
 
-            int chemistry = calculateChemistry(selectedPlayers);
+
 
             List<MyPlayerDto> lst = new ArrayList<>();
-            Set<Integer> usedIds = new HashSet<>();
+//            Set<Integer> usedIds = new HashSet<>();
             IntStream.range(0, selectedPlayers.size()).forEach(i -> {
                 Player p = selectedPlayers.get(i);
                 MyPlayerDto myPlayerDto = MyPlayerDto.from(p, userId, 1L, 0L, 0L, (long) i);
                 lst.add(myPlayerDto);
             });
 
-            //my team ovr 계산
-            double avg = lst.stream().mapToLong(MyPlayerDto::getOvr).average().orElse(0.0);
-            System.out.println("random formation - avg: " + avg);
-
-            Long myTeamOvr = (long) avg;
-
-            System.out.println("random formation - long avg: " + myTeamOvr);
-
-            // total squad value
-            Long squadValue = lst.stream()
-                    .mapToLong(p -> FormationUtil.estimateValue(p, MyPlayerDto::getOvr, MyPlayerDto::getPos,
-                                                                MyPlayerDto::getName))
-                    .sum();
-
-            // atk, def
-            Map<String, Long> atkdef = FormationUtil.getDefenseAttackSplit(lst, MyPlayerDto::getDef,
-                                                                           MyPlayerDto::getSho);
-            Long atk = atkdef.get("attack");
-            Long def = atkdef.get("defense");
-
-            Long pace = FormationUtil.getAverageStat(lst, MyPlayerDto::getPac);
-            Long age = FormationUtil.getAverageStat(lst, MyPlayerDto::getAge);
-            Long stamina = FormationUtil.getAverageStat(lst, MyPlayerDto::getStamina);
-            Long cohesion = FormationUtil.getClubCohesion(lst, MyPlayerDto::getTeam);
-
-            UserInfo user =
-                    userInfoService.getUserById(
-                            userId);    // TODO : when account system added, this should come from userId from the front-end
             // bench players
             List<MyPlayerDto> benchPlayers = IntStream.range(0, numberOfBenchPlayers)
                     .mapToObj(i -> {
@@ -164,21 +136,51 @@ public class RandomTeamService {
 
             lst.addAll(buyPlayers);
 
+            // calc team ovr
+            double avg = lst.stream().mapToLong(MyPlayerDto::getOvr).average().orElse(0.0);
+            System.out.println("random formation - avg: " + avg);
+
+            Long myTeamOvr = (long) avg;
+
+            System.out.println("random formation - long avg: " + myTeamOvr);
+
+            // total squad value
+            Long squadValue = lst.stream()
+                    .mapToLong(p -> FormationUtil.estimateValue(p, MyPlayerDto::getOvr, MyPlayerDto::getPos,
+                                                                MyPlayerDto::getName))
+                    .sum();
+
+            // atk, def
+            Map<String, Long> atkdef = FormationUtil.getDefenseAttackSplit(lst, MyPlayerDto::getDef,
+                                                                           MyPlayerDto::getSho);
+            Long atk = atkdef.get("attack");
+            Long def = atkdef.get("defense");
+
+            Long pace = FormationUtil.getAverageStat(lst, MyPlayerDto::getPac);
+            Long age = FormationUtil.getAverageStat(lst, MyPlayerDto::getAge);
+            Long stamina = FormationUtil.getAverageStat(lst, MyPlayerDto::getStamina);
+            Long cohesion = FormationUtil.getClubCohesion(lst, MyPlayerDto::getTeam);
+            int chemistry = calculateChemistry(selectedPlayers);
+
+            UserInfo user =
+                    userInfoService.getUserById(
+                            userId);    // TODO : when account system added, this should come from userId from the front-end
+
+
 //        // setting idx to playerDto
 //        IntStream.range(0, lst.size())
 //                .forEach(i -> lst.get(i).setIdx((long) i));
 
             return RandomSquadResponse.builder()
                     .myPlayerList(lst)
-                    .chemistry((long) chemistry)
                     .myTeamOvr(myTeamOvr)
-                    .myTeamSquadValue(squadValue)
-                    .myTeamAge(age)
                     .myTeamClubCohesion(cohesion)
+                    .myTeamStamina(stamina)
+                    .myTeamAge(age)
                     .myTeamAtk(atk)
                     .myTeamDef(def)
                     .myTeamPace(pace)
-                    .myTeamStamina(stamina)
+                    .myTeamSquadValue(squadValue)
                     .build();
         } catch (Exception e) {
             userLockManager.unlock(userId);

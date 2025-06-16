@@ -2,6 +2,7 @@ package com.example.kfc.data;
 
 import com.example.kfc.dto.MyPlayerDto;
 import com.example.kfc.dto.PlayerDto;
+import com.example.kfc.service.RandomTeamService;
 
 import java.util.*;
 import java.util.function.Function;
@@ -261,7 +262,7 @@ public class FormationUtil {
     // 🟡 평균 스탯 계산 (pace, age, stamina 등)
     public static <T> Long getAverageStat(List<T> players, ToLongFunction<T> getter) {
         return (long) Math.round(
-                players.stream().filter(Objects::nonNull).mapToLong(getter).sum() / 11.0
+                (float) players.stream().filter(Objects::nonNull).mapToLong(getter).sum() / RandomTeamService.numberOfTotalPlayers
                                 );
     }
 
