@@ -153,7 +153,7 @@ public class SeasonController {
     public List<MyPlayerDto> validateAiFormation(AiFormation aiFormation, Long userId, Long clubId, Long yellowCard, Long redCard) {
         List<MyPlayerDto> lst = new ArrayList<>();
 
-        for (int i = 1; i <= RandomTeamService.numberOfAiPlayers; i++) {
+        for (int i = 1; i <= RandomTeamService.aiPlayersCount; i++) {
             String methodName = "getP" + i;
             try {
                 Method method = AiFormation.class.getMethod(methodName);

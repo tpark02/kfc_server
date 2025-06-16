@@ -1,9 +1,9 @@
 package com.example.kfc.service;
 
 import com.example.kfc.data.FormationUtil;
-import com.example.kfc.dto.MyPlayerDto;
 import com.example.kfc.dto.PlayerDto;
 import com.example.kfc.entity.Player;
+import com.example.kfc.manager.LockManager;
 import com.example.kfc.repository.AiClubRepository;
 import com.example.kfc.repository.UserInfoRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +20,8 @@ public class AiClubService {
     private final PlayerService playerService;
     private final AiFormationService aiFormationService;
     private final UserInfoRepository userInfoRepository;
+
+    private final LockManager<Long> userLockManager = new LockManager<>();
 
     public void updateAiClubAndFormation(Long clubId, String formation, Long ovr) {
         List<String> positionRequirement =
@@ -85,7 +88,10 @@ public class AiClubService {
         });
 
         //my team ovr 계산
-        double avg = lst.stream().mapToLong(PlayerDto::getOvr).average().orElse(0.0);
+        double avg = IntStream.range(0, Math.min(17, lst.size()))
+                .mapToLong(i -> lst.get(i).getOvr())
+                .average()
+                .orElse(0.0);
         System.out.println("random formation - avg: " + avg);
 
         Long myTeamOvr = (long) avg;
@@ -119,7 +125,7 @@ public class AiClubService {
 
         // bench players
         List<PlayerDto> benchplayers = playersPool.stream()
-                .limit(RandomTeamService.numberOfAiPlayers)
+                .limit(RandomTeamService.aiPlayersCount)
                 .map(PlayerDto::from)
                 .toList();
 
@@ -130,11 +136,11 @@ public class AiClubService {
                 .toList();
 
         List<Integer> playerIds = playerList.stream()
-                .limit(RandomTeamService.numberOfAiPlayers)
+                .limit(RandomTeamService.aiPlayersCount)
                 .map(p -> p.getId().intValue())
                 .toList();
 
-        if (playerIds.size() < RandomTeamService.numberOfAiPlayers) {
+        if (playerIds.size() < RandomTeamService.aiPlayersCount) {
             throw new IllegalStateException(String.format("You need %d players", playerIds.size()));
         }
 

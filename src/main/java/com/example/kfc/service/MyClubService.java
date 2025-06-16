@@ -62,11 +62,11 @@ public class MyClubService {
         return myClubRepository.save(club);
     }
 
-    public MyClub getClubByUserIdAndClubId(Long userId, Long clubId) {
+    public MyClub getClubByUserId(Long userId) {
         System.out.println(
-                "getClubByUserIdAndClubId - " +
-                        "user id : " + userId + ", club id : " + clubId);
-        return myClubRepository.findByClubIdAndUserId(clubId, userId)
+                "getClubByUserId - " +
+                        "user id : " + userId);
+        return myClubRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Club not found"));
     }
 
@@ -78,7 +78,7 @@ public class MyClubService {
         // 클럽별 락 가져오기
         clubLockManager.lock(clubId);
         try {
-            MyClub existing = myClubRepository.findByClubIdAndUserId(clubId, userId)
+            MyClub existing = myClubRepository.findByUserId(userId)
                     .orElseThrow(() -> new IllegalArgumentException("Club not found"));
 
             // 클럽 정보 초기화
@@ -128,13 +128,13 @@ public class MyClubService {
     public Optional<MyClub> updateMyClub(Long userId, Long clubId, MyClubRequest request) {
         clubLockManager.lock(clubId);
         try {
-            MyClub existing = myClubRepository.findByClubIdAndUserId(clubId, userId)
+            MyClub existing = myClubRepository.findByUserId(userId)
                     .orElseThrow(() -> new IllegalArgumentException("Club not found"));
 
             var lst = request.getPlayers().stream().filter(p -> p != null).toList();
-            if (lst.size() != RandomTeamService.numberOfTotalPlayers) {
+            if (lst.size() != RandomTeamService.totalPlayersCount) {
                 throw new IllegalArgumentException(
-                        String.format("Exactly %d players must be provided", RandomTeamService.numberOfTotalPlayers)
+                        String.format("Exactly %d players must be provided", RandomTeamService.totalPlayersCount)
                 );
             }
 
@@ -165,14 +165,14 @@ public class MyClubService {
             myPlayerDtoLst.sort(Comparator.comparingLong(MyPlayerDto::getIdx));
             List<MyPlayer> existingPlayers = myPlayerRepository.findByUserIdAndClubId(userId, clubId);
 
-            if (existingPlayers.size() != RandomTeamService.numberOfTotalPlayers) {
+            if (existingPlayers.size() != RandomTeamService.totalPlayersCount) {
                 throw new IllegalArgumentException(
-                        String.format("❌ Expected %d players, found %d", RandomTeamService.numberOfTotalPlayers,
+                        String.format("❌ Expected %d players, found %d", RandomTeamService.totalPlayersCount,
                                       existingPlayers.size())
                 );
             }
 
-            for (int i = 0; i < RandomTeamService.numberOfTotalPlayers; i++) {
+            for (int i = 0; i < RandomTeamService.totalPlayersCount; i++) {
                 MyPlayerDto updated = myPlayerDtoLst.get(i);
                 Long playerId = updated.getPlayerId();
 

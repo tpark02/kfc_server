@@ -79,7 +79,7 @@ private void calcTournament(Season season, List<SeasonParticipant> players) {
         Long userId = p.getUser().getId();
         Long clubId = p.getClubId();
 
-        MyClub club = myClubService.getClubByUserIdAndClubId(userId, clubId);
+        MyClub club = myClubService.getClubByUserId(userId);
 
         MyFormation myFormation = myFormationService.getFormationsByClub(club)
                 .orElseThrow(() -> new IllegalArgumentException("Club not found for clubId: " + clubId));
@@ -88,7 +88,7 @@ private void calcTournament(Season season, List<SeasonParticipant> players) {
 
         List<MyPlayer> allMyPlayers = myPlayerService.getMyPlayers(userId, clubId); // 전체 MyPlayer 리스트
 
-        for (int j = 1; j <= RandomTeamService.numberOfTotalPlayers; j++) {
+        for (int j = 1; j <= RandomTeamService.totalPlayersCount; j++) {
             try {
                 Method getter = MyFormation.class.getMethod("getP" + j); // P1 ~ P17
                 Long playerId = (Long) getter.invoke(myFormation);
@@ -119,7 +119,7 @@ private void calcTournament(Season season, List<SeasonParticipant> players) {
             }
         }
 
-        long avgOvr = totalOvr / RandomTeamService.numberOfTotalPlayers;
+        long avgOvr = totalOvr / RandomTeamService.startingPlayerCount;
         playerOvrMap.put(userId, avgOvr);
     }
 
@@ -159,8 +159,8 @@ private void calcTournament(Season season, List<SeasonParticipant> players) {
             Random random = SeasonService.random;
 
             if (!aIsAi && !bIsAi) {
-                MyClub clubA = myClubService.getClubByUserIdAndClubId(a.getUser().getId(), a.getClubId());
-                MyClub clubB = myClubService.getClubByUserIdAndClubId(b.getUser().getId(), b.getClubId());
+                MyClub clubA = myClubService.getClubByUserId(a.getUser().getId());
+                MyClub clubB = myClubService.getClubByUserId(b.getUser().getId());
 
 
                 Long adjustedOvrA = playerOvrMap.get(a.getUser().getId());
@@ -563,8 +563,8 @@ private UserInfo simulateByClub(SeasonParticipant a, SeasonParticipant b, Long y
         return null;
     }
 
-    MyClub clubA = myClubService.getClubByUserIdAndClubId(aUserId, aClubId);
-    MyClub clubB = myClubService.getClubByUserIdAndClubId(bUserId, bClubId);
+    MyClub clubA = myClubService.getClubByUserId(aUserId);
+    MyClub clubB = myClubService.getClubByUserId(bUserId);
 
     Long ovrA = clubA.getOvr() - (yellowCntA * 5L);
     Long ovrB = clubB.getOvr() - (yellowCntB * 5L);

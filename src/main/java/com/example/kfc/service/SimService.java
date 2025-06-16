@@ -5,6 +5,7 @@ import com.example.kfc.dto.MatchDto;
 import com.example.kfc.dto.PlayerDto;
 import com.example.kfc.dto.TeamStatDto;
 import com.example.kfc.entity.Team;
+import com.example.kfc.manager.LockManager;
 import com.example.kfc.repository.PlayerRepository;
 import com.example.kfc.repository.TeamRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +27,8 @@ public class SimService {
 
     @Autowired
     MyClubService myClubService;
+
+    private final LockManager<Long> userLockManager = new LockManager<>();
 
     public SimResultResponse simulateLeague(List<String> teams) {
         Map<String, TeamStatDto> table = new HashMap<>();
@@ -74,6 +77,8 @@ public class SimService {
     }
 
     public List<MatchDto> generateRandomSchedule(Long userId, Long clubId) {
+        userLockManager.lock(userId);
+
         try {
             List<Team> teams = teamRepository.findRandom20Teams();
 
@@ -87,7 +92,7 @@ public class SimService {
             }
 
             // 사용자 클럽 정보 가져오기
-            var club = myClubService.getClubByUserIdAndClubId(userId, clubId);
+            var club = myClubService.getClubByUserId(userId);
             List<MatchDto> schedule = new ArrayList<>();
 
             for (int i = 0; i < teams.size(); i++) {
@@ -127,6 +132,8 @@ public class SimService {
         } catch (Exception e) {
             log.error("❌ Failed to generate schedule", e);
             return Collections.emptyList();
+        } finally {
+            userLockManager.unlock(userId);
         }
     }
 }

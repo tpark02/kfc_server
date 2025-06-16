@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.stream.IntStream;
 
 @CrossOrigin(origins = "http://localhost:5173") // Vite dev 서버 주소
 @RestController
@@ -41,7 +42,10 @@ public class MyClubController {
             var formationName = f.getName();
 
             // calc team ovr
-            double avg = lst.stream().mapToLong(MyPlayerDto::getOvr).average().orElse(0.0);
+            double avg = IntStream.range(0, Math.min(17, lst.size()))
+                    .mapToLong(i -> lst.get(i).getOvr())
+                    .average()
+                    .orElse(0.0);
             System.out.println("random formation - avg: " + avg);
 
             Long myTeamOvr = (long) avg;

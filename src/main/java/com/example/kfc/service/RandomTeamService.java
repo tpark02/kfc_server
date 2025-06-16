@@ -3,7 +3,6 @@ package com.example.kfc.service;
 import com.example.kfc.Response.RandomSquadResponse;
 import com.example.kfc.data.FormationUtil;
 import com.example.kfc.dto.*;
-import com.example.kfc.entity.MyPlayer;
 import com.example.kfc.entity.Player;
 import com.example.kfc.entity.UserInfo;
 import com.example.kfc.manager.LockManager;
@@ -19,10 +18,11 @@ import java.util.stream.IntStream;
 @Service
 @RequiredArgsConstructor
 public class RandomTeamService {
-    public static int numberOfTotalPlayers = 27;
-    public static int numberOfAiPlayers = 17;
-    public static int numberOfBenchPlayers = 6;
-    public static int numberOfBuyPlayers = 10;
+    public static int totalPlayersCount = 27;
+    public static int startingPlayerCount = 17;
+    public static int aiPlayersCount = 17;
+    public static int benchPlayerCount = 6;
+    public static int reservePlayerCount = 10;
 
     private final PlayerService playerService;
     private final UserInfoService userInfoService;
@@ -101,7 +101,7 @@ public class RandomTeamService {
             });
 
             // bench players
-            List<MyPlayerDto> benchPlayers = IntStream.range(0, numberOfBenchPlayers)
+            List<MyPlayerDto> benchPlayers = IntStream.range(0, benchPlayerCount)
                     .mapToObj(i -> {
                         MyPlayerDto dto = MyPlayerDto.from(
                                 playersPool.get(i),
@@ -120,7 +120,7 @@ public class RandomTeamService {
 
             // buy players
             Player dummy = playerService.findMaxId();
-            List<MyPlayerDto> buyPlayers = IntStream.range(0, numberOfBuyPlayers)
+            List<MyPlayerDto> buyPlayers = IntStream.range(0, reservePlayerCount)
                     .mapToObj(i -> {
                         MyPlayerDto dto = MyPlayerDto.from(
                                 dummy,
@@ -137,7 +137,10 @@ public class RandomTeamService {
             lst.addAll(buyPlayers);
 
             // calc team ovr
-            double avg = lst.stream().mapToLong(MyPlayerDto::getOvr).average().orElse(0.0);
+            double avg = IntStream.range(0, Math.min(17, lst.size()))
+                    .mapToLong(i -> lst.get(i).getOvr())
+                    .average()
+                    .orElse(0.0);
             System.out.println("random formation - avg: " + avg);
 
             Long myTeamOvr = (long) avg;

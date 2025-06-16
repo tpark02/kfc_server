@@ -16,6 +16,5 @@ public interface MyClubRepository extends JpaRepository<MyClub, Long> {
     Optional<MyClub> findByUserId(@Param("userId") Long userId);
 
     List<MyClub> findByUser(UserInfo user);
-    Optional<MyClub> findByClubIdAndUserId(Long cludId, Long userId);
 }
 
