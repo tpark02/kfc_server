@@ -11,9 +11,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MyPlayerRepository extends JpaRepository<MyPlayer, Long> {
-    @Query("SELECT m FROM MyPlayer m WHERE m.userId = :userId AND m.clubId = :clubId AND m.playerId = :playerId")
+    @Query("SELECT m FROM MyPlayer m WHERE m.userId = :userId AND m.playerId = :playerId")
     List<MyPlayer> findAllMatchingPlayerId(@Param("userId") Long userId,
-                                           @Param("clubId") Long clubId,
                                            @Param("playerId") Long playerId);
     List<MyPlayer> findByUserIdAndClubId(Long userId, Long clubId);
 
@@ -22,7 +21,6 @@ public interface MyPlayerRepository extends JpaRepository<MyPlayer, Long> {
     @Query("UPDATE MyPlayer p SET p.yellowCard = :yellowCard " +
             "WHERE p.userId = :userId AND p.clubId = :clubId AND p.playerId = :playerId")
     int updateYellowCard(@Param("userId") Long userId,
-                         @Param("clubId") Long clubId,
                          @Param("playerId") Long playerId,
                          @Param("yellowCard") Long yellowCard);
 
@@ -31,39 +29,33 @@ public interface MyPlayerRepository extends JpaRepository<MyPlayer, Long> {
     @Query("UPDATE MyPlayer p SET p.redCard = :redCard, p.seq_cnt = :seq_cnt  " +
             "WHERE p.userId = :userId AND p.clubId = :clubId AND p.playerId = :playerId")
     int updateRedCard(@Param("userId") Long userId,
-                      @Param("clubId") Long clubId,
                       @Param("playerId") Long playerId,
                       @Param("redCard") Long redCard,
                       @Param("seq_cnt") Long seq_cnt);
 
     @Transactional
     @Modifying
-    @Query("UPDATE MyPlayer p SET p.yellowCard = 0 WHERE p.userId = :userId AND p.clubId = :clubId")
-    int resetYellowCard(@Param("userId") Long userId,
-                        @Param("clubId") Long clubId);
+    @Query("UPDATE MyPlayer p SET p.yellowCard = 0 WHERE p.userId = :userId")
+    int resetYellowCard(@Param("userId") Long userId);
 
     @Transactional
     @Modifying
-    @Query("UPDATE MyPlayer p SET p.redCard = 0 WHERE p.userId = :userId AND p.clubId = :clubId")
-    int resetRedCard(@Param("userId") Long userId,
-                     @Param("clubId") Long clubId);
+    @Query("UPDATE MyPlayer p SET p.redCard = 0 WHERE p.userId = :userId")
+    int resetRedCard(@Param("userId") Long userId);
 
     @Transactional
     @Modifying
-    @Query("UPDATE MyPlayer p SET p.seq_cnt = 0 WHERE p.userId = :userId AND p.clubId = :clubId")
-    int resetSeqCnt(@Param("userId") Long userId,
-                    @Param("clubId") Long clubId);
+    @Query("UPDATE MyPlayer p SET p.seq_cnt = 0 WHERE p.userId = :userId")
+    int resetSeqCnt(@Param("userId") Long userId);
 
-    @Query("SELECT SUM(p.yellowCard) FROM MyPlayer p WHERE p.userId = :userId AND p.clubId = :clubId")
-    Long countYellowCards(@Param("userId") Long userId,
-                          @Param("clubId") Long clubId);
+    @Query("SELECT SUM(p.yellowCard) FROM MyPlayer p WHERE p.userId = :userId")
+    Long countYellowCards(@Param("userId") Long userId);
 
-    @Query("SELECT SUM(p.redCard) FROM MyPlayer p WHERE p.userId = :userId AND p.clubId = :clubId")
-    Long countRedCards(@Param("userId") Long userId,
-                       @Param("clubId") Long clubId);
+    @Query("SELECT SUM(p.redCard) FROM MyPlayer p WHERE p.userId = :userId")
+    Long countRedCards(@Param("userId") Long userId);
 
     @Modifying
     @Transactional
-    @Query("UPDATE MyPlayer p SET p.idx = :idx WHERE p.userId = :userId AND p.clubId = :clubId AND p.playerId = :playerId")
-    int updateIdxByUserIdAndClubIdAndPlayerId(Long idx, Long userId, Long clubId, Long playerId);
+    @Query("UPDATE MyPlayer p SET p.idx = :idx WHERE p.userId = :userId AND p.playerId = :playerId")
+    int updateIdxByUserIdAndClubIdAndPlayerId(Long idx, Long userId, Long playerId);
 }

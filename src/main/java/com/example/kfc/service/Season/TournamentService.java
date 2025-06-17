@@ -128,8 +128,8 @@ private void calcTournament(Season season, List<SeasonParticipant> players) {
     // reset all players' yellow, red cards
     players.forEach(p -> {
         if (p.getUser().isAi()) return;
-        myPlayerService.resetYellowCards(p.getUser().getId(), p.getClubId());
-        myPlayerService.resetRedCards(p.getUser().getId(), p.getClubId());
+        myPlayerService.resetYellowCards(p.getUser().getId());
+        myPlayerService.resetRedCards(p.getUser().getId());
     });
 
     int round = 1;
@@ -497,7 +497,7 @@ private void setYellowCard(Long userId, Long clubId, int cnt) {
 
             Long yellowCardCount = (random.nextBoolean()) ? 1L : 2L;
 
-            myPlayerService.setYellowCard(userId, clubId, playerId, yellowCardCount);
+            myPlayerService.setYellowCard(userId, playerId, yellowCardCount);
 
             System.out.println("\n🟨 Yellow card given:");
             System.out.println("User ID: " + userId);
@@ -544,7 +544,7 @@ private void setRedCard(Long userId, Long clubId, int cnt, Long seq_cnt) {
             System.out.println("OVR: " + selectedPlayer.getOvr());
             System.out.println("Red Card Count: " + seq_cnt);
 
-            myPlayerService.setRedCard(userId, clubId, playerId, 1L, seq_cnt);
+            myPlayerService.setRedCard(userId, playerId, 1L, seq_cnt);
         }
     } catch (Exception e) {
         throw new RuntimeException("❗ setRedCard error: " + e.getMessage(), e);

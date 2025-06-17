@@ -11,8 +11,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PlayerRepository extends JpaRepository<Player, Long> {
-    @Query("SELECT ROUND(AVG(p.ovr)) FROM Player p WHERE LOWER(p.team) LIKE LOWER(CONCAT('%', :team, '%'))")
-    Long avgOvrTeam(@Param("team") String team);
+    @Query("SELECT ROUND(AVG(p.ovr)) FROM Player p WHERE p.teamId  = :teamId")
+    Long avgOvrTeam(@Param("teamId") Long teamId);
+
     @Query("SELECT p FROM Player p WHERE p.id = (SELECT MAX(p2.id) FROM Player p2)")
     Player findPlayerWithMaxId();
 
@@ -61,8 +62,8 @@ public interface PlayerRepository extends JpaRepository<Player, Long> {
     @Query("SELECT p FROM Player p WHERE p.ID = :Id")
     Optional<Player> searchPlayerById(@Param("Id") Long id);
 
-    @Query("SELECT p FROM Player p WHERE (:team IS NULL OR LOWER(p.team) = LOWER(:team))")
-    List<Player> searchClub(@Param("team") String team);
+    @Query("SELECT p FROM Player p WHERE (:teamId IS NULL OR p.teamId = :teamId)")
+    List<Player> searchClub(@Param("teamId") Long teamId);
 
     List<Player> findByNameContainingIgnoreCase(String name);
 

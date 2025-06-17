@@ -21,7 +21,7 @@ public class MyPlayerService {
     private final MyPlayerRepository myPlayerRepository;
 
     public List<MyPlayer> getMyPlayersByPlayerId(Long userId, Long clubId, Long playerId) {
-        return myPlayerRepository.findAllMatchingPlayerId(userId, clubId, playerId);
+        return myPlayerRepository.findAllMatchingPlayerId(userId, playerId);
     }
 
     public List<MyPlayer> getMyPlayers(Long userId, Long clubId) {
@@ -65,16 +65,16 @@ public class MyPlayerService {
 //        return Optional.of(res);
 //    }
     @Transactional
-    public void setYellowCard(Long userId, Long clubId, Long playerId, Long cnt) {
-        int updated = myPlayerRepository.updateYellowCard(userId, clubId, playerId, cnt);
+    public void setYellowCard(Long userId, Long playerId, Long cnt) {
+        int updated = myPlayerRepository.updateYellowCard(userId, playerId, cnt);
         if (updated == 0) {
             throw new IllegalStateException("❌ Failed to update yellow card: no matching player found.");
         }
     }
 
     @Transactional
-    public void setRedCard(Long userId, Long clubId, Long playerId, Long cnt, Long seq_cnt) {
-        int updated = myPlayerRepository.updateRedCard(userId, clubId, playerId, cnt, seq_cnt);
+    public void setRedCard(Long userId, Long playerId, Long cnt, Long seq_cnt) {
+        int updated = myPlayerRepository.updateRedCard(userId, playerId, cnt, seq_cnt);
         if (updated == 0) {
             throw new IllegalStateException(
                     "❌ Failed to update red card: no matching player found. - playerId : " + playerId);
@@ -85,8 +85,8 @@ public class MyPlayerService {
      * Reset yellow cards for a user's club players
      */
     @Transactional
-    public void resetYellowCards(Long userId, Long clubId) {
-        int updated = myPlayerRepository.resetYellowCard(userId, clubId);
+    public void resetYellowCards(Long userId) {
+        int updated = myPlayerRepository.resetYellowCard(userId);
         if (updated == 0) {
             throw new IllegalStateException(
                     "❌ Failed to reset yellow cards: No matching players found for the given user and club.");
@@ -97,8 +97,8 @@ public class MyPlayerService {
      * Reset red cards for a user's club players
      */
     @Transactional
-    public void resetRedCards(Long userId, Long clubId) {
-        int updated = myPlayerRepository.resetRedCard(userId, clubId);
+    public void resetRedCards(Long userId) {
+        int updated = myPlayerRepository.resetRedCard(userId);
         if (updated == 0) {
             throw new IllegalStateException(
                     "❌ Failed to reset red cards: No matching players found for the given user and club.");
@@ -109,8 +109,8 @@ public class MyPlayerService {
      * Reset sequence count for a user's club players
      */
     @Transactional
-    public void resetSeqCnt(Long userId, Long clubId) {
-        int updated = myPlayerRepository.resetSeqCnt(userId, clubId);
+    public void resetSeqCnt(Long userId) {
+        int updated = myPlayerRepository.resetSeqCnt(userId);
         if (updated == 0) {
             throw new IllegalStateException(
                     "❌ Failed to reset seq_cnt: No matching players found for the given user and club.");
@@ -135,25 +135,25 @@ public class MyPlayerService {
         }
     }
 
-    public Long getYellowCardCount(Long userId, Long clubId) {
-        Long count = myPlayerRepository.countYellowCards(userId, clubId);
+    public Long getYellowCardCount(Long userId) {
+        Long count = myPlayerRepository.countYellowCards(userId);
         return count != null ? count : 0L;
     }
 
-    public Long getRedCardCount(Long userId, Long clubId) {
-        Long count = myPlayerRepository.countRedCards(userId, clubId);
+    public Long getRedCardCount(Long userId) {
+        Long count = myPlayerRepository.countRedCards(userId);
         return count != null ? count : 0L;
     }
 
-    public void updateIdxForClub(Long userId, Long clubId, Map<Long, Long> rosterMap) {
+    public void updateIdxForClub(Long userId, Map<Long, Long> rosterMap) {
         try {
             rosterMap.forEach((playerId, idx) -> {
                 System.out.println(String.format("🔁 Updating idx for userId=%d, clubId=%d, playerId=%d, idx=%d",
-                                                 userId, clubId, playerId, idx));
-                myPlayerRepository.updateIdxByUserIdAndClubIdAndPlayerId(idx, userId, clubId, playerId);
+                                                 userId, playerId, idx));
+                myPlayerRepository.updateIdxByUserIdAndClubIdAndPlayerId(idx, userId, playerId);
             });
         } catch (Exception e) {
-            log.error("❌ Failed to update idx for userId={}, clubId={}, error={}", userId, clubId, e.getMessage(), e);
+            log.error("❌ Failed to update idx for userId={}, clubId={}, error={}", userId, e.getMessage(), e);
             throw new RuntimeException("Failed to update player idx", e);
         }
     }

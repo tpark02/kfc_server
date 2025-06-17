@@ -190,4 +190,7 @@ public class Player {
 
     @Column
     private Long price;
+
+    @Column(name = "team_id")
+    private Long teamId;
 }
