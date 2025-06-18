@@ -19,4 +19,5 @@ public class MatchDto {
     private String res;
     private List<PlayerDto> members;
     private Long addStats;
+    private String teamImg;
 }

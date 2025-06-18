@@ -177,7 +177,7 @@ public class RandomTeamService {
             return RandomSquadResponse.builder()
                     .myPlayerList(lst)
                     .myTeamOvr(myTeamOvr)
-                    .myTeamClubCohesion(cohesion)
+                    .myTeamClubCohesion((long) chemistry)
                     .myTeamStamina(stamina)
                     .myTeamAge(age)
                     .myTeamAtk(atk)
@@ -198,6 +198,9 @@ public class RandomTeamService {
         int chemistry = 0;
 
         for (int i = 0; i < players.size(); i++) {
+            if (players.get(i).getName().equals("dummy"))
+                continue;
+
             for (int j = i + 1; j < players.size(); j++) {
                 Player p1 = players.get(i);
                 Player p2 = players.get(j);

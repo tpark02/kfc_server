@@ -79,7 +79,7 @@ public class MyClubController {
                     pace,
                     def,
                     atk,
-                    (long) cohesion,
+                    (long) chemistry,
                     stamina,
                     club.getNation(),
                     club.getTeamLogo() != null ? club.getTeamLogo().getLogoImg() : null,
@@ -95,6 +95,9 @@ public class MyClubController {
         int chemistry = 0;
 
         for (int i = 0; i < players.size(); i++) {
+            if (players.get(i).getName().equals("dummy"))
+                continue;
+
             for (int j = i + 1; j < players.size(); j++) {
                 MyPlayerDto p1 = players.get(i);
                 MyPlayerDto p2 = players.get(j);
