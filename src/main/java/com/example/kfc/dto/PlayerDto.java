@@ -70,6 +70,9 @@ public class PlayerDto {
     private Long gkReflexes;
     private Long price;
     private Long teamId;
+    private Long leagueId;
+    private String leagueUrl;
+    private String teamUrl;
 
     public static PlayerDto from(Player player) {
         return new PlayerDto(
@@ -133,7 +136,10 @@ public class PlayerDto {
                 player.getGkPositioning(),
                 player.getGkReflexes(),
                 player.getPrice(),
-                player.getTeamId()
+                player.getTeamId(),
+                player.getLeagueId(),
+                player.getLeagueUrl(),
+                player.getTeamUrl()
         );
     }
 
@@ -202,7 +208,10 @@ public class PlayerDto {
                 dto.getGkPositioning(),
                 dto.getGkReflexes(),
                 dto.getPrice(),
-                dto.getTeamId()
+                dto.getTeamId(),
+                dto.getLeagueId(),
+                dto.getLeagueUrl(),
+                dto.getTeamUrl()
         );
     }
 

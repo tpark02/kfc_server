@@ -193,4 +193,13 @@ public class Player {
 
     @Column(name = "team_id")
     private Long teamId;
+
+    @Column(name = "league_id")
+    private Long leagueId;
+
+    @Column(name = "league_url")
+    private String leagueUrl;
+
+    @Column(name = "team_url")
+    private String teamUrl;
 }

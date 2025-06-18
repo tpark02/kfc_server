@@ -6,6 +6,9 @@ import com.example.kfc.dto.*;
 import com.example.kfc.entity.Player;
 import com.example.kfc.entity.UserInfo;
 import com.example.kfc.manager.LockManager;
+import com.example.kfc.repository.LeagueRepository;
+import com.example.kfc.repository.TeamLogoRepository;
+import com.example.kfc.repository.TeamRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,6 +31,8 @@ public class RandomTeamService {
     private final UserInfoService userInfoService;
     private final Random random = new Random();
     private final LockManager<Long> userLockManager = new LockManager<>();
+    private final LeagueRepository leagueRepository;
+    private final TeamRepository teamRepository;
 
     public RandomSquadResponse generateRandomTeamByPosition(String formation, List<CountryDto> countries,
                                                             List<LeagueDto> leagues, List<TeamDto> clubs, Long userId) {
@@ -89,7 +94,6 @@ public class RandomTeamService {
             if (selectedPlayers.size() != 11) {
                 throw new IllegalStateException("선수 11명을 완성할 수 없습니다. 현재 인원: " + selectedPlayers.size());
             }
-
 
 
             List<MyPlayerDto> lst = new ArrayList<>();
@@ -167,12 +171,21 @@ public class RandomTeamService {
 
             UserInfo user =
                     userInfoService.getUserById(
-                            userId);    // TODO : when account system added, this should come from userId from the front-end
+                            userId);    // TODO : when account system added, this should come from userId from the
+            // front-end
 
 
-//        // setting idx to playerDto
-//        IntStream.range(0, lst.size())
-//                .forEach(i -> lst.get(i).setIdx((long) i));
+            lst.stream().filter(p->p.getLeagueId() != null).forEach(p -> {
+                var league = leagueRepository.findById(p.getLeagueId()).orElseThrow(() -> new IllegalArgumentException(
+                        "Random Team Service - League Url not found - league id : " + p.getLeagueId()));
+                p.setLeagueUrl(league.getUrl());
+            });
+
+            lst.stream().filter(p->p.getTeamId()!= null).forEach(t->{
+                var team = teamRepository.findById(t.getTeamId()).orElseThrow(() -> new IllegalArgumentException(
+                        "Random Team Service - Team Url not found - team id : " + t.getTeamId()));
+                t.setTeamUrl(team.getUrl());
+            });
 
             return RandomSquadResponse.builder()
                     .myPlayerList(lst)

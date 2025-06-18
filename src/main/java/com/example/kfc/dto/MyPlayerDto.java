@@ -74,6 +74,10 @@ public class MyPlayerDto {
     private Long gkKicking;
     private Long gkPositioning;
     private Long gkReflexes;
+    private Long teamId;
+    private Long leagueId;
+    private String leagueUrl;
+    private String teamUrl;
 
     public static MyPlayerDto from(Player player, Long userId, Long clubId, Long yellowCard, Long redCard, Long idx) {
         return new MyPlayerDto(
@@ -140,7 +144,11 @@ public class MyPlayerDto {
                 player.getGkHandling(),
                 player.getGkKicking(),
                 player.getGkPositioning(),
-                player.getGkReflexes()
+                player.getGkReflexes(),
+                player.getTeamId(),
+                player.getLeagueId(),
+                player.getLeagueUrl(),
+                player.getTeamUrl()
         );
     }
 
@@ -209,7 +217,11 @@ public class MyPlayerDto {
                 player.getGkHandling(),
                 player.getGkKicking(),
                 player.getGkPositioning(),
-                player.getGkReflexes()
+                player.getGkReflexes(),
+                player.getTeamId(),
+                player.getLeagueId(),
+                player.getLeagueUrl(),
+                player.getTeamUrl()
         );
     }
 }

@@ -248,6 +248,10 @@ public class MyClubService {
                 target.setGkKicking(updated.getGkKicking());
                 target.setGkPositioning(updated.getGkPositioning());
                 target.setGkReflexes(updated.getGkReflexes());
+                target.setTeamId(updated.getTeamId());
+                target.setLeagueId(updated.getLeagueId());
+                target.setLeagueUrl(updated.getLeagueUrl());
+                target.setTeamUrl(updated.getTeamUrl());
             }
 
             myPlayerRepository.saveAll(existingPlayers);
