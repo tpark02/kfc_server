@@ -24,8 +24,6 @@ public class MyClubController {
 
     private final UserInfoService userInfoService;
     private final MyClubService myClubService;
-    //private final FormationService formationService;
-    private final PlayerRepository playerRepository;
     private final MyPlayerService myPlayerService;
 
     @GetMapping("/users/{userId}/myclubs")
@@ -160,7 +158,7 @@ public class MyClubController {
         }
     }
 
-//    @PostMapping("/myclub/updateroster")
+    //    @PostMapping("/myclub/updateroster")
 //    public ResponseEntity<String> updateRoater(@RequestBody UpdateRosterRequest request) {
 //        try {
 //            Long userId = request.getUserId();
@@ -177,4 +175,19 @@ public class MyClubController {
 //            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 //        }
 //    }
+    @PutMapping("/updatePlayer/{userId}/{idx}")
+    public ResponseEntity<String> updatePlayer(@PathVariable Long userId, @PathVariable Long idx) {
+        try {
+            int updated = myPlayerService.deletePlayer(userId, idx);
+
+            if (updated > 0) {
+                return ResponseEntity.ok("✅ 업데이트 성공");
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("❌ 업데이트 실패: 해당 플레이어가 없음");
+            }
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("🔥 서버 에러: " + e.getMessage());
+        }
+    }
 }

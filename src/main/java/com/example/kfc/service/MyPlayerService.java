@@ -65,6 +65,36 @@ public class MyPlayerService {
 //        return Optional.of(res);
 //    }
     @Transactional
+    public int deletePlayer(Long userId, Long idx) {
+        return myPlayerRepository.updatePlayer(
+                userId,                // userId (Long)
+                idx,                  // idx (Long)
+                17738L,               // playerId (Long)
+                1L,                   // clubId (Long)
+                0L, 0L, 0L,           // yellowCard, redCard, seqCnt (Long)
+                0L,                   // rank (Long)
+                "dummy",              // name (String)
+                0L, 0L, 0L, 0L, 0L, 0L, 0L,
+                0L, 0L, 0L, 0L, 0L, 0L, 0L,
+                0L, 0L, 0L, 0L, 0L, 0L, 0L,
+                0L, 0L, 0L, 0L, 0L, 0L, 0L,
+                0L, 0L, 0L, 0L, 0L, 0L, 0L,
+                0L,
+                "LM",                        // pos (String)
+                0L, 0L,                     // weakFoot, skillMoves (Long)
+                "Left",                     // preferredFoot (String)
+                "0", "0",                   // height, weight (String)
+                "LW",                       // alternativePositions (String)
+                18L,                        // age (Long)
+                "", "", "", "",             // nation, league, team, playStyle (String)
+                "", "",                     // url, img (String)
+                0L, 0L, 0L, 0L, 0L,         // gk stats (Long)
+                0L, 0L,                    // teamId, leagueId (Long)
+                "", ""                     // leagueUrl, teamUrl (String)
+                                              );
+    }
+
+    @Transactional
     public void setYellowCard(Long userId, Long playerId, Long cnt) {
         int updated = myPlayerRepository.updateYellowCard(userId, playerId, cnt);
         if (updated == 0) {
@@ -123,7 +153,7 @@ public class MyPlayerService {
     }
 
     @Transactional
-    public boolean  updateNewPlayer(Player source, MyPlayer myPlayer) {
+    public boolean updateNewPlayer(Player source, MyPlayer myPlayer) {
         try {
             MyPlayer.PlayerToMyPlayer(source, myPlayer);
 
