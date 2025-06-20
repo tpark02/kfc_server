@@ -27,7 +27,7 @@ public class AuthService {
 
     public AuthResponse signupAndGenerateToken(AuthRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) {
-            throw new RuntimeException("이미 존재하는 사용자명입니다.");
+            throw new RuntimeException("This username is already taken. Please choose another.");
         }
 
         UserInfo newUser = new UserInfo();

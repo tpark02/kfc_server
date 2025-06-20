@@ -51,6 +51,7 @@ public class UserInfoController {
         result.put("myClub", MyClubDto.from(myclub));
         result.put("myFormation", FormationDto.from(formation));
         result.put("myPlayers", myPlayerDtoList);
+        result.put("myCoin", userinfo.getCoin());
 
         return ResponseEntity.ok(result);
     }

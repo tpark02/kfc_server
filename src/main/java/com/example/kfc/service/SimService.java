@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.IntStream;
 
 @Slf4j
 @Service
@@ -27,6 +26,9 @@ public class SimService {
 
     @Autowired
     MyClubService myClubService;
+
+    @Autowired
+    UserInfoService userInfoService;
 
     private final LockManager<Long> userLockManager = new LockManager<>();
 
@@ -127,12 +129,20 @@ public class SimService {
                 ));
             }
 
+            AtomicReference<Long> winCnt = new AtomicReference<>(0L);
             // add stats to the won matches
             schedule.forEach(m -> {
                 if (m.getRes().equals("W")) {
                     m.setAddStats(1L);
+                    winCnt.getAndSet(winCnt.get() + 1);
                 }
             });
+
+            var userinfo = userInfoService.getUserById(userId);
+            var userCoin = userinfo.getCoin();
+            userinfo.setCoin(userCoin + winCnt.get());
+            userInfoService.save(userinfo);
+
             return schedule;
         } catch (Exception e) {
             log.error("❌ Failed to generate schedule", e);
