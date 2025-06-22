@@ -20,7 +20,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     @Autowired
     private JwtUtil jwtUtil;
-    @Autowired private CustomUserDetailsService userDetailsService;
+    @Autowired
+    private CustomUserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -30,7 +31,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         System.out.println("🛂 Filter executed - URI: " + path);
 
         // Skip filtering for login, signup, and H2 console
-        if (path.startsWith("/api/login") || path.startsWith("/api/register") || path.startsWith("/h2-console")) {
+        if (path.startsWith("/api/login") || path.startsWith("/api/register") || path.startsWith(
+                "/h2-console") || path.startsWith("/api/signup")) {
             filterChain.doFilter(request, response);
             return;
         }
