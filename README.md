@@ -77,7 +77,7 @@ Then go to: [http://localhost:5173](http://localhost:5173)
 
 ## 📊 Features
 
-- 🧠 AI-based random squad generation
+- 🧠 random squad generation
 - 🎮 League & match simulations
 - 🛠 Drag & drop squad builder
 - 📝 Custom formations
