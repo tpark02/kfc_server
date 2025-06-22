@@ -126,7 +126,7 @@ The backend includes logic like:
 
 ## 📜 License
 
-MIT © 2025 Taemin Park ([GitHub](https://github.com/tpark02))
+MIT © 2025 Daniel Park ([GitHub](https://github.com/tpark02))
 
 ---
 
