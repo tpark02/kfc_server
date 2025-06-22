@@ -49,7 +49,7 @@ public class MyPlayer {
     @Column
     private Long pac;
 
-    @Column
+    @Column(name = "`sho`")
     private Long sho;
 
     @Column
@@ -76,7 +76,7 @@ public class MyPlayer {
     @Column
     private Long finishing;
 
-    @Column
+    @Column(name = "`shot_power`")
     private Long shotPower;
 
     @Column
@@ -97,7 +97,7 @@ public class MyPlayer {
     @Column
     private Long freeKickAccuracy;
 
-    @Column
+    @Column(name = "`short_passing`")
     private Long shortPassing;
 
     @Column
@@ -136,7 +136,7 @@ public class MyPlayer {
     @Column
     private Long standingTackle;
 
-    @Column
+    @Column(name = "`sliding_tackle`")
     private Long slidingTackle;
 
     @Column
@@ -157,7 +157,7 @@ public class MyPlayer {
     @Column
     private Long weakFoot;
 
-    @Column
+    @Column(name = "`skill_moves`")
     private Long skillMoves;
 
     @Column
