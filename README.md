@@ -7,7 +7,7 @@
 ### 💻 Frontend (React + Vite)
 - React + TypeScript
 - Zustand for state management
-- Tailwind CSS + MUI
+- Material UI (MUI) for components and styling
 - Vite as the build tool
 
 ### 🚀 Backend (Spring Boot)
@@ -47,7 +47,6 @@ kfc_server-main/
 │   │       ├── static/                 # Static web files (HTML)
 │   │       └── templates/              # Template views (if used)
 │   └── test/                           # Unit & integration tests
-
 ```
 
 ---
@@ -77,7 +76,7 @@ Then go to: [http://localhost:5173](http://localhost:5173)
 
 ## 📊 Features
 
-- 🧠 random squad generation
+- 🧠 Random squad generation
 - 🎮 League & match simulations
 - 🛠 Drag & drop squad builder
 - 📝 Custom formations
