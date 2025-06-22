@@ -2,13 +2,6 @@
 
 **KFC** is a full-stack football club simulation web application where users can manage their teams, simulate leagues, build squads with filters, and analyze football stats with game-like visuals.
 
----
-
-## 🌐 Live Demo (Optional)
-_You can host this on Render, Heroku, Vercel, etc._
-
----
-
 ## 🧱 Tech Stack
 
 ### 💻 Frontend (React + Vite)
