@@ -62,10 +62,15 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody AuthRequest request) {
+        System.out.println("✅ username = " + request.getUsername());
+        System.out.println("✅ password = " + request.getPassword());
+        System.out.println("✅ email = " + request.getEmail());
+
         try {
             AuthResponse response = authService.signupAndGenerateToken(request);
             return ResponseEntity.ok(response);
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
