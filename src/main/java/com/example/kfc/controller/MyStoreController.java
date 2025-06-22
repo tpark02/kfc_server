@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@CrossOrigin(origins = "http://localhost:5173")
+//@CrossOrigin(origins = "http://localhost:5173")
 @Slf4j
 @RestController
 @RequiredArgsConstructor
