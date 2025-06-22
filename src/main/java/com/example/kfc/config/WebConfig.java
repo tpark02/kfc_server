@@ -15,7 +15,7 @@ public class WebConfig {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/api/**") // 또는 "/**" 전체 허용
                         .allowedOrigins("http://localhost:5173", "https://tpark02.github.io")
-                        .allowedMethods("GET", "POST", "PUT", "DELETE")
+                        .allowedMethods("*")
                         .allowedHeaders("*");
             }
         };
