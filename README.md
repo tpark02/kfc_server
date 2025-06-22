@@ -23,25 +23,31 @@
 ## 📁 Project Structure
 
 ```
-frontend/
+kfc_server-main/
+├── build.gradle
+├── settings.gradle
+├── gradlew / gradlew.bat
+├── excel_data/                # Contains initial CSV data for clubs/players
 ├── src/
-│   ├── Components/      # Shared UI
-│   ├── Modal/           # Filtering & selectors
-│   ├── Util/            # Utility functions
-│   ├── api/             # Axios wrappers
-│   ├── store/           # Zustand stores
-│   ├── style/           # CSS & Tailwind styles
+│   ├── main/
+│   │   ├── java/com/example/kfc/
+│   │   │   ├── controller/     # REST controllers (API endpoints)
+│   │   │   ├── service/        # Business logic
+│   │   │   ├── entity/         # JPA entity classes (Player, Club, etc.)
+│   │   │   ├── repository/     # Spring Data JPA repositories
+│   │   │   ├── dto/            # Data transfer objects (input/output)
+│   │   │   ├── Request/        # Custom request classes
+│   │   │   ├── Response/       # Custom response classes
+│   │   │   ├── config/         # Spring configuration (Web, SQL loader, etc.)
+│   │   │   └── data/           # Utility helpers like FormationUtil
+│   │   └── resources/
+│   │       ├── application.properties  # Spring Boot config
+│   │       ├── schema.sql              # DB schema definition
+│   │       ├── *.sql                   # Initial SQL data
+│   │       ├── static/                 # Static web files (HTML)
+│   │       └── templates/              # Template views (if used)
+│   └── test/                           # Unit & integration tests
 
-backend/
-├── src/
-│   ├── main/java/com/example/kfc/
-│   │   ├── controller/
-│   │   ├── service/
-│   │   ├── entity/
-│   │   ├── repository/
-│   ├── resources/
-│       ├── schema.sql
-│       ├── *.sql (data files)
 ```
 
 ---
