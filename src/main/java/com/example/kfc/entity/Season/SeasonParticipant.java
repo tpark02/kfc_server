@@ -18,16 +18,16 @@ public class SeasonParticipant {
     private Long id;
 
     @ManyToOne
-    @JsonManagedReference // Participant → UserInfo 는 직렬화
+    @JsonManagedReference
     private UserInfo user;
 
     @ManyToOne
-    @JsonBackReference // Participant → Season 방향은 무시
+    @JsonBackReference
     private Season season;
 
     private Long clubId;
 
-    private int round; // 1 = 8강, 2 = 4강, 3 = 결승
+    private int round;
     private boolean eliminated;
 
     @Column(nullable = false)

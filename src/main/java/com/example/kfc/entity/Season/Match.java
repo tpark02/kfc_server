@@ -10,7 +10,7 @@ import lombok.*;
 @Entity
 @Getter
 @Setter
-@Table(name = "season_match") // 추천: 예약어 피하기
+@Table(name = "season_match")
 public class Match {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -39,12 +39,10 @@ public class RandomTeamService {
 
         userLockManager.lock(userId);
         try {
-            List<String> positionRequirement =
-                    FormationUtil.formationPosition.get(
-                            formation);
+            List<String> positionRequirement = FormationUtil.formationPosition.get(formation);
 
             if (positionRequirement == null) {
-                throw new IllegalArgumentException("존재하지 않는 포메이션입니다: " + formation);
+                throw new IllegalArgumentException("❌ Formation does not exist: " + formation);
             }
 
             List<Player> playersPool = playerService.searchPlayersByFilters(countries, leagues, clubs).stream()
@@ -52,15 +50,13 @@ public class RandomTeamService {
                     .collect(Collectors.toList());
 
             if (playersPool.isEmpty()) {
-                throw new IllegalStateException("필터 조건에 맞는 선수가 없습니다.");
+                throw new IllegalStateException("❌ No players found matching the filter criteria.");
             }
 
-            // 전체 선수 풀을 섞기
             Collections.shuffle(playersPool);
 
-            // 포지션별 그룹 만들기
             Map<String, List<Player>> playersByPosition = playersPool.stream()
-                    .collect(Collectors.groupingBy(p -> p.getPos().toUpperCase())); // 대소문자 무시 대비
+                    .collect(Collectors.groupingBy(p -> p.getPos().toUpperCase()));
 
             List<Player> selectedPlayers = new ArrayList<>();
 
@@ -68,7 +64,6 @@ public class RandomTeamService {
                 List<Player> candidates = playersByPosition.get(pos);
 
                 if (candidates == null || candidates.isEmpty()) {
-                    // Try to match prefix, e.g. "CDM1" → "CDM"
                     for (String key : playersByPosition.keySet()) {
                         if (pos.startsWith(key)) {
                             candidates = playersByPosition.get(key);
@@ -81,85 +76,70 @@ public class RandomTeamService {
                     candidates = Collections.emptyList();
                 }
 
-                // 후보를 다시 섞어도 되고, 그냥 앞에서부터 뽑아도 됨
                 Collections.shuffle(candidates);
 
                 if (candidates == null || candidates.isEmpty()) {
-                    throw new IllegalStateException("[" + pos + "] 포지션에 사용할 수 있는 후보 선수가 없습니다.");
+                    throw new IllegalStateException("❌ No available players for position: [" + pos + "]");
                 }
+
                 selectedPlayers.add(candidates.get(0));
             }
 
-            // 최종적으로 정확히 11명만 선택됐는지 체크
             if (selectedPlayers.size() != 11) {
-                throw new IllegalStateException("선수 11명을 완성할 수 없습니다. 현재 인원: " + selectedPlayers.size());
+                throw new IllegalStateException("❌ Failed to select exactly 11 players. Current count: " + selectedPlayers.size());
             }
 
-
             List<MyPlayerDto> lst = new ArrayList<>();
-//            Set<Integer> usedIds = new HashSet<>();
+
             IntStream.range(0, selectedPlayers.size()).forEach(i -> {
                 Player p = selectedPlayers.get(i);
                 MyPlayerDto myPlayerDto = MyPlayerDto.from(p, userId, 1L, 0L, 0L, (long) i);
                 lst.add(myPlayerDto);
             });
 
-            // bench players
             List<MyPlayerDto> benchPlayers = IntStream.range(0, benchPlayerCount)
                     .mapToObj(i -> {
-                        MyPlayerDto dto = MyPlayerDto.from(
+                        return MyPlayerDto.from(
                                 playersPool.get(i),
                                 userId,
-                                1L,     // clubId
-                                0L,     // yellowCard
-                                0L,     // redCard
-                                (long) (i + 11) // idx: 11부터 시작
-                                                          );
-                        return dto;
+                                1L,
+                                0L,
+                                0L,
+                                (long) (i + 11)
+                                               );
                     })
                     .toList();
 
-
             lst.addAll(benchPlayers);
 
-            // buy players
             Player dummy = playerService.findMaxId();
             List<MyPlayerDto> buyPlayers = IntStream.range(0, reservePlayerCount)
                     .mapToObj(i -> {
-                        MyPlayerDto dto = MyPlayerDto.from(
+                        return MyPlayerDto.from(
                                 dummy,
                                 userId,
-                                1L,     // clubId
-                                0L,     // yellowCard
-                                0L,     // redCard
-                                (long) (i + 17) // idx: 11부터 시작
-                                                          );
-                        return dto;
+                                1L,
+                                0L,
+                                0L,
+                                (long) (i + 17)
+                                               );
                     })
                     .toList();
 
             lst.addAll(buyPlayers);
 
-            // calc team ovr
             double avg = IntStream.range(0, Math.min(17, lst.size()))
                     .mapToLong(i -> lst.get(i).getOvr())
                     .average()
                     .orElse(0.0);
-            System.out.println("random formation - avg: " + avg);
 
             Long myTeamOvr = (long) avg;
 
-            System.out.println("random formation - long avg: " + myTeamOvr);
-
-            // total squad value
             Long squadValue = lst.stream()
-                    .mapToLong(p -> FormationUtil.estimateValue(p, MyPlayerDto::getOvr, MyPlayerDto::getPos,
-                                                                MyPlayerDto::getName))
+                    .mapToLong(p -> FormationUtil.estimateValue(p, MyPlayerDto::getOvr, MyPlayerDto::getPos, MyPlayerDto::getName))
                     .sum();
 
-            // atk, def
-            Map<String, Long> atkdef = FormationUtil.getDefenseAttackSplit(lst, MyPlayerDto::getDef,
-                                                                           MyPlayerDto::getSho);
+            Map<String, Long> atkdef = FormationUtil.getDefenseAttackSplit(lst, MyPlayerDto::getDef, MyPlayerDto::getSho);
             Long atk = atkdef.get("attack");
             Long def = atkdef.get("defense");
 
@@ -169,21 +149,17 @@ public class RandomTeamService {
             Long cohesion = FormationUtil.getClubCohesion(lst, MyPlayerDto::getTeam);
             int chemistry = calculateChemistry(selectedPlayers);
 
-            UserInfo user =
-                    userInfoService.getUserById(
-                            userId);    // TODO : when account system added, this should come from userId from the
-            // front-end
+            UserInfo user = userInfoService.getUserById(userId);
 
-
-            lst.stream().filter(p->p.getLeagueId() != null).forEach(p -> {
-                var league = leagueRepository.findById(p.getLeagueId()).orElseThrow(() -> new IllegalArgumentException(
-                        "Random Team Service - League Url not found - league id : " + p.getLeagueId()));
+            lst.stream().filter(p -> p.getLeagueId() != null).forEach(p -> {
+                var league = leagueRepository.findById(p.getLeagueId())
+                        .orElseThrow(() -> new IllegalArgumentException("❌ League URL not found - league id: " + p.getLeagueId()));
                 p.setLeagueUrl(league.getUrl());
             });
 
-            lst.stream().filter(p->p.getTeamId()!= null).forEach(t->{
-                var team = teamRepository.findById(t.getTeamId()).orElseThrow(() -> new IllegalArgumentException(
-                        "Random Team Service - Team Url not found - team id : " + t.getTeamId()));
+            lst.stream().filter(p -> p.getTeamId() != null).forEach(t -> {
+                var team = teamRepository.findById(t.getTeamId())
+                        .orElseThrow(() -> new IllegalArgumentException("❌ Team URL not found - team id: " + t.getTeamId()));
                 t.setTeamUrl(team.getUrl());
             });
 
@@ -200,7 +176,7 @@ public class RandomTeamService {
                     .build();
         } catch (Exception e) {
             userLockManager.unlock(userId);
-            log.info("generate random team error - ", e.getMessage());
+            log.info("⚠️ Error generating random team - {}", e.getMessage());
             throw new RuntimeException(e);
         } finally {
             userLockManager.unlock(userId);
@@ -219,13 +195,13 @@ public class RandomTeamService {
                 Player p2 = players.get(j);
 
                 if (p1.getNation().equals(p2.getNation())) {
-                    chemistry += 5; // 같은 국가
+                    chemistry += 5;
                 }
                 if (p1.getLeague().equals(p2.getLeague())) {
-                    chemistry += 3; // 같은 리그
+                    chemistry += 3;
                 }
                 if (p1.getTeam().equals(p2.getTeam())) {
-                    chemistry += 7; // 같은 팀
+                    chemistry += 7;
                 }
             }
         }

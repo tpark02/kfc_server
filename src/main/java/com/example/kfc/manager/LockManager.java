@@ -20,13 +20,11 @@ public class LockManager<ID> {
         if (lock != null && lock.isHeldByCurrentThread()) {
             lock.unlock();
 
-            // 🔐 락이 완전히 해제됐고, 대기 중인 스레드도 없으면 제거
             if (!lock.isLocked() && !lock.hasQueuedThreads()) {
                 lockMap.remove(key, lock); // only remove if value is same as in map
             }
         }
     }
-    // Optional: Cleanup unused locks (not strictly needed, but helps memory management in long-running apps)
     public void removeLock(ID key) {
         lockMap.remove(key);
     }

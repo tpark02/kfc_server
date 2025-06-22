@@ -24,9 +24,7 @@ public class AiClubService {
     private final LockManager<Long> userLockManager = new LockManager<>();
 
     public void updateAiClubAndFormation(Long clubId, String formation, Long ovr) {
-        List<String> positionRequirement =
-                FormationUtil.formationPosition.get(
-                        formation);
+        List<String> positionRequirement = FormationUtil.formationPosition.get(formation);
 
         if (positionRequirement == null) {
             throw new IllegalArgumentException("AI - No such formation - " + formation);
@@ -38,12 +36,10 @@ public class AiClubService {
             throw new IllegalStateException("AI - There are no players with ovr - " + ovr);
         }
 
-        // 전체 선수 풀을 섞기
         Collections.shuffle(playersPool);
 
-        // 포지션별 그룹 만들기
         Map<String, List<Player>> playersByPosition = playersPool.stream()
-                .collect(Collectors.groupingBy(p -> p.getPos().toUpperCase())); // 대소문자 무시 대비
+                .collect(Collectors.groupingBy(p -> p.getPos().toUpperCase()));
 
         List<Player> selectedPlayers = new ArrayList<>();
 
@@ -51,7 +47,6 @@ public class AiClubService {
             List<Player> candidates = playersByPosition.get(pos);
 
             if (candidates == null || candidates.isEmpty()) {
-                // Try to match prefix, e.g. "CDM1" → "CDM"
                 for (String key : playersByPosition.keySet()) {
                     if (pos.startsWith(key)) {
                         candidates = playersByPosition.get(key);
@@ -64,21 +59,17 @@ public class AiClubService {
                 candidates = Collections.emptyList();
             }
 
-            // 후보를 다시 섞어도 되고, 그냥 앞에서부터 뽑아도 됨
             Collections.shuffle(candidates);
 
             if (candidates == null || candidates.isEmpty()) {
-                throw new IllegalStateException("[" + pos + "] 포지션에 사용할 수 있는 후보 선수가 없습니다.");
+                throw new IllegalStateException("[" + pos + "] No available candidate players.");
             }
             selectedPlayers.add(candidates.get(0));
         }
 
-        // 최종적으로 정확히 11명만 선택됐는지 체크
         if (selectedPlayers.size() != 11) {
-            throw new IllegalStateException("선수 11명을 완성할 수 없습니다. 현재 인원: " + selectedPlayers.size());
+            throw new IllegalStateException("Could not complete 11 players. Current count: " + selectedPlayers.size());
         }
-
-        //int chemistry = randomTeamService.calculateChemistry(selectedPlayers);
 
         List<PlayerDto> lst = new ArrayList<>();
         Set<Integer> usedIds = new HashSet<>();
@@ -87,25 +78,18 @@ public class AiClubService {
             lst.add(PlayerDto.from(p));
         });
 
-        //my team ovr 계산
         double avg = IntStream.range(0, Math.min(17, lst.size()))
                 .mapToLong(i -> lst.get(i).getOvr())
                 .average()
                 .orElse(0.0);
-        System.out.println("random formation - avg: " + avg);
 
         Long myTeamOvr = (long) avg;
 
-        System.out.println("random formation - long avg: " + myTeamOvr);
-
-        // total squad value
         Long squadValue = lst.stream()
                 .mapToLong(p -> FormationUtil.estimateValue(p, PlayerDto::getOvr, PlayerDto::getPos, PlayerDto::getName))
                 .sum();
 
-        Long pace =
-                FormationUtil.getAverageStat(lst
-                        , PlayerDto::getPac);
+        Long pace = FormationUtil.getAverageStat(lst, PlayerDto::getPac);
         Long age = FormationUtil.getAverageStat(lst, PlayerDto::getAge);
         Long stamina = FormationUtil.getAverageStat(lst, PlayerDto::getStamina);
 
@@ -115,15 +99,8 @@ public class AiClubService {
 
         Long cohesion = FormationUtil.getClubCohesion(lst, PlayerDto::getTeam);
 
+        updateAiClub(clubId, ovr, squadValue, age, pace, defense, attack, cohesion, stamina);
 
-        // update ai club
-        //CLUB_ID  	NAME  	USER_ID  	OVR  	PRICE  	AGE  	PACE  	DEF  	ATK  	CCH  	STM
-        updateAiClub(clubId, ovr, squadValue, age,
-                     pace, defense, attack,
-                     cohesion,
-                     stamina);
-
-        // bench players
         List<PlayerDto> benchplayers = playersPool.stream()
                 .limit(RandomTeamService.aiPlayersCount)
                 .map(PlayerDto::from)
@@ -144,7 +121,6 @@ public class AiClubService {
             throw new IllegalStateException(String.format("You need %d players", playerIds.size()));
         }
 
-        // update ai formation
         aiFormationService.updateFormationPlayers(clubId,
                                                   formation,
                                                   playerIds.get(0),
@@ -166,7 +142,6 @@ public class AiClubService {
                                                   playerIds.get(16));
     }
 
-    //CLUB_ID  	NAME  	USER_ID  	OVR  	PRICE  	AGE  	PACE  	DEF  	ATK  	CCH  	STM
     public void updateAiClub(Long userId, Long ovr, Long price, Long age, Long pace, Long def, Long atk, Long cch, Long stm) {
         try {
             aiClubRepository.updateClubInfoById(userId, ovr, price, age, pace, def, atk, cch, stm);

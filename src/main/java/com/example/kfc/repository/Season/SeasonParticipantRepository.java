@@ -33,10 +33,8 @@ public interface SeasonParticipantRepository extends JpaRepository<SeasonPartici
     @Query("SELECT p FROM SeasonParticipant p WHERE p.season.id = :seasonId AND p.active = true")
     List<SeasonParticipant> findActiveBySeasonId(@Param("seasonId") Long seasonId);
 
-    // 탈퇴 처리 대상 조회
     Optional<SeasonParticipant> findBySeasonIdAndUserIdAndActiveTrue(Long seasonId, Long userId);
 
-    // 참가 여부 확인 (중복 참가 방지용)
     boolean existsBySeasonIdAndUserIdAndActiveTrue(Long seasonId, Long userId);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)

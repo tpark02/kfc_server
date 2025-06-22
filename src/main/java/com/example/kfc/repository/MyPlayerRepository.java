@@ -159,7 +159,7 @@ public interface MyPlayerRepository extends JpaRepository<MyPlayer, Long> {
     @Query("SELECT m FROM MyPlayer m WHERE m.userId = :userId AND m.playerId = :playerId")
     List<MyPlayer> findAllMatchingPlayerId(@Param("userId") Long userId,
                                            @Param("playerId") Long playerId);
-    List<MyPlayer> findByUserIdAndClubId(Long userId, Long clubId);
+    List<MyPlayer> findByUserId(Long userId);
 
     @Transactional
     @Modifying

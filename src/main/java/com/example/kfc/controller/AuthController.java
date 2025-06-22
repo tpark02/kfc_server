@@ -35,11 +35,11 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request) {
         try {
-            // 👉 디버깅용 로그
+            // 👉 Debug log
             UserInfo user = userInfoRepository.findByUsername(request.getUsername())
                     .orElseThrow(() -> new IllegalArgumentException("User not found"));
             boolean matched = passwordEncoder.matches(request.getPassword(), user.getPassword());
-            System.out.println("🧪 비밀번호 매칭 결과: " + matched);
+            System.out.println("🧪 Password match result: " + matched);
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
                                               );
@@ -51,15 +51,14 @@ public class AuthController {
 
             Long userId = userinfo.getId();
 
+            // myClubService (commented out)
 
-//            myClubService.
             return ResponseEntity.ok(new AuthResponse(token, userId));
 
         } catch (AuthenticationException e) {
-            return ResponseEntity.status(401).body("❌ 아이디 또는 비밀번호가 일치하지 않습니다.");
+            return ResponseEntity.status(401).body("❌ Username or password does not match.");
         }
     }
-
 
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody AuthRequest request) {

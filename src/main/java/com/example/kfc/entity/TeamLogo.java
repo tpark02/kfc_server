@@ -11,7 +11,7 @@ import lombok.*;
 @Setter
 public class TeamLogo {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // DB가 id 자동 생성
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name="logo_img")

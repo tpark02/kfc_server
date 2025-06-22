@@ -25,7 +25,7 @@ public class Season {
     private boolean started;
 
     @OneToMany(mappedBy = "season")
-    @JsonManagedReference // Season → Participant 방향만 직렬화
+    @JsonManagedReference
     private List<SeasonParticipant> participants;
 
     @Column(nullable = false, updatable = false)

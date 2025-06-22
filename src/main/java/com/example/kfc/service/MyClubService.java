@@ -25,29 +25,20 @@ public class MyClubService {
     private final UserInfoRepository userInfoRepository;
     private final MyFormationRepository myFormationRepository;
     private final MyPlayerRepository myPlayerRepository;
-    private final PlayerRepository playerRepository;
-    private final MyPlayerService myPlayerService;
-    private final PlayerService playerService;
-    private final RandomTeamService randomTeamService;
     private final TeamLogoRepository teamLogoRepository;
 
     // ai club
-    private final AiClubService aiClubService;
-    private final AiFormationService aiFormationService;
     private final LockManager<Long> clubLockManager = new LockManager<>();
 
     public MyClub createClubForUser(Long userId, String clubName) {
-        // 1. 사용자 조회
         UserInfo user = userInfoRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("❌ 존재하지 않는 사용자입니다: " + userId));
+                .orElseThrow(() -> new IllegalArgumentException("❌ user id not exist: " + userId));
 
-        // 2. 클럽 생성 및 정보 설정
         MyClub club = new MyClub();
         club.setName(clubName);
-        club.setUser(user); // ✅ FK 연결
+        club.setUser(user);
         club.setClubId(1L);
 
-        // 3. 초기값 설정
         club.setOvr(0L);
         club.setAge(0L);
         club.setPrice(0L);
@@ -56,9 +47,8 @@ public class MyClubService {
         club.setCch(0L);
         club.setPace(0L);
         club.setStm(0L);
-        club.setNation(""); // 예시
+        club.setNation("");
 
-        // 4. 저장
         return myClubRepository.save(club);
     }
 
@@ -75,13 +65,11 @@ public class MyClubService {
     }
 
     public Optional<MyClub> resetClub(Long userId, Long clubId) {
-        // 클럽별 락 가져오기
         clubLockManager.lock(clubId);
         try {
             MyClub existing = myClubRepository.findByUserId(userId)
                     .orElseThrow(() -> new IllegalArgumentException("Club not found"));
 
-            // 클럽 정보 초기화
             existing.setName(null);
             existing.setOvr(0L);
             existing.setAtk(0L);
@@ -92,7 +80,6 @@ public class MyClubService {
             existing.setAge(0L);
             existing.setStm(0L);
 
-            // 포메이션 초기화
             Optional<MyFormation> formationOpt = myFormationRepository.findByClub(existing);
             if (formationOpt.isPresent()) {
                 MyFormation myFormation = formationOpt.get();
@@ -104,8 +91,7 @@ public class MyClubService {
                 myFormationRepository.save(myFormation);
             }
 
-            // 선수 초기화
-            List<MyPlayer> players = myPlayerRepository.findByUserIdAndClubId(userId, clubId);
+            List<MyPlayer> players = myPlayerRepository.findByUserId(userId);
             if (players.isEmpty()) {
                 throw new IllegalArgumentException("No players found for clubId: " + clubId);
             }
@@ -138,7 +124,6 @@ public class MyClubService {
                 );
             }
 
-            // 클러 정보 업데이트
             existing.setName(request.getClubName());
             existing.setOvr(request.getOvr());
             existing.setAtk(request.getAttack());
@@ -154,7 +139,6 @@ public class MyClubService {
                     .orElseThrow(() -> new IllegalArgumentException("Logo not found - " + request.getMyLogoId()));
             existing.setTeamLogo(teamLogo);
 
-            // 포메이션 조회 또는 생성
             MyFormation myFormation = myFormationRepository.findByClub(existing).orElseGet(MyFormation::new);
             if (myFormation.getId() == null) {
                 myFormation.setClub(existing);
@@ -163,7 +147,7 @@ public class MyClubService {
 
             List<MyPlayerDto> myPlayerDtoLst = request.getPlayers();
             myPlayerDtoLst.sort(Comparator.comparingLong(MyPlayerDto::getIdx));
-            List<MyPlayer> existingPlayers = myPlayerRepository.findByUserIdAndClubId(userId, clubId);
+            List<MyPlayer> existingPlayers = myPlayerRepository.findByUserId(userId);
 
             if (existingPlayers.size() != RandomTeamService.totalPlayersCount) {
                 throw new IllegalArgumentException(
@@ -266,80 +250,4 @@ public class MyClubService {
             clubLockManager.unlock(clubId);
         }
     }
-
-//    TODO: perhaps used later for creating login. because a user must have 3 clubs
-//    public void createMyClub(Long userId, MyClubRequest request) {
-//        UserInfo user = userInfoRepository.findById(userId)
-//                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-//
-//        if (request.getPlayers().size() != 26) {
-//            throw new IllegalArgumentException("Exactly 26 players must be provided");
-//        }
-//
-//        // Save the club first so it gets an ID
-//        List<MyClub> myClubs = myClubRepository.findByUser(user);
-//
-//        if (myClubs.size() >= 3) {
-//            throw new IllegalArgumentException("You cannot create more than 3 clubs");
-//        }
-//
-//        MyClub club = new MyClub();
-//        club.setName(request.getClubName());
-//        club.setUser(user);
-//        club.setOvr(request.getOvr());
-//        club.setAtk(request.getAttack());
-//        club.setDef(request.getDefense());
-//        club.setCch(request.getClubCohesion());
-//        club.setPace(request.getPace());
-//        club.setPrice(request.getPrice());
-//        club.setAge(request.getAge());
-//        club.setStm(request.getStamina());
-//
-//        System.out.println("Saving club: id=" + club.getClubId() + ", name=" + club.getName());
-//
-//        var targetClub = myClubRepository.save(club);
-//
-//        // 🔍 Check if a formation already exists for this club
-//        Formation formation = formationRepository.findByClub(targetClub)
-//                .orElseGet(Formation::new); // new Formation() if not found
-//
-//        // ⚙️ If it's new, set the club and name
-//        if (formation.getId() == null) {
-//            formation.setClub(club);
-//            formation.setName(request.getFormationName());
-//        }
-//
-//        // Create the formation
-//        formation.setName(request.getFormationName());
-//        formation.setClub(targetClub); // FK
-//        List<Long> players = request.getPlayers();
-//        formation.setP1(players.get(0));
-//        formation.setP2(players.get(1));
-//        formation.setP3(players.get(2));
-//        formation.setP4(players.get(3));
-//        formation.setP5(players.get(4));
-//        formation.setP6(players.get(5));
-//        formation.setP7(players.get(6));
-//        formation.setP8(players.get(7));
-//        formation.setP9(players.get(8));
-//        formation.setP10(players.get(9));
-//        formation.setP11(players.get(10));
-//        formation.setP12(players.get(11));
-//        formation.setP13(players.get(12));
-//        formation.setP14(players.get(13));
-//        formation.setP15(players.get(14));
-//        formation.setP16(players.get(15));
-//        formation.setP17(players.get(16));
-//        formation.setP18(players.get(17));
-//        formation.setP19(players.get(18));
-//        formation.setP20(players.get(19));
-//        formation.setP21(players.get(20));
-//        formation.setP22(players.get(21));
-//        formation.setP23(players.get(22));
-//        formation.setP24(players.get(23));
-//        formation.setP25(players.get(24));
-//        formation.setP26(players.get(25));
-//
-//        formationRepository.save(formation);
-//    }
 }

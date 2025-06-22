@@ -14,7 +14,7 @@ import lombok.ToString;
 @Getter
 public class Player {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // DB가 id 자동 생성
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column

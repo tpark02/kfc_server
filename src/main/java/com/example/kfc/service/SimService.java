@@ -61,7 +61,6 @@ public class SimService {
                 if (goalsA > goalsB) {
                     statA.wins++;
                     statA.pts += 3;
-
                     statB.losses++;
                 } else if (goalsA < goalsB) {
                     statB.wins++;
@@ -86,15 +85,15 @@ public class SimService {
             List<Team> teams = teamRepository.findRandom20TeamsExcluding(excludedIds);
 
             if (teams.size() < 2) {
-                throw new IllegalStateException("2개 이상의 팀이 필요합니다.");
+                throw new IllegalStateException("At least 2 teams are required.");
             }
 
-            // 홀수일 경우 BYE 팀 추가
+            // If odd number, add a BYE team
             if (teams.size() % 2 != 0) {
                 teams.add(new Team("BYE"));
             }
 
-            // 사용자 클럽 정보 가져오기
+            // Get user's club info
             var club = myClubService.getClubByUserId(userId);
             List<MatchDto> schedule = new ArrayList<>();
 
@@ -103,20 +102,21 @@ public class SimService {
                 String opponentTeam = teams.get(i).getTeam();
                 Long teamId = teams.get(i).getId();
 
-                // 평균 OVR 조회
+                // Get average OVR
                 Long avgOvr = playerRepository.avgOvrTeam(teamId);
 
                 System.out.println("team id : " + teamId);
-                // 선수 목록 조회
+
+                // Get players
                 List<PlayerDto> members = playerRepository.searchClub(teamId)
                         .stream()
                         .map(PlayerDto::from)
                         .toList();
 
-                // 승패 계산
+                // Determine match result
                 String result = club.getOvr() > avgOvr ? "W" : "L";
 
-                // 매치 생성 및 추가
+                // Create match
                 schedule.add(new MatchDto(
                         club.getName(),
                         opponentTeam,
@@ -130,7 +130,8 @@ public class SimService {
             }
 
             AtomicReference<Long> winCnt = new AtomicReference<>(0L);
-            // add stats to the won matches
+
+            // Mark stats for matches won
             schedule.forEach(m -> {
                 if (m.getRes().equals("W")) {
                     m.setAddStats(1L);

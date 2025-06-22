@@ -97,14 +97,6 @@ public class MyStoreService {
         return result > 0;
     }
 
-//    public Pair<Long, Long> findIdRangeByUserId(Long userId) {
-//        Object[] result = myStoreRepository.findIdRangeByUserId(userId).orElseThrow(() -> new IllegalArgumentException("No range found for userId=" + userId));
-//
-//        Long minId = result[0] != null ? (Long) result[0] : -1L;
-//        Long maxId = result[1] != null ? (Long) result[1] : -1L;
-//        return Pair.of(minId, maxId);
-//    }
-
     public List<MyStore> getMyStore(Long userId) {
         List<MyStore> lst = myStoreRepository.getMyStoreData(userId);
         return lst;

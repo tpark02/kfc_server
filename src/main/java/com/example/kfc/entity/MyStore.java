@@ -12,7 +12,7 @@ import lombok.*;
 @Table(name = "my_store")
 public class MyStore {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // DB가 id 자동 생성
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column

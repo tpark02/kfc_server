@@ -53,7 +53,6 @@ public class TournamentService {
                         .collect(Collectors.toList());
 
                 calcTournament(season, filledParticipants);
-//                startTournament(season, filledParticipants);
 
                 season.setFinishedAt(LocalDateTime.now());
                 seasonRepository.save(season);
@@ -86,7 +85,7 @@ private void calcTournament(Season season, List<SeasonParticipant> players) {
 
         long totalOvr = 0L;
 
-        List<MyPlayer> allMyPlayers = myPlayerService.getMyPlayers(userId, clubId); // 전체 MyPlayer 리스트
+        List<MyPlayer> allMyPlayers = myPlayerService.getMyPlayers(userId);
 
         for (int j = 1; j <= RandomTeamService.totalPlayersCount; j++) {
             try {
@@ -94,9 +93,8 @@ private void calcTournament(Season season, List<SeasonParticipant> players) {
                 Long playerId = (Long) getter.invoke(myFormation);
 
                 if (playerId != null) {
-                    int targetIdx = j - 1; // idx는 0-based
+                    int targetIdx = j - 1;
 
-                    // playerId와 idx가 둘 다 일치하는 MyPlayer 찾기
                     Optional<MyPlayer> matched = allMyPlayers.stream()
                             .filter(my -> my.getPlayerId().equals(playerId) && my.getIdx().equals((long) targetIdx))
                             .findFirst();
@@ -279,177 +277,6 @@ private void calcTournament(Season season, List<SeasonParticipant> players) {
     }
 }
 
-//    private void startTournament(Season season, List<SeasonParticipant> players) {
-//        Collections.shuffle(players);
-//        int round = 1;
-//
-//        while (players.size() > 1) {
-//            List<SeasonParticipant> nextRound = new ArrayList<>();
-//
-//            for (int i = 0; i < players.size(); i += 2) {
-//                SeasonParticipant a = players.get(i);
-//                SeasonParticipant b = players.get(i + 1);
-//
-//                boolean aIsAi = a.getUser().isAi();
-//                boolean bIsAi = b.getUser().isAi();
-//
-//                SeasonParticipant winnerParticipant, loserParticipant;
-//
-//                System.out.println("\n🌀 Round " + round + " - Match #" + (i / 2 + 1));
-//
-//                Match match = new Match();
-//                match.setSeason(season);
-//                match.setPlayer1(a.getUser());
-//                match.setPlayer2(b.getUser());
-//                match.setClubId1(a.getClubId());
-//                match.setClubId2(b.getClubId());
-//                match.setIsAi1(aIsAi);
-//                match.setIsAi2(bIsAi);
-//
-//                Random random = SeasonService.random;
-//
-//                if (!aIsAi && !bIsAi) {
-//                    // get yellow cards from a b
-//                    Long yellowCntA = myPlayerService.getYellowCardCount(a.getUser().getId(), a.getClubId());
-//                    Long yellowCntB = myPlayerService.getYellowCardCount(b.getUser().getId(), b.getClubId());
-//
-//                    // compare a b ovr
-//                    MyClub clubA = myClubService.getClubByUserIdAndClubId(a.getUser().getId(), a.getClubId());
-//                    MyClub clubB = myClubService.getClubByUserIdAndClubId(b.getUser().getId(), b.getClubId());
-//
-//                    // deduct ovr yellow cards
-//                    Long adjustedOvrA = clubA.getOvr() - yellowCntA * 5;
-//                    Long adjustedOvrB = clubB.getOvr() - yellowCntB * 5;
-//
-//                    // deduct ovr red cards
-//                    Long redCntA = myPlayerService.getRedCardCount(a.getUser().getId(), a.getClubId());
-//                    Long redCntB = myPlayerService.getRedCardCount(b.getUser().getId(), b.getClubId());
-//
-//                    adjustedOvrA -= (redCntA * 10);
-//                    adjustedOvrB -= (redCntB * 10);
-//
-//                    UserInfo winnerUser = a.getUser();
-//                    if (!Objects.equals(adjustedOvrA, adjustedOvrB)) {
-//                        winnerUser = (adjustedOvrA > adjustedOvrB) ? a.getUser() : b.getUser();
-//                    }
-//
-//                    System.out.println("🧍 User vs 🧍 User");
-//                    System.out.println("A: " + a.getUser()
-//                            .getUsername() + " | Club ID: " + clubA.getClubId() + " | adjusted OVR: " + adjustedOvrA);
-//                    System.out.println("B: " + b.getUser()
-//                            .getUsername() + " | Club ID: " + clubB.getClubId() + " | adjusted  OVR: " +
-//                            adjustedOvrB);
-//
-//                    winnerParticipant = (winnerUser == null || winnerUser.equals(a.getUser())) ? a : b;
-//                    loserParticipant = (winnerUser == null || winnerUser.equals(a.getUser())) ? b : a;
-//
-//                    // reset yellow and red cards
-////                    myPlayerService.resetYellowCards(a.getUser().getId(), a.getClubId());
-////                    myPlayerService.resetRedCards(a.getUser().getId(), a.getClubId());
-////
-////                    myPlayerService.resetYellowCards(b.getUser().getId(), b.getClubId());
-////                    myPlayerService.resetRedCards(b.getUser().getId(), b.getClubId());
-//
-//                    if (random.nextBoolean()) {
-//                        int cntA = generateYellowCardCount(random);
-//                        int cntB = generateYellowCardCount(random);
-//
-//                        setYellowCard(b.getUser().getId(), b.getClubId(), cntA);
-//                        setYellowCard(a.getUser().getId(), a.getClubId(), cntB);
-//                    }
-//
-//                    if (random.nextBoolean()) {
-//                        int cntA = generateRedCardsCount(random);
-//                        int cntB = generateRedCardsCount(random);
-//
-//                        setRedCard(b.getUser().getId(), b.getClubId(), cntA, 0L);
-//                        setRedCard(a.getUser().getId(), a.getClubId(), cntB, 0L);
-//                    }
-//                } else if (aIsAi && bIsAi) {
-//                    AiClub clubA = getAiClubById(a.getClubId());
-//                    AiClub clubB = getAiClubById(b.getClubId());
-//
-//                    System.out.println("🤖 AI vs 🤖 AI");
-//                    System.out.println("A (AI): " + a.getUser()
-//                            .getUsername() + " | Club ID: " + clubA.getClubId() + " | OVR: " + clubA.getOvr());
-//                    System.out.println("B (AI): " + b.getUser()
-//                            .getUsername() + " | Club ID: " + clubB.getClubId() + " | OVR: " + clubB.getOvr());
-//
-//                    winnerParticipant = (clubA.getOvr() >= clubB.getOvr()) ? a : b;
-//                    loserParticipant = (clubA.getOvr() >= clubB.getOvr()) ? b : a;
-//                } else {
-//                    SeasonParticipant human = aIsAi ? b : a;
-//                    SeasonParticipant ai = aIsAi ? a : b;
-//
-//                    MyClub humanClub = myClubService.getClubByUserIdAndClubId(human.getUser().getId(),
-//                                                                              human.getClubId());
-//                    AiClub aiClub = getAiClubById(ai.getClubId());
-//
-//                    Long yellowCnt = myPlayerService.getYellowCardCount(humanClub.getUser().getId(),
-//                                                                        humanClub.getClubId());
-//                    Long redCnt = myPlayerService.getRedCardCount(humanClub.getUser().getId(), humanClub.getClubId());
-//
-//                    // deduct ovr yellow cards
-//                    long adjustedOvr = humanClub.getOvr() - (yellowCnt * 5);
-//
-//                    // deduct ovr reds cards
-//                    adjustedOvr -= (redCnt * 10);
-//
-//                    boolean humanWins = adjustedOvr >= aiClub.getOvr();
-//                    winnerParticipant = humanWins ? human : ai;
-//                    loserParticipant = humanWins ? ai : human;
-//
-//                    // reset yellow and red
-
-/// /                    myPlayerService.resetYellowCards(human.getUser().getId(), human.getClubId());
-/// /                    myPlayerService.resetRedCards(human.getUser().getId(), human.getClubId());
-//
-//                    // set yellow
-//                    if (random.nextBoolean()) {
-//                        int c = generateYellowCardCount(random);
-//                        setYellowCard(human.getUser().getId(), human.getClubId(), c);
-//                    }
-//
-//                    // set red
-//                    if (random.nextBoolean()) {
-//                        int c = generateRedCardsCount(random);
-//                        setRedCard(human.getUser().getId(), human.getClubId(), c, 0L);
-//                    }
-//
-//                    System.out.println("🧍 vs 🤖 User vs AI");
-//                    System.out.println("Human: " + human.getUser()
-//                            .getUsername() + " | Club ID: " + humanClub.getClubId() + " | adjusted OVR: " +
-//                            adjustedOvr);
-//                    System.out.println("AI: " + ai.getUser()
-//                            .getUsername() + " | Club ID: " + aiClub.getClubId() + " | OVR: " + aiClub.getOvr());
-//                }
-//
-//                Long loserUserId = loserParticipant.getUser().getId();
-//                participantRepository.eliminateParticipantByUserIdAndRound(loserUserId, round);
-//                System.out.println("❌ Eliminated participant - User ID: " + loserUserId);
-//
-//                match.setWinner(winnerParticipant.getUser());
-//                match.setRound(round);
-//                matchRepository.save(match);
-//
-//                SeasonParticipant next = new SeasonParticipant();
-//                next.setSeason(season);
-//                next.setUser(winnerParticipant.getUser());
-//                next.setClubId(winnerParticipant.getClubId());
-//                next.setRound(round + 1);
-//                next.setEliminated(false);
-//                participantRepository.save(next);
-//                nextRound.add(next);
-//            }
-//
-//            round++;
-//            players = nextRound;
-//        }
-//
-//        if (!players.isEmpty()) {
-//            log.info("🏆 Final Winner: " + players.get(0).getUser().getUsername());
-//        }
-//    }
 private int generateRedCardsCount(Random random) {
     int chance = random.nextInt(100);
     if (chance < 80) return 0;
@@ -475,7 +302,7 @@ private AiClub getAiClubById(Long clubId) {
 
 private void setYellowCard(Long userId, Long clubId, int cnt) {
     try {
-        List<MyPlayer> myPlayers = myPlayerService.getMyPlayers(userId, clubId);
+        List<MyPlayer> myPlayers = myPlayerService.getMyPlayers(userId);
         int size = 11;
 
         if (cnt > size) {
@@ -515,7 +342,7 @@ private void setYellowCard(Long userId, Long clubId, int cnt) {
 
 private void setRedCard(Long userId, Long clubId, int cnt, Long seq_cnt) {
     try {
-        List<MyPlayer> myPlayers = myPlayerService.getMyPlayers(userId, clubId);
+        List<MyPlayer> myPlayers = myPlayerService.getMyPlayers(userId);
         int size = 11;
 
         if (cnt > size) {

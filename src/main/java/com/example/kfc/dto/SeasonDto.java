@@ -31,7 +31,7 @@ public class SeasonDto {
     }
 
     public static SeasonDto from(Season season, String msg) {
-        List<String> names = List.of(); // 기본 빈 리스트
+        List<String> names = List.of();
 
         if (season.getParticipants() != null) {
             names = season.getParticipants().stream()

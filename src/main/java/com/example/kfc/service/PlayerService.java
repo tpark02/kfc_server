@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-@Service // 서비스 객체 선언
+@Service
 @RequiredArgsConstructor
 public class PlayerService {
 
@@ -66,13 +66,6 @@ public class PlayerService {
                                          Pageable pageable) {
         return playerRepository.searchPlayers(country, league, club, pos, name, pageable).map(PlayerDto::from);
     }
-
-//    public List<PlayerDto> searchClub(String teamName){
-//        if (teamName.isEmpty()) {
-//            return Collections.emptyList(); // or return List.of();
-//        }
-//        return playerRepository.searchClub(teamName).stream().map(PlayerDto::from).toList();
-//    }
 
     public List<Player> search(String query) {
         return new ArrayList<>(playerRepository.findByNameContainingIgnoreCase(query));

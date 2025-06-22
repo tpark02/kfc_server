@@ -14,12 +14,4 @@ public class AdditionalSqlLoader {
 
     @Autowired
     private ResourceLoader resourceLoader;
-
-//    @PostConstruct
-//    public void loadExtraSql() throws Exception {
-//        Resource resource = resourceLoader.getResource("classpath:extra-data.sql");
-//        try (Connection conn = dataSource.getConnection()) {
-//            ScriptUtils.executeSqlScript(conn, resource);
-//        }
-//    }
 }

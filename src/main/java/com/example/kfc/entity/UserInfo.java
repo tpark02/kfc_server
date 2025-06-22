@@ -18,7 +18,7 @@ import java.util.List;
 @Table(name = "user_info")
 public class UserInfo {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // DB가 id 자동 생성
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(unique = true)
     private String username;
@@ -30,14 +30,12 @@ public class UserInfo {
 
     @Column(name = "is_ai")
     private boolean isAi = false;
-//    @Column(name = "team_name")
-//    private String teamName;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonIgnore // clubs에서 다시 user로 가는 걸 막기 위해 무시
+    @JsonIgnore
     private List<MyClub> clubs = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonBackReference // Participant → UserInfo는 직렬화되지 않음
+    @JsonBackReference
     private List<SeasonParticipant> participants = new ArrayList<>();
 }

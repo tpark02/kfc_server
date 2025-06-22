@@ -27,9 +27,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         String path = request.getRequestURI();
-        System.out.println("🛂 필터 실행됨 - URI: " + path);
+        System.out.println("🛂 Filter executed - URI: " + path);
 
-        // 로그인, 회원가입, H2 콘솔은 필터 패스
+        // Skip filtering for login, signup, and H2 console
         if (path.startsWith("/api/login") || path.startsWith("/api/register") || path.startsWith("/h2-console")) {
             filterChain.doFilter(request, response);
             return;
@@ -47,12 +47,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             try {
                 username = jwtUtil.extractUsername(token);
             } catch (Exception e) {
-                System.out.println("❌ JWT 파싱 실패: " + e.getMessage());
+                System.out.println("❌ Failed to parse JWT: " + e.getMessage());
             }
 
-            System.out.println("🔍 추출된 토큰: " + token);
-            System.out.println("👤 추출된 사용자: " + username);
-            System.out.println("🛡️ SecurityContextHolder에 인증 있음?: " + SecurityContextHolder.getContext().getAuthentication());
+            System.out.println("🔍 Extracted token: " + token);
+            System.out.println("👤 Extracted user: " + username);
+            System.out.println("🛡️ Is authentication already present in SecurityContextHolder?: "
+                                       + SecurityContextHolder.getContext().getAuthentication());
 
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
@@ -61,9 +62,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     UsernamePasswordAuthenticationToken authToken =
                             new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     SecurityContextHolder.getContext().setAuthentication(authToken);
-                    System.out.println("✅ 인증 완료: SecurityContext에 사용자 설정됨");
+                    System.out.println("✅ Authentication successful: User set in SecurityContext");
                 } else {
-                    System.out.println("❌ 토큰 유효성 실패");
+                    System.out.println("❌ Token validation failed");
                 }
             }
         }
@@ -71,3 +72,4 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 }
+

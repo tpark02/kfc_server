@@ -257,14 +257,12 @@ public class FormationUtil {
         return result;
     }
 
-    // 🟡 평균 스탯 계산 (pace, age, stamina 등)
     public static <T> Long getAverageStat(List<T> players, ToLongFunction<T> getter) {
         return (long) Math.round(
                 (float) players.stream().filter(Objects::nonNull).mapToLong(getter).sum() / RandomTeamService.startingPlayerCount
                                 );
     }
 
-    // 🔴 공격/수비 스플릿
     public static <T> Map<String, Long> getAttackDefenseSplit(
             List<T> players,
             ToLongFunction<T> attackGetter,
@@ -279,7 +277,6 @@ public class FormationUtil {
         return result;
     }
 
-    // 🔵 클럽 결속도
     public static <T> Long getClubCohesion(List<T> players, Function<T, String> teamGetter) {
         Map<String, Long> teamCount = new HashMap<>();
         for (T p : players) {
@@ -290,7 +287,6 @@ public class FormationUtil {
         return teamCount.values().stream().max(Long::compareTo).orElse(0L) * 10L;
     }
 
-    // 🟢 스쿼드 밸류
     public static <T> Long getSquadValue(List<T> players, Function<T, Long> valueEstimator) {
         return players.stream().mapToLong(p -> valueEstimator.apply(p)).sum();
     }

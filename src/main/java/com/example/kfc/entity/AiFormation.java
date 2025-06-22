@@ -18,7 +18,6 @@ public class AiFormation {
 
     private String name;
 
-    //    @ManyToOne(fetch = FetchType.LAZY)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "club_id", nullable = false)
     private AiClub club;
@@ -40,13 +39,4 @@ public class AiFormation {
     private Long p15;
     private Long p16;
     private Long p17;
-//    private Long p18;
-//    private Long p19;
-//    private Long p20;
-//    private Long p21;
-//    private Long p22;
-//    private Long p23;
-//    private Long p24;
-//    private Long p25;
-//    private Long p26;
 }

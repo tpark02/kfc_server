@@ -42,7 +42,7 @@ public class AuthService {
         UserInfo savedUser = userRepository.save(newUser);
 
         String token = jwtUtil.generateToken(savedUser.getUsername());
-        Long userId = savedUser.getId(); // ✅ 저장 후 ID 추출
+        Long userId = savedUser.getId();
 
         myClubService.createClubForUser(userId, "");
         myFormationService.createEmptyFormation(userId, "");

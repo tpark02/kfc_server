@@ -17,22 +17,23 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 import java.util.stream.IntStream;
 
-@CrossOrigin(origins = "http://localhost:5173") // Vite dev 서버 주소
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api")
 public class MyClubController {
 
     private final UserInfoService userInfoService;
     private final MyClubService myClubService;
     private final MyPlayerService myPlayerService;
 
-    @GetMapping("/users/{userId}/myclubs")
+    @GetMapping("/users/{userId}/clubs")
     public MyClubDto getMyClubs(@PathVariable Long userId) {
         try {
             UserInfo user = userInfoService.getUserById(userId);
             List<MyClub> clubs = myClubService.getClubsByUser(user);
             var club = clubs.get(0);
-            List<MyPlayer> myPlayers = myPlayerService.getMyPlayers(userId, club.getClubId());
+            List<MyPlayer> myPlayers = myPlayerService.getMyPlayers(userId);
 
             var lst = myPlayers.stream().map(MyPlayerDto::from).toList();
             MyFormation f = club.getFormation();
@@ -101,36 +102,21 @@ public class MyClubController {
                 MyPlayerDto p2 = players.get(j);
 
                 if (p1.getNation().equals(p2.getNation())) {
-                    chemistry += 5; // 같은 국가
+                    chemistry += 5;
                 }
                 if (p1.getLeague().equals(p2.getLeague())) {
-                    chemistry += 3; // 같은 리그
+                    chemistry += 3;
                 }
                 if (p1.getTeam().equals(p2.getTeam())) {
-                    chemistry += 7; // 같은 팀
+                    chemistry += 7;
                 }
             }
         }
 
         return chemistry;
     }
-//    TODO: perhaps used later for creating login. because a user must have 3 clubs
-//    @GetMapping("/users/{userId}/myplayers")
-//    public List<MyClubDto> getMyPlayers(@PathVariable Long userId) {
-//        UserInfo user = userInfoService.getUserById(userId);
-//
-//    }
 
-    //    @PostMapping("/users/{userId}/myclubs")
-//    public ResponseEntity<?> createMyClub(@PathVariable Long userId, @RequestBody MyClubRequest request) {
-//        try {
-//            myClubService.createMyClub(userId, request);
-//            return ResponseEntity.ok("클럽 저장 성공");
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-//        }
-//    }
-    @PutMapping("/updatemyclub/{userId}/{clubId}")
+    @PutMapping("/users/{userId}/clubs/{clubId}")
     public ResponseEntity<String> updateMyClub(
             @PathVariable Long userId,
             @PathVariable Long clubId,
@@ -148,7 +134,7 @@ public class MyClubController {
         }
     }
 
-    @DeleteMapping("/deletemyclub/{userId}/{clubId}")
+    @DeleteMapping("/users/{userId}/clubs/{clubId}")
     public ResponseEntity<String> deleteMyClub(@PathVariable Long userId, @PathVariable Long clubId) {
         try {
             var updatedClub = myClubService.resetClub(userId, clubId).orElse(null);
@@ -158,36 +144,19 @@ public class MyClubController {
         }
     }
 
-    //    @PostMapping("/myclub/updateroster")
-//    public ResponseEntity<String> updateRoater(@RequestBody UpdateRosterRequest request) {
-//        try {
-//            Long userId = request.getUserId();
-//            Long clubId = request.getClubId();
-//            Map<Long, Long> rosterMap = request.getRosterMap();
-//
-//            System.out.println("✅ userId: " + request.getUserId());
-//            System.out.println("✅ clubId: " + request.getClubId());
-//            System.out.println("✅ rosterMap: " + request.getRosterMap());
-//
-//            myPlayerService.updateIdxForClub(userId, clubId, rosterMap);
-//            return ResponseEntity.ok("club saved");
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-//        }
-//    }
-    @PutMapping("/updatePlayer/{userId}/{idx}")
+    @PutMapping("/users/{userId}/players/{idx}")
     public ResponseEntity<String> updatePlayer(@PathVariable Long userId, @PathVariable Long idx) {
         try {
             int updated = myPlayerService.deletePlayer(userId, idx);
 
             if (updated > 0) {
-                return ResponseEntity.ok("✅ 업데이트 성공");
+                return ResponseEntity.ok("✅ Update successful");
             } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("❌ 업데이트 실패: 해당 플레이어가 없음");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("❌ Update failed: player not found");
             }
 
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("🔥 서버 에러: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("🔥 server error: " + e.getMessage());
         }
     }
 }

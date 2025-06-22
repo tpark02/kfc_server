@@ -13,9 +13,6 @@ public interface MyStoreRepository extends JpaRepository<MyStore, Long> {
 
     Optional<MyStore> findByUserIdAndPlayerId(Long userId, Long playerId);
 
-//    @Query("SELECT MIN(s.id), MAX(s.id) FROM MyStore s WHERE s.userId = :userId")
-//    Optional<Object[]> findIdRangeByUserId(@Param("userId") Long userId);
-
     @Modifying
     @Query("""
     UPDATE MyStore s SET 

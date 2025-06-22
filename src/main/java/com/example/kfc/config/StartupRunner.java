@@ -29,11 +29,7 @@ public class StartupRunner implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
-        // 🟢 player.price 동기화
-//        playerService.multiplyOvrByTen();
-//        playerService.syncPriceWithOvr();
-
-        // ai club beginner insert
+        // Insert AI club beginner
         aiClubService.updateAiClubAndFormation(1L, "442", 630L);
         aiClubService.updateAiClubAndFormation(1L, "433", 630L);
         aiClubService.updateAiClubAndFormation(1L, "352", 630L);
@@ -48,7 +44,7 @@ public class StartupRunner implements ApplicationRunner {
         aiClubService.updateAiClubAndFormation(1L, "4132", 630L);
         aiClubService.updateAiClubAndFormation(1L, "424", 630L);
 
-// ai club intermediate insert
+        // Insert AI club intermediate
         aiClubService.updateAiClubAndFormation(2L, "442", 730L);
         aiClubService.updateAiClubAndFormation(2L, "433", 730L);
         aiClubService.updateAiClubAndFormation(2L, "352", 730L);
@@ -63,7 +59,7 @@ public class StartupRunner implements ApplicationRunner {
         aiClubService.updateAiClubAndFormation(2L, "4132", 730L);
         aiClubService.updateAiClubAndFormation(2L, "424", 730L);
 
-// ai club expert insert
+        // Insert AI club expert
         aiClubService.updateAiClubAndFormation(3L, "442", 830L);
         aiClubService.updateAiClubAndFormation(3L, "433", 830L);
         aiClubService.updateAiClubAndFormation(3L, "352", 830L);
@@ -78,15 +74,14 @@ public class StartupRunner implements ApplicationRunner {
         aiClubService.updateAiClubAndFormation(3L, "4132", 830L);
         aiClubService.updateAiClubAndFormation(3L, "424", 830L);
 
-
-        for (Long i = 1l; i <= 3L; i++) {
+        for (Long i = 1L; i <= 3L; i++) {
             Long finalI = i;
             AiClub club = aiClubRepository.findById(i)
                     .orElseThrow(() -> new IllegalArgumentException("AI Club does not exist with club id - " + finalI));
             aiClubList.add(club);
 
             List<AiFormation> lst = aiFormationRepository.findByClub_ClubId(finalI).orElseThrow(
-                    () -> new IllegalArgumentException("AI Formation does not exist with club id - " + finalI)); ;
+                    () -> new IllegalArgumentException("AI Formation does not exist with club id - " + finalI));
 
             aiFormationList.put(finalI, lst);
         }

@@ -29,7 +29,8 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:5173")
 @Slf4j
 @RestController
-public class PlayerApiController {
+@RequestMapping("/api")
+public class PlayerController {
     @Autowired
     private PlayerService playerService;
 
@@ -68,18 +69,6 @@ public class PlayerApiController {
             teamFilter = request.getTeamFilter();
             leagueFilters = request.getLeagueFilter();
             posFilter = request.getPlayerPositionFilter();
-
-//        for (var c : countryFilter)
-//            System.out.println(c.getName());
-//
-//        for (var t : teamFilter)
-//            System.out.println(t.getName());
-//
-//        for (var l : leagueFilters)
-//            System.out.println(l.getName());
-//
-//        for (var p : posFilter)
-//            System.out.println(p.getCode());
 
             Sort sort = Sort.by("ovr").descending(); // 기본값
 
@@ -146,11 +135,11 @@ public class PlayerApiController {
         }
     }
 
-    @GetMapping("/players/{userId}/{clubId}")
-    public List<PlayerDto> getMyClubPlayers(@PathVariable Long userId, @PathVariable Long clubId) {
+    @GetMapping("/users/{userId}/players")
+    public List<PlayerDto> getMyClubPlayers(@PathVariable Long userId) {
         try {
             UserInfo user = userInfoService.getUserById(userId);
-            List<MyPlayer> myPlayers = myPlayerService.getMyPlayers(userId, clubId);
+            List<MyPlayer> myPlayers = myPlayerService.getMyPlayers(userId);
             return myPlayers.stream().map(p -> {
                 var player = playerService.searchPlayerById(p.getPlayerId());
                 return PlayerDto.from(player);

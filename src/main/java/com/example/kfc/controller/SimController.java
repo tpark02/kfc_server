@@ -8,10 +8,7 @@ import com.example.kfc.service.SimService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,16 +16,12 @@ import java.util.List;
 @Slf4j
 @RestController
 @AllArgsConstructor
+@RequestMapping("/api")
 public class SimController {
     @Autowired
     private final SimService simService;
 
-//    @PostMapping("/api/simulate-league")
-//    public SimResultResponse simulateLeague(@RequestBody SimRequest request) {
-//        return simService.simulateLeague(request.getTeams());
-//    }
-
-    @PostMapping("/simulate/generate-schedule")
+    @PostMapping("/simulations/schedule")
     public List<MatchDto> generateRandomSchedule(@RequestBody SimGenerateRequest request) {
         return simService.generateRandomSchedule(request.getUserId(), request.getClubId());
     }

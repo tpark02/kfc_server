@@ -27,9 +27,8 @@ public class UserInfoController {
     private final MyFormationService myFormationService;
     private final MyPlayerService myPlayerService;
 
-    @PostMapping("/userInfo")
-    public UserInfoDto getUserInfoById(@RequestBody UserInfoRequest request) {
-        Long userId = request.getUserId();
+    @GetMapping("/users/{userId}")
+    public UserInfoDto getUserInfoById(@PathVariable Long userId) {
         UserInfo info = userInfoService.findUserInfoById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Could not find user info, user id - " + userId));
         return UserInfoDto.from(info);
@@ -43,7 +42,7 @@ public class UserInfoController {
         var myclub = myClubService.getClubsByUser(userinfo).get(0);
         var formation = myFormationService.getFormationsByClub(myclub).orElseThrow(() -> new IllegalArgumentException(
                 " user info controller - /api/me - getCurrentUserInfo errr - getting formation"));
-        var myPlayers = myPlayerService.getMyPlayers(userId, 1L);
+        var myPlayers = myPlayerService.getMyPlayers(userId);
         List<MyPlayerDto> myPlayerDtoList = myPlayers.stream().map(MyPlayerDto::from).toList();
 
         Map<String, Object> result = new HashMap<>();

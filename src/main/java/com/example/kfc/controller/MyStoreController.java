@@ -23,13 +23,14 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api")
 public class MyStoreController {
     private final PlayerService playerService;
     private final MyPlayerService myPlayerService;
     private final UserInfoService userInfoService;
     private final LockManager<Long> userLockManager = new LockManager<>();
 
-    @PutMapping("/mystore/buyplayer/")
+    @PutMapping("/store/players/purchase")
     public BuyPlayerResponse buyplayer(@RequestBody MyStoreUpdateRequest request) {
         Long userId = request.getUserId();
         Long playerId = request.getPlayerId();
@@ -63,7 +64,7 @@ public class MyStoreController {
 
             List<MyPlayer> resultList = new ArrayList<>();
             if (res) {
-                resultList = myPlayerService.getMyPlayers(userId, 1L);
+                resultList = myPlayerService.getMyPlayers(userId);
                 return new BuyPlayerResponse(resultList, String.format("%s purchased successfully!", player.getName()), player.getName());
             } else {
                 return new BuyPlayerResponse(new ArrayList<>(), "Purchase failed", "NO PLAYER");

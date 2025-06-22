@@ -11,7 +11,7 @@ public class ProtectedController {
     @GetMapping("/protected")
     public ResponseEntity<Map<String, String>> getProtectedData() {
         Map<String, String> response = new HashMap<>();
-        response.put("message", "🔐 이 데이터는 인증된 사용자만 접근 가능합니다.");
+        response.put("message", "🔐 This data is only accessible to authenticated users.");
         return ResponseEntity.ok(response);
     }
 }

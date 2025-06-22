@@ -144,10 +144,6 @@ public class PlayerDto {
     }
 
     public static Player toEntity(PlayerDto dto) {
-        Player player = new Player();
-        // lombok @Getter만 있으므로 setter 직접 호출이 안 됨 → 생성자 필요 또는 Builder 사용 추천
-
-        // 또는 모든 필드 포함 생성자 사용
         return new Player(
                 dto.getId(),
                 dto.getRank(),

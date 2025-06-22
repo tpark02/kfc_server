@@ -56,13 +56,12 @@ public class SeasonService {
                 .toList();
     }
 
-    @Scheduled(fixedRate = matchTime) // 분마다 실행
+    @Scheduled(fixedRate = matchTime)
     @Transactional
     public void checkSeasonStartConditions() {
         List<Season> waitingSeasons = seasonRepository.findByStartedFalse();
 
         for (Season season : waitingSeasons) {
-            //if (Duration.between(season.getCreatedAt(), LocalDateTime.now()).toMinutes() >= 5) {
             if (Duration.between(season.getCreatedAt(), LocalDateTime.now()).getSeconds() >= 5) {   // season start
 
                 List<SeasonParticipant> slots = seasonParticipantRepository.findBySeason(season);
@@ -76,7 +75,6 @@ public class SeasonService {
                             .iterator();
 
                     for (int i = 0; i < emptyCount && emptySlots.hasNext(); i++) {
-                        //UserInfo aiUser = userInfoService.generateRandomUser();
                         UserInfo aiUser = aiUserCache.getAiUser(i);
                         AiClub aiClub = getRandomAiClub();
 
@@ -87,7 +85,6 @@ public class SeasonService {
                     }
                 }
 
-                //season.setStarted(true);
                 tournamentService.tryStartTournament(season);
                 // save season
                 seasonRepository.save(season);

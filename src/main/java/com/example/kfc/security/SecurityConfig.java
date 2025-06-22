@@ -18,20 +18,20 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthFilter jwtAuthFilter) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable)  // ✅ 최신 방식
-                .cors(cors -> {})                       // ✅ 기본 CORS 허용
+                .csrf(AbstractHttpConfigurer::disable)  // ✅ Modern method to disable CSRF
+                .cors(cors -> {})                       // ✅ Allow default CORS
                 .headers(headers -> headers
-                                 .frameOptions(frame -> frame.disable()) // ✅ H2 Console 사용 가능하도록
+                                 .frameOptions(frame -> frame.disable()) // ✅ Allow H2 Console
                         )
                 .authorizeHttpRequests(auth -> auth
-                                               .requestMatchers("/api/login", "/api/signup", "/api/register", "/h2" +
-                                                       "-console/**").permitAll()
-                                               .requestMatchers("/api/me").authenticated().anyRequest().authenticated()
+                                               .requestMatchers("/api/login", "/api/signup", "/api/register", "/h2-console/**").permitAll()
+                                               .requestMatchers("/api/me").authenticated()
+                                               .anyRequest().authenticated()
                                       )
                 .sessionManagement(sess -> sess
-                                           .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // ✅ JWT 사용 시 필수
+                                           .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // ✅ Required for JWT
                                   )
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class); // ✅ 커스텀 필터 적용
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class); // ✅ Apply custom filter
 
         return http.build();
     }
@@ -43,6 +43,6 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(); // ✅ 로그인 시 bcrypt 비교용
+        return new BCryptPasswordEncoder(); // ✅ Used for comparing bcrypt during login
     }
 }

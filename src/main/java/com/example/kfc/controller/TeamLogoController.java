@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/logos")
+@RequestMapping("/api")
 public class TeamLogoController {
 
     private final TeamLogoService teamLogoService;
@@ -20,12 +20,12 @@ public class TeamLogoController {
         this.teamLogoService = teamLogoService;
     }
 
-    @GetMapping
+    @GetMapping("/logos")
     public List<TeamLogo> getAllLogos() {
         return teamLogoService.getAllTeamLogos();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/logos/{id}")
     public ResponseEntity<TeamLogo> getLogoById(@PathVariable Long id) {
         return teamLogoService.getTeamLogoById(id)
                 .map(ResponseEntity::ok)

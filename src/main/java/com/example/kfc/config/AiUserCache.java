@@ -20,7 +20,7 @@ public class AiUserCache {
     @PostConstruct
     public void loadAiUsers() {
         this.cachedAiUsers = userInfoRepository.findByIsAiTrue();
-        System.out.println("✅ AI 유저 캐싱 완료: " + cachedAiUsers.size() + "명");
+        System.out.println("✅ Finished caching AI users: " + cachedAiUsers.size() + " users");
     }
 
     public UserInfo getAiUser(int index) {

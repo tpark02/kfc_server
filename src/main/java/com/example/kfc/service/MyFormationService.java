@@ -16,23 +16,23 @@ import java.util.List;
 import java.util.Optional;
 
 @Slf4j
-@Service // 서비스 객체 선언
+@Service
 @AllArgsConstructor
-
 public class MyFormationService {
+
     @Autowired
     MyFormationRepository myFormationRepository;
     private final MyClubRepository myClubRepository;
 
     public MyFormation createEmptyFormation(Long userId, String formationName) {
         MyClub club = myClubRepository.findByUserId(userId)
-                .orElseThrow(() -> new IllegalArgumentException("❌ 클럽이 없습니다: " + userId));
+                .orElseThrow(() -> new IllegalArgumentException("❌ Club not found: " + userId));
 
         MyFormation formation = new MyFormation();
         formation.setName(formationName);
         formation.setClub(club);
 
-        initializeAllPlayerFields(formation); // ✅ 초기화
+        initializeAllPlayerFields(formation); // ✅ Initialize
 
         return myFormationRepository.save(formation);
     }
@@ -42,10 +42,10 @@ public class MyFormationService {
             for (int i = 1; i <= 27; i++) {
                 Field field = MyFormation.class.getDeclaredField("p" + i);
                 field.setAccessible(true);
-                field.set(formation, 0L); // 또는 null
+                field.set(formation, 0L); // or null
             }
         } catch (Exception e) {
-            throw new RuntimeException("❌ 플레이어 필드 초기화 중 오류", e);
+            throw new RuntimeException("❌ Error while initializing player fields", e);
         }
     }
 
@@ -85,7 +85,7 @@ public class MyFormationService {
 
     public MyFormation updateFormation(Long formationId, MyFormation updated) {
         MyFormation existing = myFormationRepository.findById(formationId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 포메이션이 존재하지 않습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("The formation does not exist."));
 
         existing.setName(updated.getName());
         existing.setP1(updated.getP1());

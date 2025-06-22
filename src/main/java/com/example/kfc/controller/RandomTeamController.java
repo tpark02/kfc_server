@@ -9,10 +9,7 @@ import com.example.kfc.manager.LockManager;
 import com.example.kfc.service.RandomTeamService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,11 +17,12 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api")
 public class RandomTeamController {
 
     private final RandomTeamService randomTeamService;
 
-    @PostMapping("/randomteam")
+    @PostMapping("/teams/random")
     public RandomSquadResponse getRandomTeam(@RequestBody RandomSquadRequest request) {
         String formation  = request.getName();
         List<CountryDto> countries = request.getCountries();

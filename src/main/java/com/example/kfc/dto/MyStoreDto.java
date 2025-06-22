@@ -16,10 +16,6 @@ public class MyStoreDto {
     private Long id;
     private Long userId;
     private Long playerId;
-//    private Long clubId;
-//    private Long yellowCard;
-//    private Long redCard;
-//    private Long idx;
     private Long rank;
     private String name;
     private Long ovr;
@@ -83,9 +79,6 @@ public class MyStoreDto {
                 m.getId(),
                 m.getUserId(),
                 m.getPlayerId(),
-//                m.getYellowCard(),
-//                m.getRedCard(),
-//                m.getIdx(),
                 m.getRank(),
                 m.getName(),
                 m.getOvr(),
