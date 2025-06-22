@@ -37,7 +37,7 @@ public class MyPlayer {
     @Column
     private Long idx;
 
-    @Column
+    @Column(name = "`rank`")
     private Long rank;
 
     @Column
