@@ -81,14 +81,30 @@ Then go to: [http://localhost:5173](http://localhost:5173)
 
 ---
 
-## 🧪 Sample API Endpoints
+## 📡 API Endpoints
 
-```http
-GET /api/players/search
-POST /api/squad/random
-POST /api/formation/create
-GET /api/simulate/league
-```
+Most endpoints are prefixed with `/api`.
+
+| Method   | Path                                      | Controller            |
+|----------|-------------------------------------------|------------------------|
+| POST     | /api/login                                | AuthController         |
+| POST     | /api/signup                               | AuthController         |
+| GET      | /api/leagues                              | LeagueController       |
+| GET      | /api/teams                                | TeamController         |
+| GET      | /api/logos                                | TeamLogoController     |
+| GET      | /api/logos/{id}                           | TeamLogoController     |
+| POST     | /api/teams/random                         | RandomTeamController   |
+| POST     | /api/simulations/schedule                 | SimController          |
+| GET      | /api/protected                            | ProtectedController    |
+| GET      | /api/me                                   | UserInfoController     |
+| GET      | /api/users/{userId}                       | UserInfoController     |
+| GET      | /api/users/{userId}/clubs                 | MyClubController       |
+| PUT      | /api/users/{userId}/clubs/{clubId}        | MyClubController       |
+| DELETE   | /api/users/{userId}/clubs/{clubId}        | MyClubController       |
+| PUT      | /api/users/{userId}/players/{idx}         | MyClubController       |
+| GET      | /api/users/{userId}/players               | PlayerController       |
+| POST     | /api/players                              | PlayerController       |
+| PUT      | /api/store/players/purchase               | MyStoreController      |
 
 ---
 
