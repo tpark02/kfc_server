@@ -14,7 +14,7 @@ public class WebConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/api/**") // 또는 "/**" 전체 허용
-                        .allowedOrigins("http://localhost:5173", "https://tpark02.github.io")
+                        .allowedOrigins("http://localhost:5173", "http://84.247.155.23")
                         .allowedMethods("*")
                         .allowedHeaders("*");
             }
