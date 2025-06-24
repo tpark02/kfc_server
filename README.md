@@ -1,22 +1,27 @@
 # ⚽ KFC - Kickoff Football Club Simulator
 
-**KFC** is a full-stack football club simulation web application where users can manage their teams, simulate leagues, build squads with filters, and analyze football stats with game-like visuals.
+KFC is a full-stack football club simulation web application. It allows users to build squads, simulate leagues, manage players and formations, and view team stats in a game-like experience inspired by modern football manager platforms.
 
-## 🧱 Tech Stack
+---
 
-### 💻 Frontend (React + Vite)
-- React + TypeScript
-- Zustand for state management
-- Material UI (MUI) for components and styling
-- Vite as the build tool
+## 🧠 Project Overview
 
-### 🚀 Backend (Spring Boot)
-- Spring Boot 3+
-- Java 17
-- JPA/Hibernate
-- H2 or MySQL
-- RESTful API
-- Gradle for build
+Kickoff Football Club Simulator (KFC) is a football management simulation platform built with a professional service-oriented mindset.
+
+While the theme is football, the true goal is to demonstrate capabilities in **full-stack development**, including RESTful API design, frontend architecture, user authentication, data modeling, dynamic UI rendering, and **efficient large-scale data processing**.
+
+---
+
+
+## 🛠️ Tech Stack
+
+| Layer        | Stack |
+|--------------|-------|
+| Frontend     | React + TypeScript + Zustand + Material UI (MUI) |
+| Backend      | Spring Boot 3, Java 17, JPA/Hibernate, RESTful APIs |
+| Database     | H2 / MariaDB |
+| Deployment   | Docker + VPS (Contabo) |
+
 
 ---
 
