@@ -34,6 +34,8 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request) {
+        System.out.println("🟢 login() called with username: " + request.getUsername());
+
         try {
             // 👉 Debug log
             UserInfo user = userInfoRepository.findByUsername(request.getUsername())

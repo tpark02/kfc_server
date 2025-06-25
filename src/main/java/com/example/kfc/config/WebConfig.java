@@ -14,9 +14,9 @@ public class WebConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/api/**") // 또는 "/**" 전체 허용
-                        .allowedOrigins("http://localhost:5173", "http://84.247.155.23")
+                        .allowedOrigins("http://localhost:5173", "http://84.247.155.23", "https://kfcfootball.club", "https://www.kfcfootball.club")
                         .allowedMethods("*")
-                        .allowedHeaders("*");
+                        .allowedHeaders("*").allowCredentials(true); // 로그인/쿠키 등 사용할 경우 필수
             }
         };
     }
