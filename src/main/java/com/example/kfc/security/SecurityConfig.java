@@ -24,14 +24,15 @@ public class SecurityConfig {
                                  .frameOptions(frame -> frame.disable()) // ✅ Allow H2 Console
                         )
                 .authorizeHttpRequests(auth -> auth
-                                               .requestMatchers("/api/login", "/api/signup", "/api/register", "/h2-console/**").permitAll()
+                                               .requestMatchers("/api/login", "/api/signup", "/api/register", "/h2" +
+                                                       "-console/**").permitAll()
                                                .requestMatchers("/api/me").authenticated()
                                                .anyRequest().authenticated()
                                       )
                 .sessionManagement(sess -> sess
-                                           .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // ✅ Required for JWT
+                                           .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                                   )
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class); // ✅ Apply custom filter
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

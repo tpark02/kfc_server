@@ -10,6 +10,7 @@ import com.example.kfc.service.MyFormationService;
 import com.example.kfc.service.MyClubService;
 import com.example.kfc.service.MyPlayerService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.AuthenticationException;
@@ -57,8 +58,12 @@ public class AuthController {
 
             return ResponseEntity.ok(new AuthResponse(token, userId));
 
+        } catch (BadCredentialsException e) {
+            // ✅ Handles invalid credentials correctly
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("❌ Invalid username or password");
         } catch (AuthenticationException e) {
-            return ResponseEntity.status(401).body("❌ Username or password does not match.");
+            // ✅ Handles disabled users, etc
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("❌ Authentication failed");
         }
     }
 
