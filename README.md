@@ -65,7 +65,7 @@ cd kfc_server-main
 ./gradlew bootRun
 ```
 
-> Ensure Java 17+ is installed. Default DB is H2 (in-memory) unless configured in `application.properties`.
+> Ensure Java 17+ is installed. Maria DB
 
 ### 🌐 Frontend Setup
 
@@ -221,7 +221,7 @@ cd kfc_server-main
 ./gradlew bootRun
 ```
 
-> Java 17 이상이 설치되어 있어야 합니다. 기본 DB는 H2 (인메모리)이며, `application.properties`에서 변경 가능합니다.
+> Java 17 이상이 설치되어 있어야 합니다. Maria DB
 
 ### 🌐 프론트엔드 설정
 
